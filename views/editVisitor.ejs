@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Visitor</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/style.css" rel="stylesheet">
+
+</head>
+<body class="bg-light">
+  <div class="container py-5">
+    <h2 class="mb-4 text-center">Edit Data Visitor</h2>
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <form method="POST" action="/visitor/edit/<%= visitor._id %>">
+          <div class="mb-3">
+            <label class="form-label">Nama</label>
+            <input type="text" name="name" class="form-control" value="<%= visitor.name %>" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Keperluan</label>
+            <input type="text" name="purpose" class="form-control" value="<%= visitor.purpose %>" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+          <a href="/visitor" class="btn btn-secondary">Batal</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
