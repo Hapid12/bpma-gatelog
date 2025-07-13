@@ -2,12 +2,15 @@
 const express = require('express');
 const router = express.Router();
 const Visitor = require('../models/Visitor');
+const Employee = require('../models/Employee');
+const transporter = require('../utils/mailer');
 
 // GET: Halaman visitor + histori
 router.get('/', async (req, res) => {
   try {
     const visitors = await Visitor.find().sort({ date: -1 });
-    res.render('visitor', { visitors });
+    const employees = await Employee.find();
+    res.render('visitor', { visitors, employees });
   } catch (error) {
     console.error(error);
     res.status(500).send('Gagal memuat data visitor');
@@ -28,7 +31,13 @@ router.post('/add', async (req, res) => {
       schedule
     } = req.body;
 
-    const newVisitor = new Visitor({
+    // Cari email karyawan berdasarkan nama
+    const employee = await Employee.findOne({ name: targetEmployee });
+    if (!employee) {
+      return res.status(404).send('Karyawan tidak ditemukan.');
+    }
+
+    const newVisitor = await Visitor.create({
       name,
       email,
       institution,
@@ -40,7 +49,33 @@ router.post('/add', async (req, res) => {
       date: new Date()
     });
 
-    await newVisitor.save();
+    const mailOptions = {
+      from: process.env.MY_GMAIL,
+      to: employee.email,
+      subject: `Permintaan Pertemuan dari ${name}`,
+      html: `
+        <p>Yth. Bapak/Ibu <b>${targetEmployee}</b>,</p>
+        <p>Anda memiliki permintaan pertemuan dari:</p>
+        <ul>
+          <li><b>Nama:</b> ${name}</li>
+          <li><b>Instansi:</b> ${institution}</li>
+          <li><b>Email:</b> ${email}</li>
+          <li><b>Keperluan:</b> ${purpose}</li>
+          <li><b>Jumlah Rekan:</b> ${companions}</li>
+          <li><b>Jadwal:</b> ${new Date(schedule).toLocaleString('id-ID')}</li>
+        </ul>
+        <p>Apakah Anda bersedia menerima tamu ini?</p>
+        <p>
+          <a href="http://localhost:3000/response/approved/${newVisitor._id}">✅ Approve</a> |
+          <a href="http://localhost:3000/response/rejected/${newVisitor._id}">❌ Reject</a> |
+          <a href="http://localhost:3000/response/reschedule/${newVisitor._id}">📆 Reschedule</a>
+        </p>
+        <p>Terima kasih.</p>
+      `
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(`Email terkirim ke ${employee.email}`);
     res.redirect('/visitor');
   } catch (error) {
     console.error(error);

@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,17 +38,29 @@
             <label class="form-label">Instansi Asal</label>
             <input type="text" name="institution" class="form-control" placeholder="Instansi/Perusahaan asal" required>
           </div>
-          <div class="mb-3">
+                    <div class="mb-3">
             <label class="form-label">Ingin Bertemu Siapa?</label>
-            <input type="text" name="targetEmployee" class="form-control" placeholder="Nama karyawan yang ingin ditemui" required>
+            <select name="targetEmployee" class="form-select" required>
+              <option value="Pak Dimas">Pak Haykal</option>
+              <option value="Bu Rani">Bu Rani</option>
+            </select>
           </div>
           <div class="mb-3">
-            <label class="form-label">Sudah Membuat Janji?</label>
-            <select class="form-select" name="hasAppointment" required>
-              <option value="">-- Pilih --</option>
-              <option value="Ya">Ya</option>
-              <option value="Tidak">Tidak</option>
+            <label class="form-label">Email Tujuan (Karyawan)</label>
+            <select name="targetEmail" class="form-select" required>
+              <option value="dimas@example.com">Pak Haykal - buttertiger022@gmail.com</option>
+              <option value="rani@example.com">Bu Rani - rani@example.com</option>
             </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Sudah Membuat Janji?</label>
+            <select class="form-select" name="employeeId" required>
+              <option value="">-- Pilih Karyawan --</option>
+              <% employees.forEach(emp => { %>
+              <option value="<%= emp._id %>"><%= emp.name %> - <%= emp.email %></option>
+              <% }) %>
+          </select>
           </div>
           <div class="mb-3">
             <label class="form-label">Keperluan</label>
