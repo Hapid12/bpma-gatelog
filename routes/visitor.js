@@ -137,4 +137,10 @@ router.post('/delete/:id', async (req, res) => {
   }
 });
 
+router.get('/', async (req, res) => {
+  const visitors = await Visitor.find().sort({ date: -1 });
+  const employees = await Employee.find(); // ✅ pastikan ada ini
+  res.render('visitor', { visitors, employees }); // ✅ pastikan employees dikirim
+});
+
 module.exports = router;

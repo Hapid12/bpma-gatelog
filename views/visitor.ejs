@@ -38,28 +38,35 @@
             <label class="form-label">Instansi Asal</label>
             <input type="text" name="institution" class="form-control" placeholder="Instansi/Perusahaan asal" required>
           </div>
-                    <div class="mb-3">
-            <label class="form-label">Ingin Bertemu Siapa?</label>
-            <select name="targetEmployee" class="form-select" required>
-              <option value="Pak Dimas">Pak Haykal</option>
-              <option value="Bu Rani">Bu Rani</option>
-            </select>
-          </div>
           <div class="mb-3">
-            <label class="form-label">Email Tujuan (Karyawan)</label>
+              <label class="form-label">Ingin Bertemu Siapa?</label>
+              <select name="targetEmployee" class="form-select" required>
+                <option value="">-- Pilih Karyawan --</option>
+                  <% employees.forEach(emp => { %>
+                    <option value="<%= emp.name %>" data-email="<%= emp.email %>"><%= emp.name %> - <%= emp.email %></option>
+                  <% }) %>
+              </select>
+          </div>
+
+<!-- Tambahkan hidden input untuk kirim email -->
+          <input type="hidden" name="targetEmail" id="targetEmail">
+
+          <div class="mb-3">
+            <label class="form-label">Alamat Gmail Karyawan</label>
             <select name="targetEmail" class="form-select" required>
-              <option value="dimas@example.com">Pak Haykal - buttertiger022@gmail.com</option>
-              <option value="rani@example.com">Bu Rani - rani@example.com</option>
+              <option value=""> pilih Alamat gmail karyawan</option>
+              <% employees.forEach(emp => { %>
+                    <option value="<%= emp.name %>" data-email="<%= emp.email %>"><%= emp.name %> - <%= emp.email %></option>
+                  <% }) %>
             </select>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Sudah Membuat Janji?</label>
-            <select class="form-select" name="employeeId" required>
-              <option value="">-- Pilih Karyawan --</option>
-              <% employees.forEach(emp => { %>
-              <option value="<%= emp._id %>"><%= emp.name %> - <%= emp.email %></option>
-              <% }) %>
+            <select class="form-select" name="hasAppointment" required>
+              <option value="">-- Pilih Opsi --</option>
+              <option value="Ya">Ya</option>
+              <option value="Tidak">Tidak</option>
           </select>
           </div>
           <div class="mb-3">
@@ -129,5 +136,18 @@
   </table>
 </div>
   </div>
+
+<script>
+  const select = document.querySelector('select[name="targetEmployee"]');
+  const emailInput = document.getElementById('targetEmail');
+
+  select.addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    const email = selectedOption.getAttribute('data-email');
+    emailInput.value = email;
+  });
+</script>
+
+
 </body>
 </html>
