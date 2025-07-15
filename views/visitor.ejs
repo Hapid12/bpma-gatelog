@@ -85,55 +85,6 @@
         </form>
       </div>
     </div>
-
-<!-- Tabel Histori Visitor -->
-<h2 class="mb-4 text-center text-white" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">Histori Visitor</h2>
-<div class="table-responsive shadow-sm">
-  <table class="table table-striped table-hover">
-    <thead class="table-dark">
-      <tr>
-        <th>No</th>
-        <th>Nama</th>
-        <th>Email</th>
-        <th>Instansi</th>
-        <th>Ingin Bertemu</th>
-        <th>Janji?</th>
-        <th>Keperluan</th>
-        <th>Jumlah Rekan</th>
-        <th>Jadwal</th>
-        <th>Tanggal Kunjungan</th>
-        <th>Aksi</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% if (visitors.length === 0) { %>
-        <tr>
-          <td colspan="11" class="text-center">Belum ada data.</td>
-        </tr>
-      <% } else { %>
-        <% visitors.forEach((visitor, index) => { %>
-          <tr>
-            <td><%= index + 1 %></td>
-            <td><%= visitor.name %></td>
-            <td><%= visitor.email %></td>
-            <td><%= visitor.institution %></td>
-            <td><%= visitor.targetEmployee %></td>
-            <td><%= visitor.hasAppointment %></td>
-            <td><%= visitor.purpose %></td>
-            <td><%= visitor.companions %></td>
-            <td><%= new Date(visitor.schedule).toLocaleString("id-ID") %></td>
-            <td><%= new Date(visitor.date).toLocaleString("id-ID") %></td>
-            <td>
-              <a href="/visitor/edit/<%= visitor._id %>" class="btn btn-sm btn-warning">Edit</a>
-              <form action="/visitor/delete/<%= visitor._id %>" method="POST" style="display:inline;">
-                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Hapus data ini?')">Hapus</button>
-              </form>
-            </td>
-          </tr>
-        <% }) %>
-      <% } %>
-    </tbody>
-  </table>
 </div>
   </div>
 
