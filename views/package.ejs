@@ -1,74 +1,84 @@
-<%- include('partials/header', { currentPath: request.url }) %>
-
-
-<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Data Paket - BPMA GateLog</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="/css/style.css" rel="stylesheet">
-
-</head>
-<body class="bg-light">
-  <div class="container py-5">
-    <h1 class="mb-4 text-center">Form Data Paket Masuk</h1>
-
-    <!-- Form Input -->
-    <div class="card mb-5 shadow-sm">
-      <div class="card-body">
-        <form method="POST" action="/package/add">
-          <div class="mb-3">
-            <label class="form-label">Nama Penerima</label>
-            <input type="text" name="recipient" class="form-control" placeholder="Masukkan nama penerima" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Nama Kurir</label>
-            <input type="text" name="courier" class="form-control" placeholder="Masukkan nama kurir" required>
-          </div>
-          <button type="submit" class="btn btn-success">Simpan Paket</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Tabel Riwayat Paket -->
-    <h2 class="mb-3">Riwayat Paket Masuk</h2>
-    <div class="table-responsive shadow-sm">
-      <table class="table table-striped table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>No</th>
-                <th>Penerima</th>
-                <th>Kurir</th>
-                <th>Tanggal</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% if (packages.length === 0) { %>
-            <tr>
-            <td colspan="5" class="text-center">Belum ada data paket.</td>
-            </tr>
-            <% } else { %>
-            <% packages.forEach((pkg, index) => { %>
-            <tr>
-                <td><%= index + 1 %></td>
-                <td><%= pkg.recipient %></td>
-                <td><%= pkg.courier %></td>
-                <td><%= new Date(pkg.date).toLocaleDateString("id-ID") %></td>
-                <td>
-                    <a href="/package/edit/<%= pkg._id %>" class="btn btn-sm btn-warning">Edit</a>
-                    <form action="/package/delete/<%= pkg._id %>" method="POST" style="display:inline;">
-                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Hapus data paket ini?')">Hapus</button>
-                    </form>
-                </td>
-            </tr>
-            <% }) %>
-            <% } %>
-        </tbody>
-      </table>
-    </div>
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Package Log
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <style>
+   @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap");
+    body {
+      font-family: "Inter", sans-serif;
+    }
+  </style>
+ </head>
+ <body class="min-h-screen bg-black relative">
+  <img alt="Aerial view of an industrial plant with pipes and structures under a partly cloudy sky" class="absolute inset-0 w-full h-full object-cover brightness-50" height="1080" src="https://storage.googleapis.com/a1aa/image/a17ac5d8-8b3f-4f30-a964-9f476c016760.jpg" width="1920"/>
+  
+  <!-- Header positioned at top corner -->
+  <header class="fixed top-0 left-0 right-0 z-50 flex items-center gap-2 bg-black bg-opacity-90 px-4 py-3 rounded-b-3xl">
+   <a class="navbar-brand d-flex align-items-center" href="/">
+       <img src="/logoBPMA.png" alt="BPMA" width="116" height="85" class="me-2">   
+    </a>
+    <h1 class="absolute left-1/2 transform -translate-x-1/2 text-white font-bold text-2xl select-none">
+    PACKAGE - LOG
+  </h1>
+</header>
+  <main class="relative z-10 max-w-3xl mx-auto pt-32 px-4 pb-8">
+    <div class="bg-black bg-opacity-70 rounded-xl p-8">
+      <form class="space-y-6">
+        <div>
+          <label class="block text-white font-semibold mb-1 select-none" for="nama-kurir">
+            Nama Kurir:
+          </label>
+          <input class="w-full rounded-md border border-transparent px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" id="nama-kurir" placeholder="Cth : Agus" type="text"/>
+        </div>
+        <div>
+          <label class="block text-white font-semibold mb-1 select-none" for="tujuan-paket">
+          Tujuan Paket:
+          </label>
+          <input class="w-full rounded-md border border-transparent px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" id="tujuan-paket" placeholder="Berikan nama atau email penerima" type="text"/>
+        </div>
+        <div>
+          <label class="block text-white font-semibold mb-1 select-none" for="tipe-paket">
+          Tipe Paket:
+          </label>
+          <input class="w-full rounded-md border border-transparent px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" id="tipe-paket" placeholder="Cth : Busana" type="text"/>
+        </div>
+        <div>
+          <label class="block text-white font-semibold mb-1 select-none" for="pengirim">
+          Pengirim:
+          </label>
+          <input class="w-full rounded-md border border-transparent px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" id="pengirim" placeholder="Berikan nama/toko pengirim" type="text"/>
+        </div>
+        <div>
+          <label class="block text-white font-semibold mb-1 select-none" for="perihal">
+          Perihal:
+          </label>
+          <textarea class="w-full rounded-md border border-transparent px-3 py-2 text-sm placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" id="perihal" placeholder="Rincian" rows="4"></textarea>
+        </div>
+        <div>
+          <label class="block text-white font-semibold mb-2 select-none">
+          Sertakan Gambar:
+          </label>
+          <button class="inline-flex items-center space-x-2 rounded border border-gray-300 bg-white px-3 py-1 text-xs text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-600" type="button">
+          <i class="fas fa-plus text-sm">
+          </i>
+          <span>
+            Add Attachment
+          </span>
+      </button>
+     </div>
+     <div>
+      <button class="bg-blue-700 text-white text-sm font-semibold px-5 py-2 rounded hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-600" type="submit">
+       Kirim
+      </button>
+     </div>
+    </form>
+   </main>
   </div>
-  <%- include('partials/footer') %>
-</body>
+ </body>
 </html>
