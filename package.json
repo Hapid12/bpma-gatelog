@@ -1,11 +1,12 @@
 {
   "dependencies": {
     "body-parser": "^2.2.0",
-    "dotenv": "^17.1.0",
+    "dotenv": "^17.0.1",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "mongodb": "^6.17.0",
-    "mongoose": "^8.16.2"
+    "mongoose": "^8.16.1",
+    "nodemon": "^3.1.10"
   },
   "name": "bpma-project",
   "version": "1.0.0",
