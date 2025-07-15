@@ -67,10 +67,9 @@
        <option disabled="" selected="">
         Select your answer
        </option>
-       <option value="direktur">Direktur</option>
-       <option value="manager">Manager</option>
-       <option value="supervisor">Supervisor</option>
-       <option value="staff">Staff</option>
+       <% employees.forEach(emp => { %>
+      <option value="<%= emp.name %>" data-email="<%= emp.email %>"><%= emp.name %> - <%= emp.email %></option>
+    <% }) %>
       </select>
      </div>
      <div>
