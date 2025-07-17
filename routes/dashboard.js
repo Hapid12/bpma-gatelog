@@ -33,11 +33,20 @@ router.get('/', async (req, res) => {
   const chartLabels = Object.keys(dailyCounts);
   const chartData = Object.values(dailyCounts);
 
-  res.render('dashboard', {
+  // Initialize default data
+  const data = {
     visitorsToday,
     packagesToday,
-    chartLabels,
-    chartData
+    monthlyVisitors: 0,
+    monthlyPackages: 0,
+    chartLabels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
+    chartData,
+    packageChartData: [0, 0, 0, 0, 0, 0, 0]
+  };
+
+  res.render('dashboard', {
+    ...data,
+    request: req
   });
 });
 
