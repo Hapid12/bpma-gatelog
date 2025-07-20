@@ -5,7 +5,7 @@ const Visitor = require('../models/Visitor');
 const Employee = require('../models/Employee');
 const transporter = require('../utils/mailer');
 
-// GET: Halaman visitor + histori
+// GET: Halaman visitor
 router.get('/', async (req, res) => {
   try {
     const visitors = await Visitor.find().sort({ date: -1 });
@@ -17,52 +17,53 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST: Tambah visitor
-router.post('/add', async (req, res) => {
+// POST: Form visitor (dari form action="/visitor")
+router.post('/', async (req, res) => {
   try {
     const {
-      name,
+      nama,
       email,
-      institution,
-      targetEmployee,
-      hasAppointment,
-      purpose,
-      companions,
-      schedule
+      instansi,
+      bertemu,
+      janji,
+      keperluan,
+      rekan,
+      tanggal
     } = req.body;
 
     // Cari email karyawan berdasarkan nama
-    const employee = await Employee.findOne({ name: targetEmployee });
+    const employee = await Employee.findOne({ name: bertemu });
     if (!employee) {
       return res.status(404).send('Karyawan tidak ditemukan.');
     }
 
     const newVisitor = await Visitor.create({
-      name,
-      email,
-      institution,
-      targetEmployee,
-      hasAppointment,
-      purpose,
-      companions,
-      schedule: new Date(schedule),
+      name: nama,
+      email: email,
+      institution: instansi,
+      targetEmployee: bertemu,
+      hasAppointment: janji,
+      purpose: keperluan,
+      companions: rekan,
+      schedule: new Date(tanggal),
       date: new Date()
     });
 
+    // Kirim email ke karyawan
     const mailOptions = {
       from: process.env.MY_GMAIL,
       to: employee.email,
-      subject: `Permintaan Pertemuan dari ${name}`,
+      subject: `Permintaan Pertemuan dari ${nama}`,
       html: `
-        <p>Yth. Bapak/Ibu <b>${targetEmployee}</b>,</p>
+        <p>Yth. Bapak/Ibu <b>${bertemu}</b>,</p>
         <p>Anda memiliki permintaan pertemuan dari:</p>
         <ul>
-          <li><b>Nama:</b> ${name}</li>
-          <li><b>Instansi:</b> ${institution}</li>
+          <li><b>Nama:</b> ${nama}</li>
+          <li><b>Instansi:</b> ${instansi}</li>
           <li><b>Email:</b> ${email}</li>
-          <li><b>Keperluan:</b> ${purpose}</li>
-          <li><b>Jumlah Rekan:</b> ${companions}</li>
-          <li><b>Jadwal:</b> ${new Date(schedule).toLocaleString('id-ID')}</li>
+          <li><b>Keperluan:</b> ${keperluan}</li>
+          <li><b>Jumlah Rekan:</b> ${rekan}</li>
+          <li><b>Jadwal:</b> ${new Date(tanggal).toLocaleString('id-ID')}</li>
         </ul>
         <p>Apakah Anda bersedia menerima tamu ini?</p>
         <p>
@@ -95,28 +96,33 @@ router.get('/edit/:id', async (req, res) => {
 });
 
 // POST: Update visitor
-router.post('/edit/:id', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
+    console.log('Data masuk:', req.body); // debug 1
+
     const {
-      name,
+      nama,
       email,
-      institution,
-      targetEmployee,
-      hasAppointment,
-      purpose,
-      companions,
-      schedule
+      instansi,
+      bertemu,
+      janji,
+      keperluan,
+      rekan,
+      tanggal
     } = req.body;
 
+    // lanjut...
+
+
     await Visitor.findByIdAndUpdate(req.params.id, {
-      name,
-      email,
-      institution,
-      targetEmployee,
-      hasAppointment,
-      purpose,
-      companions,
-      schedule: new Date(schedule)
+      name: nama,
+      email: email,
+      institution: instansi,
+      targetEmployee: bertemu,
+      hasAppointment: janji,
+      purpose: keperluan,
+      companions: rekan,
+      schedule: new Date(tanggal)
     });
 
     res.redirect('/visitor');
@@ -135,12 +141,6 @@ router.post('/delete/:id', async (req, res) => {
     console.error(error);
     res.status(500).send('Gagal menghapus data visitor');
   }
-});
-
-router.get('/', async (req, res) => {
-  const visitors = await Visitor.find().sort({ date: -1 });
-  const employees = await Employee.find(); // ✅ pastikan ada ini
-  res.render('visitor', { visitors, employees }); // ✅ pastikan employees dikirim
 });
 
 module.exports = router;

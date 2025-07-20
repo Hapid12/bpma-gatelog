@@ -8,7 +8,7 @@ mongoose.connect(process.env.MONGO_URI)
     console.log('MongoDB Connected');
 
     await Employee.create([
-      { name: 'haykal', email: 'buttertiger022@gmail.com' },
+      { name: 'haykal', email: 'muhammadhafizhhaykal01@gmail.com' },
       { name: 'Siti Aminah', email: 'siti.aminah@example.com' },
       { name: 'Dian Pratama', email: 'dian.pratama@example.com' },
     ]);
