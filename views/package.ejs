@@ -1,84 +1,102 @@
+<!DOCTYPE html>
 <html lang="en">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1" name="viewport"/>
-  <title>
-   Package Log
-  </title>
-  <script src="https://cdn.tailwindcss.com">
-  </script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-  <style>
-   @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap");
-    body {
-      font-family: "Inter", sans-serif;
-    }
-  </style>
- </head>
- <body class="min-h-screen bg-black relative">
-  <img alt="Aerial view of an industrial plant with pipes and structures under a partly cloudy sky" class="absolute inset-0 w-full h-full object-cover brightness-50" height="1080" src="https://storage.googleapis.com/a1aa/image/a17ac5d8-8b3f-4f30-a964-9f476c016760.jpg" width="1920"/>
-  
-  <!-- Header positioned at top corner -->
-  <header class="fixed top-0 left-0 right-0 z-50 flex items-center gap-2 bg-black bg-opacity-90 px-4 py-3 rounded-b-3xl">
-   <a class="navbar-brand d-flex align-items-center" href="/">
-       <img src="/logoBPMA.png" alt="BPMA" width="116" height="85" class="me-2">   
-    </a>
-    <h1 class="absolute left-1/2 transform -translate-x-1/2 text-white font-bold text-2xl select-none">
-    PACKAGE - LOG
-  </h1>
-</header>
-  <main class="relative z-10 max-w-3xl mx-auto pt-32 px-4 pb-8">
-    <div class="bg-black bg-opacity-70 rounded-xl p-8">
-      <form class="space-y-6">
-        <div>
-          <label class="block text-white font-semibold mb-1 select-none" for="nama-kurir">
-            Nama Kurir:
-          </label>
-          <input class="w-full rounded-md border border-transparent px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" id="nama-kurir" placeholder="Cth : Agus" type="text"/>
-        </div>
-        <div>
-          <label class="block text-white font-semibold mb-1 select-none" for="tujuan-paket">
-          Tujuan Paket:
-          </label>
-          <input class="w-full rounded-md border border-transparent px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" id="tujuan-paket" placeholder="Berikan nama atau email penerima" type="text"/>
-        </div>
-        <div>
-          <label class="block text-white font-semibold mb-1 select-none" for="tipe-paket">
-          Tipe Paket:
-          </label>
-          <input class="w-full rounded-md border border-transparent px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" id="tipe-paket" placeholder="Cth : Busana" type="text"/>
-        </div>
-        <div>
-          <label class="block text-white font-semibold mb-1 select-none" for="pengirim">
-          Pengirim:
-          </label>
-          <input class="w-full rounded-md border border-transparent px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" id="pengirim" placeholder="Berikan nama/toko pengirim" type="text"/>
-        </div>
-        <div>
-          <label class="block text-white font-semibold mb-1 select-none" for="perihal">
-          Perihal:
-          </label>
-          <textarea class="w-full rounded-md border border-transparent px-3 py-2 text-sm placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" id="perihal" placeholder="Rincian" rows="4"></textarea>
-        </div>
-        <div>
-          <label class="block text-white font-semibold mb-2 select-none">
-          Sertakan Gambar:
-          </label>
-          <button class="inline-flex items-center space-x-2 rounded border border-gray-300 bg-white px-3 py-1 text-xs text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-600" type="button">
-          <i class="fas fa-plus text-sm">
-          </i>
-          <span>
-            Add Attachment
-          </span>
-      </button>
-     </div>
-     <div>
-      <button class="bg-blue-700 text-white text-sm font-semibold px-5 py-2 rounded hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-600" type="submit">
-       Kirim
-      </button>
-     </div>
-    </form>
-   </main>
-  </div>
- </body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Package Log</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-black relative text-white">
+    <img
+      src="https://storage.googleapis.com/a1aa/image/a17ac5d8-8b3f-4f30-a964-9f476c016760.jpg"
+      alt="Background"
+      class="absolute inset-0 w-full h-full object-cover brightness-50"
+    />
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 flex items-center gap-2 bg-black bg-opacity-90 px-4 py-3 rounded-b-3xl">
+      <a class="navbar-brand d-flex align-items-center" href="/">
+        <img src="/logoBPMA.png" alt="BPMA" width="116" height="85" class="me-2" />
+      </a>
+      <h1 class="absolute left-1/2 transform -translate-x-1/2 text-white font-bold text-2xl select-none">
+        PACKAGE - LOG
+      </h1>
+    </header>
+
+    <!-- Form -->
+    <main class="relative z-10 max-w-3xl mx-auto pt-32 px-4 pb-8">
+      <div class="bg-white rounded-xl p-8 shadow-lg border border-gray-200">
+        <form class="space-y-8" method="POST" action="/package" enctype="multipart/form-data">
+          <!-- Informasi Paket -->
+          <div>
+            <h2 class="text-lg font-bold mb-6 text-gray-900 border-b pb-2">Informasi Paket</h2>
+            <div class="mb-4">
+              <label for="nomorResi" class="block mb-2 text-sm font-semibold text-gray-700">Nomor Resi</label>
+              <input id="nomorResi" name="nomorResi" type="text" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div class="mb-4">
+              <label for="jenisPaket" class="block mb-2 text-sm font-semibold text-gray-700">Jenis Paket</label>
+              <input id="jenisPaket" name="jenisPaket" type="text" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label for="deskripsiPaket" class="block mb-2 text-sm font-semibold text-gray-700">Deskripsi Paket (Opsional)</label>
+              <textarea id="deskripsiPaket" name="deskripsiPaket" rows="3" class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            </div>
+          </div>
+
+          <!-- Informasi Kurir -->
+          <div>
+            <h2 class="text-lg font-bold mb-6 text-gray-900 border-b pb-2">Informasi Kurir</h2>
+            <div class="mb-4">
+              <label for="namaKurir" class="block mb-2 text-sm font-semibold text-gray-700">Nama Kurir</label>
+              <input id="namaKurir" name="namaKurir" type="text" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div class="mb-4">
+              <label for="emailKurir" class="block mb-2 text-sm font-semibold text-gray-700">Email Kurir</label>
+              <input id="emailKurir" name="emailKurir" type="email" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label for="nomorHpKurir" class="block mb-2 text-sm font-semibold text-gray-700">Nomor HP Kurir</label>
+              <input id="nomorHpKurir" name="nomorHpKurir" type="text" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+          </div>
+
+          <!-- Penerima/Pemilik Paket -->
+          <div>
+            <h2 class="text-lg font-bold mb-6 text-gray-900 border-b pb-2">Penerima/Pemilik Paket</h2>
+            <label for="penerimaPaket" class="block mb-2 text-sm font-semibold text-gray-700">Pilih Karyawan</label>
+            <select id="penerimaPaket" name="penerimaPaket" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="" disabled selected>Pilih Karyawan</option>
+              <% employees.forEach(function(emp) { %>
+                <option value="<%= emp._id %>"><%= emp.name %></option>
+              <% }); %>
+            </select>
+          </div>
+
+          <!-- Upload Foto Paket -->
+          <div>
+            <h2 class="text-lg font-bold mb-6 text-gray-900 border-b pb-2">Upload Foto Paket</h2>
+            <input id="fotoPaket" name="fotoPaket" type="file" accept="image/*" required class="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700" />
+          </div>
+
+          <!-- Submit -->
+          <div class="text-center pt-4">
+            <button type="submit" class="text-white bg-blue-600 hover:bg-blue-700 font-semibold rounded-lg text-base px-8 py-3 shadow">
+              Kirim
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </body>
 </html>

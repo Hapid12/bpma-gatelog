@@ -4,16 +4,24 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const path = require('path');
 
+// ⬇️ Tambahkan ini ke bagian atas sebelum digunakan
+const visitorRoutes = require('./routes/visitor');
+const packageRoutes = require('./routes/package');
+const dashboardRoute = require('./routes/dashboard');
+
 const app = express();
 
-// ✅ Tambahkan middleware agar 'request' tersedia di semua view
+// Middleware
 app.use((req, res, next) => {
   res.locals.request = req;
   next();
 });
 
-// Middleware lain
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 
@@ -22,14 +30,10 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log(err));
 
-// Routing
-const visitorRoutes = require('./routes/visitor');
-const packageRoutes = require('./routes/package');
-const dashboardRoute = require('./routes/dashboard'); // ✅ Sudah benar
-
+// Routing (pindahkan ke bawah setelah semua require)
 app.use('/visitor', visitorRoutes);
 app.use('/package', packageRoutes);
-app.use('/', dashboardRoute); // ✅ Root route diarahkan ke dashboard
+app.use('/', dashboardRoute);
 
 // Server Start
 const PORT = process.env.PORT || 3000;

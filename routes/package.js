@@ -1,35 +1,53 @@
+// routes/package.js
 const express = require('express');
 const router = express.Router();
-const Package = require('../models/Package');
+const nodemailer = require('nodemailer');
+const dotenv = require('dotenv');
+const Employee = require('../models/Employee');
+dotenv.config();
 
+// Ambil data karyawan untuk dropdown dan tampilkan form
 router.get('/', async (req, res) => {
-  const packages = await Package.find().sort({ date: -1 });
-  res.render('package', { packages });
+  try {
+    const employees = await Employee.find();
+    res.render('package', { employees });
+  } catch (err) {
+    res.status(500).send('Gagal mengambil data karyawan');
+  }
 });
 
-router.post('/add', async (req, res) => {
-  const { recipient, courier } = req.body;
-  await Package.create({ recipient, courier });
-  res.redirect('/package');
-});
+router.post('/', async (req, res) => {
+  const { namaKurir, tujuanPaket, tipePaket, pengirim, perihal } = req.body;
 
-// GET form edit
-router.get('/edit/:id', async (req, res) => {
-  const pkg = await Package.findById(req.params.id);
-  res.render('editPackage', { pkg });
-});
+  try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS
+      }
+    });
 
-// POST simpan hasil edit
-router.post('/edit/:id', async (req, res) => {
-  const { recipient, courier } = req.body;
-  await Package.findByIdAndUpdate(req.params.id, { recipient, courier });
-  res.redirect('/package');
-});
+    await transporter.sendMail({
+      from: `"BPMA GATELOG" <${process.env.GMAIL_USER}>`,
+      to: tujuanPaket,
+      subject: `Paket Masuk untuk Anda dari ${namaKurir}`,
+      html: `
+        <h3>Informasi Paket</h3>
+        <p><b>Nama Kurir:</b> ${namaKurir}</p>
+        <p><b>Tipe Paket:</b> ${tipePaket}</p>
+        <p><b>Pengirim:</b> ${pengirim}</p>
+        <p><b>Perihal:</b> ${perihal}</p>
+        <br>
+        <p>Silakan ambil paket Anda di pos keamanan.</p>
+      `
+    });
 
-// POST hapus paket
-router.post('/delete/:id', async (req, res) => {
-  await Package.findByIdAndDelete(req.params.id);
-  res.redirect('/package');
+    res.send('Berhasil mengirim email notifikasi paket!');
+  } catch (error) {
+    console.error('Gagal kirim email:', error);
+    res.status(500).send('Gagal mengirim email notifikasi.');
+  }
 });
 
 module.exports = router;
