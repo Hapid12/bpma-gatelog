@@ -1,33 +1,32 @@
-// routes/package.js
 const express = require('express');
 const router = express.Router();
-const nodemailer = require('nodemailer');
-const dotenv = require('dotenv');
+const multer = require('multer');
 const Employee = require('../models/Employee');
-dotenv.config();
+const transporter = require('../utils/mailer'); // GANTI INI
 
-// Ambil data karyawan untuk dropdown dan tampilkan form
+// Setup multer
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, './uploads'),
+  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
+});
+const upload = multer({ storage });
+
+// GET form
 router.get('/', async (req, res) => {
   try {
     const employees = await Employee.find();
     res.render('package', { employees });
   } catch (err) {
+    console.error('Gagal mengambil data karyawan:', err);
     res.status(500).send('Gagal mengambil data karyawan');
   }
 });
 
-router.post('/', async (req, res) => {
+// POST form + kirim email
+router.post('/', upload.single('fotoPaket'), async (req, res) => {
   const { namaKurir, tujuanPaket, tipePaket, pengirim, perihal } = req.body;
 
   try {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS
-      }
-    });
-
     await transporter.sendMail({
       from: `"BPMA GATELOG" <${process.env.GMAIL_USER}>`,
       to: tujuanPaket,
@@ -37,7 +36,6 @@ router.post('/', async (req, res) => {
         <p><b>Nama Kurir:</b> ${namaKurir}</p>
         <p><b>Tipe Paket:</b> ${tipePaket}</p>
         <p><b>Pengirim:</b> ${pengirim}</p>
-        <p><b>Perihal:</b> ${perihal}</p>
         <br>
         <p>Silakan ambil paket Anda di pos keamanan.</p>
       `

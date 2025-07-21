@@ -17,6 +17,7 @@ app.use((req, res, next) => {
   next();
 });
 
+// Middleware untuk parsing body
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
@@ -24,6 +25,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+require('dotenv').config();
+// Setup view engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 // DB Connection
 mongoose.connect(process.env.MONGO_URI)
