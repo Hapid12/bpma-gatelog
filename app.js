@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const path = require('path');
 
-// ⬇️ Tambahkan ini ke bagian atas sebelum digunakan
 const visitorRoutes = require('./routes/visitor');
 const packageRoutes = require('./routes/package');
 const dashboardRoute = require('./routes/dashboard');
