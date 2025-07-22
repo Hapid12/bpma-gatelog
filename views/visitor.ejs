@@ -1,103 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1" name="viewport"/>
-  <title>Gate Log</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"/>
-  <style>
-   body {
-     font-family: 'Inter', sans-serif;
-   }
-  </style>
- </head>
- <body class="min-h-screen bg-black relative">
-  <img alt="Background" class="absolute inset-0 w-full h-full object-cover brightness-50" src="https://storage.googleapis.com/a1aa/image/a17ac5d8-8b3f-4f30-a964-9f476c016760.jpg"/>
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <title>GateLog BPMA Registration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-[#f7f8f8] min-h-screen flex items-center justify-center p-6">
+    <div class="max-w-7xl w-full flex flex-col md:flex-row items-center md:items-start justify-center gap-12">
+      
+      <!-- Left Section (Informasi) -->
+      <div class="flex flex-col max-w-xl w-full md:w-1/2">
+        <img alt="BPMA Logo" src="/logoBPMA.png" width="100" class="mb-6" />
+        <h1 class="text-3xl font-extrabold leading-tight mb-4">
+          GateLog BPMA<br/>Sistem Registrasi Tamu
+        </h1>
+        <p class="text-sm text-black/90 max-w-md">
+          GateLog BPMA adalah sistem logbook digital yang dirancang untuk mencatat setiap kunjungan tamu ke lingkungan kantor Badan Pengelola Migas Aceh (BPMA).
+        </p>
+      </div>
 
-  <!-- Header -->
-  <header class="fixed top-0 left-0 right-0 z-50 flex items-center gap-2 bg-black bg-opacity-90 px-4 py-3 rounded-b-3xl">
-   <a class="navbar-brand d-flex align-items-center" href="/">
-     <img src="/logoBPMA.png" alt="BPMA" width="116" height="85" class="me-2">
-   </a>
-   <h1 class="absolute left-1/2 transform -translate-x-1/2 text-white font-bold text-2xl select-none">
-    GATE - LOG
-   </h1>
-  </header>
+      <!-- Form Section -->
+      <form action="/visitor" method="POST" class="bg-[#3a3a3a] rounded-lg p-6 w-full max-w-md space-y-4">
+        <div>
+          <label for="nama" class="block text-white font-semibold text-sm mb-1">Nama:</label>
+          <input id="nama" name="nama" type="text" placeholder="Cth : Agus" class="w-full rounded text-xs px-3 py-2 placeholder:text-gray-400 focus:outline-none" />
+        </div>
 
-  <!-- Form -->
-  <main class="relative z-10 max-w-3xl mx-auto pt-32 px-4 pb-8">
-   <div class="bg-black bg-opacity-70 rounded-xl p-8">
-    <form class="space-y-6" action="/visitor" method="POST">
-     <div>
-      <label for="nama" class="block text-white text-xs font-semibold mb-2">Nama:</label>
-      <input id="nama" name="nama" type="text" class="w-full rounded-md text-xs px-3 py-2 border border-transparent focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="Cth : Agus" />
-     </div>
+        <div>
+          <label for="email" class="block text-white font-semibold text-sm mb-1">Email:</label>
+          <input id="email" name="email" type="email" placeholder="Cth : agus@gmail.com" class="w-full rounded text-xs px-3 py-2 placeholder:text-gray-400 focus:outline-none" />
+        </div>
 
-     <div>
-      <label for="email" class="block text-white text-xs font-semibold mb-2">Email:</label>
-      <input id="email" name="email" type="email" class="w-full rounded-md text-xs px-3 py-2 border border-transparent focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="Cth : Agus123@gmail.com" />
-     </div>
+        <div>
+          <label for="instansi" class="block text-white font-semibold text-sm mb-1">Instansi Asal:</label>
+          <select id="instansi" name="instansi" class="w-full rounded text-xs px-3 py-2 bg-white text-black focus:outline-none">
+            <option disabled selected>Select your answer</option>
+            <option value="pemerintah">Pemerintah</option>
+            <option value="swasta">Swasta</option>
+            <option value="universitas">Universitas</option>
+            <option value="lainnya">Lainnya</option>
+          </select>
+        </div>
 
-     <div>
-      <label for="instansi" class="block text-white text-xs font-semibold mb-2">Instansi Asal:</label>
-      <select id="instansi" name="instansi" class="w-44 rounded-md text-xs px-3 py-2 border border-transparent bg-white text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-600">
-       <option disabled selected>Select your answer</option>
-       <option value="pemerintah">Pemerintah</option>
-       <option value="swasta">Swasta</option>
-       <option value="universitas">Universitas</option>
-       <option value="lainnya">Lainnya</option>
-      </select>
-     </div>
+        <div>
+          <label for="bertemu" class="block text-white font-semibold text-sm mb-1">Ingin bertemu dengan:</label>
+          <select id="bertemu" name="bertemu" class="w-full rounded text-xs px-3 py-2 bg-white text-black focus:outline-none">
+            <option disabled selected>Select your answer</option>
+            <% employees.forEach(emp => { %>
+              <option value="<%= emp.name %>" data-email="<%= emp.email %>"><%= emp.name %> - <%= emp.email %></option>
+            <% }) %>
+          </select>
+        </div>
 
-     <div>
-      <label for="bertemu" class="block text-white text-xs font-semibold mb-2">Ingin Bertemu dengan:</label>
-      <select id="bertemu" name="bertemu" class="w-44 rounded-md text-xs px-3 py-2 border border-transparent bg-white text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-600">
-       <option disabled selected>Select your answer</option>
-       <% employees.forEach(emp => { %>
-         <option value="<%= emp.name %>" data-email="<%= emp.email %>"><%= emp.name %> - <%= emp.email %></option>
-       <% }) %>
-      </select>
-     </div>
+        <div>
+          <label for="janji" class="block text-white font-semibold text-sm mb-1">Apakah sudah membuat janji?</label>
+          <select id="janji" name="janji" class="w-full rounded text-xs px-3 py-2 bg-white text-black focus:outline-none">
+            <option disabled selected>Select your answer</option>
+            <option value="ya">Ya</option>
+            <option value="tidak">Tidak</option>
+          </select>
+        </div>
 
-     <div>
-      <label for="janji" class="block text-white text-xs font-semibold mb-2">Apakah sudah membuat janji?</label>
-      <select id="janji" name="janji" class="w-44 rounded-md text-xs px-3 py-2 border border-transparent bg-white text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-600">
-       <option disabled selected>Select your answer</option>
-       <option value="ya">Ya</option>
-       <option value="tidak">Tidak</option>
-      </select>
-     </div>
+        <div>
+          <label for="keperluan" class="block text-white font-semibold text-sm mb-1">Keperluan:</label>
+          <input id="keperluan" name="keperluan" type="text" placeholder="Cth: Saya ingin bertemu dengan ..." class="w-full rounded text-xs px-3 py-2 placeholder:text-gray-400 focus:outline-none" />
+        </div>
 
-     <div>
-      <label for="keperluan" class="block text-white text-xs font-semibold mb-2">Keperluan:</label>
-      <input id="keperluan" name="keperluan" type="text" class="w-full rounded-md text-xs px-3 py-2 border border-transparent focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="Cth : Saya ingin bertemu dengan ... dengan keperluan ..." />
-     </div>
+        <div>
+          <label for="rekan" class="block text-white font-semibold text-sm mb-1">Jumlah rekan:</label>
+          <select id="rekan" name="rekan" class="w-full rounded text-xs px-3 py-2 bg-white text-black focus:outline-none">
+            <option disabled selected>Select your answer</option>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5+">5+</option>
+          </select>
+        </div>
 
-     <div>
-      <label for="rekan" class="block text-white text-xs font-semibold mb-2">Jumlah rekan yang bersama anda:</label>
-      <select id="rekan" name="rekan" class="w-44 rounded-md text-xs px-3 py-2 border border-transparent bg-white text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-600">
-       <option disabled selected>Select your answer</option>
-       <option value="0">0</option>
-       <option value="1">1</option>
-       <option value="2">2</option>
-       <option value="3">3</option>
-       <option value="4">4</option>
-       <option value="5+">5+</option>
-      </select>
-     </div>
+        <div>
+          <label for="tanggal" class="block text-white font-semibold text-sm mb-1">Tanggal Kunjungan:</label>
+          <input id="tanggal" name="tanggal" type="date" class="w-full rounded text-xs px-3 py-2 bg-white text-black focus:outline-none" />
+        </div>
 
-     <div>
-      <label for="tanggal" class="block text-white text-xs font-semibold mb-2">Tanggal kunjungan:</label>
-      <input id="tanggal" name="tanggal" type="date" class="w-44 rounded-md text-xs px-3 py-2 border border-transparent bg-white text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-600" />
-     </div>
-
-     <button type="submit" class="mt-8 px-4 py-2 text-xs font-semibold text-white bg-blue-600 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors">
-      Kirim
-     </button>
-    </form>
-   </div>
-  </main>
- </body>
+        <button type="submit" class="w-full bg-[#5ca82f] text-white font-semibold text-xs py-2 rounded">
+          Kirim
+        </button>
+      </form>
+    </div>
+  </body>
 </html>
