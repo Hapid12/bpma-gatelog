@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -149,11 +147,9 @@
     <!-- Quick Actions -->
     <div class="quick-actions">
       <button class="btn btn-primary quick-action-btn" id="btnTambahVisitor" type="button">
-        <i class="bi bi-plus-circle"></i> Tambah Visitor
+        <i class="bi bi-plus-circle"></i> Tambah Data
       </button>
-      <button class="btn btn-success quick-action-btn">
-        <i class="bi bi-box-seam"></i> Input Paket
-      </button>
+
       <button class="btn btn-secondary quick-action-btn">
         <i class="bi bi-printer"></i> Cetak Laporan
       </button>
@@ -284,26 +280,24 @@
         <div class="chart-container">
           <h5><i class="bi bi-activity me-2"></i> Aktivitas Terkini</h5>
           <div class="mt-3">
-            <div class="recent-activity-item">
-              <h6>Visitor baru: Budi Santoso</h6>
-              <p class="mb-1">Keperluan: Meeting dengan Marketing</p>
-              <p class="activity-time">2 menit yang lalu</p>
-            </div>
-            <div class="recent-activity-item">
-              <h6>Paket diterima: Ani Wijaya</h6>
-              <p class="mb-1">Kurir: JNE Express</p>
-              <p class="activity-time">15 menit yang lalu</p>
-            </div>
-            <div class="recent-activity-item">
-              <h6>Visitor keluar: Siti Rahma</h6>
-              <p class="mb-1">Durasi: 45 menit</p>
-              <p class="activity-time">30 menit yang lalu</p>
-            </div>
-            <div class="recent-activity-item">
-              <h6>Paket diambil: Dian Pratama</h6>
-              <p class="mb-1">Penerima: Resepsionis</p>
-              <p class="activity-time">1 jam yang lalu</p>
-            </div>
+            <% if (recentActivities.length === 0) { %>
+              <div class="recent-activity-item">
+                <p class="mb-1">Belum ada aktivitas hari ini.</p>
+              </div>
+            <% } else { %>
+              <% recentActivities.forEach(a => { %>
+                <div class="recent-activity-item">
+                  <% if (a.type === 'visitor') { %>
+                    <h6>Visitor baru: <%= a.name %></h6>
+                    <p class="mb-1">Keperluan: <%= a.purpose %></p>
+                  <% } else if (a.type === 'package') { %>
+                    <h6>Paket diterima: <%= a.recipient %></h6>
+                    <p class="mb-1">Kurir: <%= a.courier %></p>
+                  <% } %>
+                  <p class="activity-time"><%= new Date(a.date).toLocaleTimeString('id-ID') %></p>
+                </div>
+              <% }) %>
+            <% } %>
           </div>
           <a href="#" class="btn btn-sm btn-outline-primary mt-2">Lihat Semua Aktivitas</a>
         </div>
@@ -315,14 +309,14 @@
       <div class="col-lg-6">
         <div class="table-container">
           <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5><i class="bi bi-people-fill me-2"></i> Visitor Hari Ini</h5>
+            <h5><i class="bi bi-people-fill me-2"></i> Semua Visitor</h5>
             <div class="input-group" style="width: 200px;">
               <input type="text" class="form-control form-control-sm search-box" placeholder="Cari visitor...">
               <button class="btn btn-sm btn-outline-secondary" type="button"><i class="bi bi-search"></i></button>
             </div>
           </div>
           <div class="table-responsive">
-            <table class="table table-hover">
+            <table id="visitorTable" class="table table-hover">
               <thead class="table-light">
                 <tr>
                   <th>No</th>
@@ -332,16 +326,16 @@
                   <th>Status</th>
                 </tr>
               </thead>
-              <tbody>
-                <% if (visitorsToday.length === 0) { %>
-                  <tr><td colspan="5" class="text-center py-4">Belum ada visitor hari ini.</td></tr>
+              <tbody id="visitorTableBody">
+                <% if (allVisitors.length === 0) { %>
+                  <tr><td colspan="5" class="text-center py-4">Belum ada visitor.</td></tr>
                 <% } else { %>
-                  <% visitorsToday.forEach((v, i) => { %>
+                  <% allVisitors.forEach((v, i) => { %>
                     <tr>
                       <td><%= i + 1 %></td>
                       <td><strong><%= v.name %></strong></td>
                       <td><%= v.purpose %></td>
-                      <td><%= new Date(v.date).toLocaleTimeString("id-ID") %></td>
+                      <td><%= new Date(v.date).toLocaleString("id-ID") %></td>
                       <td><span class="badge badge-visitor"><i class="bi bi-check-circle me-1"></i> Masuk</span></td>
                     </tr>
                   <% }) %>
@@ -349,9 +343,10 @@
               </tbody>
             </table>
           </div>
+          <!-- Tabel Visitor -->
           <div class="d-flex justify-content-between align-items-center mt-3">
-            <div>Menampilkan <%= Math.min(5, visitorsToday.length) %> dari <%= visitorsToday.length %> entri</div>
-            <button class="btn btn-sm btn-outline-primary">Lihat Semua</button>
+            <div>Menampilkan <%= Math.min(5, allVisitors.length) %> dari <%= allVisitors.length %> entri</div>
+            <div id="visitorPagination"></div>
           </div>
         </div>
       </div>
@@ -359,14 +354,14 @@
       <div class="col-lg-6">
         <div class="table-container">
           <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5><i class="bi bi-box-seam me-2"></i> Paket Hari Ini</h5>
+            <h5><i class="bi bi-box-seam me-2"></i> Semua Paket</h5>
             <div class="input-group" style="width: 200px;">
               <input type="text" class="form-control form-control-sm search-box" placeholder="Cari paket...">
               <button class="btn btn-sm btn-outline-secondary" type="button"><i class="bi bi-search"></i></button>
             </div>
           </div>
           <div class="table-responsive">
-            <table class="table table-hover">
+            <table id="packageTable" class="table table-hover">
               <thead class="table-light">
                 <tr>
                   <th>No</th>
@@ -376,11 +371,11 @@
                   <th>Status</th>
                 </tr>
               </thead>
-              <tbody>
-                <% if (packagesToday.length === 0) { %>
-                  <tr><td colspan="5" class="text-center py-4">Belum ada paket hari ini.</td></tr>
+              <tbody id="packageTableBody">
+                <% if (allPackages.length === 0) { %>
+                  <tr><td colspan="5" class="text-center py-4">Belum ada paket.</td></tr>
                 <% } else { %>
-                  <% packagesToday.forEach((p, i) => { %>
+                  <% allPackages.forEach((p, i) => { %>
                     <tr>
                       <td><%= i + 1 %></td>
                       <td><strong><%= p.recipient %></strong></td>
@@ -393,9 +388,10 @@
               </tbody>
             </table>
           </div>
+          <!-- Tabel Paket -->
           <div class="d-flex justify-content-between align-items-center mt-3">
-            <div>Menampilkan <%= Math.min(5, packagesToday.length) %> dari <%= packagesToday.length %> entri</div>
-            <button class="btn btn-sm btn-outline-primary">Lihat Semua</button>
+            <div>Menampilkan <%= Math.min(5, allPackages.length) %> dari <%= allPackages.length %> entri</div>
+            <div id="packagePagination"></div>
           </div>
         </div>
       </div>
@@ -532,6 +528,54 @@
       var modal = new bootstrap.Modal(document.getElementById('modalPilihForm'));
       modal.show();
     });
+
+    // Bootstrap tab event: resize chart when tab is shown
+    document.querySelectorAll('button[data-bs-toggle="pill"]').forEach(tabBtn => {
+      tabBtn.addEventListener('shown.bs.tab', function (event) {
+        if (event.target.id === 'visitor-chart-tab') {
+          visitorChart.resize();
+        } else if (event.target.id === 'package-chart-tab') {
+          packageChart.resize();
+        } else if (event.target.id === 'comparison-chart-tab') {
+          comparisonChart.resize();
+        }
+      });
+    });
+
+    function paginateTable(tableId, paginationId, rowsPerPage) {
+      const table = document.getElementById(tableId);
+      if (!table) return;
+      const tbody = table.querySelector('tbody');
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      const pagination = document.getElementById(paginationId);
+      let currentPage = 1;
+      const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+      function showPage(page) {
+        currentPage = page;
+        rows.forEach((row, i) => {
+          row.style.display = (i >= (page-1)*rowsPerPage && i < page*rowsPerPage) ? '' : 'none';
+        });
+        renderPagination();
+      }
+
+      function renderPagination() {
+        pagination.innerHTML = '';
+        if (totalPages <= 1) return;
+        for (let i = 1; i <= totalPages; i++) {
+          const btn = document.createElement('button');
+          btn.textContent = i;
+          btn.className = 'btn btn-sm mx-1 ' + (i === currentPage ? 'btn-primary' : 'btn-outline-primary');
+          btn.onclick = () => showPage(i);
+          pagination.appendChild(btn);
+        }
+      }
+
+      showPage(1);
+    }
+
+    paginateTable('visitorTable', 'visitorPagination', 5);
+    paginateTable('packageTable', 'packagePagination', 5);
   </script>
   <%- include('partials/footer') %>
 </body>

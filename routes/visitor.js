@@ -59,6 +59,7 @@ router.post('/', async (req, res) => {
         <p>Anda memiliki permintaan pertemuan dari:</p>
         <ul>
           <li><b>Nama:</b> ${nama}</li>
+          <li><b>NIK:</b> ${req.body.nik || 'Tidak ada NIK'}</li>
           <li><b>Instansi:</b> ${instansi}</li>
           <li><b>Email:</b> ${email}</li>
           <li><b>Keperluan:</b> ${keperluan}</li>

@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const visitorSchema = new mongoose.Schema({
   name: { type: String, required: true },
+  nik: { type: String },
   email: { type: String, required: true },
   institution: { type: String, required: true },
   targetEmployee: { type: String, required: true },
