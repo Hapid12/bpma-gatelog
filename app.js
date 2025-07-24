@@ -7,6 +7,7 @@ const path = require('path');
 const visitorRoutes = require('./routes/visitor');
 const packageRoutes = require('./routes/package');
 const dashboardRoute = require('./routes/dashboard');
+const responseRoutes = require('./routes/response');
 
 const app = express();
 
@@ -39,6 +40,7 @@ mongoose.connect(process.env.MONGO_URI)
 // Routing (pindahkan ke bawah setelah semua require)
 app.use('/visitor', visitorRoutes);
 app.use('/package', packageRoutes);
+app.use('/response', responseRoutes);
 app.use('/', dashboardRoute);
 
 // Server Start

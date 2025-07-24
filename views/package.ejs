@@ -82,7 +82,7 @@
             <select id="tujuanPaket" name="tujuanPaket" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
               <option value="" disabled selected>Pilih Karyawan</option>
               <% employees.forEach(emp => { %>
-                <option value="<%= emp.email %>"><%= emp.name %> - <%= emp.email %></option>
+                <option value="<%= emp._id %>"><%= emp.name %> - <%= emp.email %></option>
               <% }) %>
             </select>
           </div>
@@ -102,5 +102,8 @@
         </form>
       </div>
     </main>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

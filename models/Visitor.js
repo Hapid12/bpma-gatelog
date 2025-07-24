@@ -10,7 +10,8 @@ const visitorSchema = new mongoose.Schema({
   purpose: { type: String, required: true },
   companions: { type: Number, required: true },
   schedule: { type: Date, required: true },
-  date: { type: Date, default: Date.now }
+  date: { type: Date, default: Date.now },
+  status: { type: String, default: 'pending' }
 });
 
 module.exports = mongoose.model('Visitor', visitorSchema);

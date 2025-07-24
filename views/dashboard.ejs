@@ -127,6 +127,11 @@
       font-size: 0.8rem;
       color: #6c757d;
     }
+
+    .badge-pending {
+      background-color: #fff3cd;
+      color: #856404;
+    }
   </style>
 </head>
 <body>
@@ -285,7 +290,7 @@
                 <p class="mb-1">Belum ada aktivitas hari ini.</p>
               </div>
             <% } else { %>
-              <% recentActivities.forEach(a => { %>
+              <% recentActivities.slice(0, 5).forEach(a => { %>
                 <div class="recent-activity-item">
                   <% if (a.type === 'visitor') { %>
                     <h6>Visitor baru: <%= a.name %></h6>
@@ -336,7 +341,16 @@
                       <td><strong><%= v.name %></strong></td>
                       <td><%= v.purpose %></td>
                       <td><%= new Date(v.date).toLocaleString("id-ID") %></td>
-                      <td><span class="badge badge-visitor"><i class="bi bi-check-circle me-1"></i> Masuk</span></td>
+                      <td>
+                        <!-- Untuk Visitor -->
+                        <span class="badge 
+                          <%= v.status === 'approved' ? 'badge-success' 
+                            : v.status === 'rejected' ? 'badge-danger' 
+                            : v.status === 'reschedule' ? 'badge-warning' 
+                            : 'badge-pending' %>">
+                          <%= v.status || 'pending' %>
+                        </span>
+                      </td>
                     </tr>
                   <% }) %>
                 <% } %>
@@ -365,23 +379,28 @@
               <thead class="table-light">
                 <tr>
                   <th>No</th>
-                  <th>Penerima</th>
-                  <th>Kurir</th>
+                  <th>No Resi</th>
+                  <th>Nama Kurir</th>
+                  <th>Penerima Paket</th>
                   <th>Waktu</th>
                   <th>Status</th>
                 </tr>
               </thead>
               <tbody id="packageTableBody">
                 <% if (allPackages.length === 0) { %>
-                  <tr><td colspan="5" class="text-center py-4">Belum ada paket.</td></tr>
+                  <tr><td colspan="6" class="text-center py-4">Belum ada paket.</td></tr>
                 <% } else { %>
                   <% allPackages.forEach((p, i) => { %>
                     <tr>
                       <td><%= i + 1 %></td>
-                      <td><strong><%= p.recipient %></strong></td>
-                      <td><%= p.courier %></td>
-                      <td><%= new Date(p.date).toLocaleTimeString("id-ID") %></td>
-                      <td><span class="badge badge-package"><i class="bi bi-box-seam me-1"></i> Belum diambil</span></td>
+                      <td><%= p.nomorResi %></td>
+                      <td><%= p.namaKurir %></td>
+                      <td><strong><%= p.penerimaNama %></strong></td>
+                      <td><%= p.createdAt ? new Date(p.createdAt).toLocaleString("id-ID") : '-' %></td>
+                      <td>
+                        <!-- Untuk Paket, jika ada status -->
+                        <span class="badge badge-pending"><i class="bi bi-box-seam me-1"></i> Belum diambil</span>
+                      </td>
                     </tr>
                   <% }) %>
                 <% } %>
@@ -459,25 +478,19 @@
         datasets: [{
           label: 'Jumlah Paket',
           data: <%- JSON.stringify(packageChartData) %>,
-          backgroundColor: 'rgba(46, 204, 113, 0.7)',
-          borderColor: 'rgba(46, 204, 113, 1)',
-          borderWidth: 1
+          backgroundColor: 'rgba(231, 76, 60, 0.5)',
+          borderColor: 'rgba(231, 76, 60, 1)',
+          borderWidth: 2
         }]
       },
       options: {
         responsive: true,
         plugins: {
-          legend: {
-            position: 'top',
-          }
+          legend: { position: 'top' },
+          tooltip: { mode: 'index', intersect: false }
         },
         scales: {
-          y: {
-            beginAtZero: true,
-            ticks: {
-              precision: 0
-            }
-          }
+          y: { beginAtZero: true, ticks: { precision: 0 } }
         }
       }
     });

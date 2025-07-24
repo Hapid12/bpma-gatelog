@@ -11,6 +11,7 @@ const packageSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Employee'
   },
+  penerimaNama: String, // <-- tambahkan ini!
   fotoPaket: String,
   createdAt: {
     type: Date,

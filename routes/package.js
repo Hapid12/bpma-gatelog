@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const Employee = require('../models/Employee');
-const transporter = require('../utils/mailer'); // GANTI INI
+const Package = require('../models/Package');
+const transporter = require('../utils/mailer');
 
 // Setup multer
 const storage = multer.diskStorage({
@@ -15,36 +16,74 @@ const upload = multer({ storage });
 router.get('/', async (req, res) => {
   try {
     const employees = await Employee.find();
-    res.render('package', { employees });
+    const packages = await Package.find().sort({ date: -1 }); // ambil data paket untuk tabel
+    res.render('package', { employees, packages });
   } catch (err) {
-    console.error('Gagal mengambil data karyawan:', err);
-    res.status(500).send('Gagal mengambil data karyawan');
+    console.error('Gagal mengambil data karyawan/paket:', err);
+    res.status(500).send('Gagal mengambil data karyawan/paket');
   }
 });
 
 // POST form + kirim email
 router.post('/', upload.single('fotoPaket'), async (req, res) => {
-  const { namaKurir, tujuanPaket, tipePaket, pengirim, perihal } = req.body;
+  const {
+    nomorResi,
+    tipePaket,
+    deskripsiPaket,
+    namaKurir,
+    emailKurir,
+    nomorHpKurir,
+    pengirim,
+    tujuanPaket // ini adalah _id karyawan
+  } = req.body;
 
   try {
+    // Ambil data karyawan berdasarkan ID
+    const employee = await Employee.findById(tujuanPaket);
+    if (!employee) throw new Error('Karyawan tidak ditemukan');
+
+    // Simpan data paket ke database, sertakan nama karyawan
+    await Package.create({
+      nomorResi,
+      tipePaket,
+      deskripsiPaket,
+      namaKurir,
+      emailKurir,
+      nomorHpKurir,
+      pengirim,
+      penerimaNama: employee.name, // <-- ini yang akan tampil di dashboard
+      penerimaEmail: employee.email,
+      fotoPaket: req.file ? req.file.filename : null,
+      createdAt: new Date()
+    });
+
+    // Kirim email ke karyawan
     await transporter.sendMail({
       from: `"BPMA GATELOG" <${process.env.GMAIL_USER}>`,
-      to: tujuanPaket,
+      to: employee.email,
       subject: `Paket Masuk untuk Anda dari ${namaKurir}`,
       html: `
         <h3>Informasi Paket</h3>
+        <p><b>Nomor Resi:</b> ${nomorResi}</p>
+        <p><b>Jenis Paket:</b> ${tipePaket}</p>
+        <p><b>Deskripsi:</b> ${deskripsiPaket || '-'}</p>
         <p><b>Nama Kurir:</b> ${namaKurir}</p>
-        <p><b>Tipe Paket:</b> ${tipePaket}</p>
+        <p><b>Email Kurir:</b> ${emailKurir}</p>
+        <p><b>Nomor HP Kurir:</b> ${nomorHpKurir}</p>
         <p><b>Pengirim:</b> ${pengirim}</p>
         <br>
         <p>Silakan ambil paket Anda di pos keamanan.</p>
-      `
+      `,
+      attachments: req.file ? [{
+        filename: req.file.originalname,
+        path: req.file.path
+      }] : []
     });
 
-    res.send('Berhasil mengirim email notifikasi paket!');
+    res.redirect('/package');
   } catch (error) {
-    console.error('Gagal kirim email:', error);
-    res.status(500).send('Gagal mengirim email notifikasi.');
+    console.error('Gagal kirim email atau simpan data:', error);
+    res.status(500).send('Gagal mengirim email atau simpan data paket.');
   }
 });
 
