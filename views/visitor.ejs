@@ -19,7 +19,7 @@
       <!-- Left Section (Informasi) -->
       <div class="flex flex-col max-w-xl w-full md:w-1/2 text-center md:text-left">
         <div class="flex justify-center md:justify-start mb-6">
-          <img alt="BPMA Logo" src="/logoBPMA.png" width="165" class="mb-28" />
+          <img alt="BPMA Logo" src="/logoBPMA.png" width="100" class="mb-28" />
         </div>
         <h1 class="text-4xl font-extrabold leading-tight mb-3">
           GateLog BPMA<br/>Sistem Registrasi Tamu
@@ -32,22 +32,22 @@
       <!-- Form Section -->
       <form action="/visitor" method="POST" class="bg-[#3a3a3a] rounded-lg p-6 w-full max-w-md space-y-4">
         <div>
-          <label for="nama" class="block text-white font-medium text-sm mb-1">Nama:</label>
+          <label for="nama" class="block text-white font-medium text-sm mb-1">Nama Tamu:</label>
           <input id="nama" name="nama" type="text" placeholder="Cth : Agus" class="w-full rounded text-xs px-3 py-2 placeholder:text-gray-400 focus:outline-none" />
         </div>
 
                 <div>
-          <label for="nik" class="block text-white font-medium text-sm mb-1">NIK:</label>
+          <label for="nik" class="block text-white font-medium text-sm mb-1">NIK Tamu:</label>
           <input id="nik" name="nik" type="text" placeholder="Cth: 1234567890123456" class="w-full rounded text-xs px-3 py-2 placeholder:text-gray-400 focus:outline-none" />
         </div>
 
         <div>
-          <label for="email" class="block text-white font-medium text-sm mb-1">Email:</label>
+          <label for="email" class="block text-white font-medium text-sm mb-1">Email Tamu:</label>
           <input id="email" name="email" type="email" placeholder="Cth : agus@gmail.com" class="w-full rounded text-xs px-3 py-2 placeholder:text-gray-400 focus:outline-none" />
         </div>
 
         <div>
-          <label for="instansi" class="block text-white font-medium text-sm mb-1">Instansi Asal:</label>
+          <label for="instansi" class="block text-white font-medium text-sm mb-1">Asal Instansi:</label>
           <select id="instansi" name="instansi" class="w-full rounded text-xs px-3 py-2 bg-white text-black focus:outline-none">
             <option disabled selected>Select your answer</option>
             <option value="pemerintah">Pemerintah</option>
@@ -58,7 +58,7 @@
         </div>
 
         <div>
-          <label for="bertemu" class="block text-white font-medium text-sm mb-1">Ingin bertemu dengan:</label>
+          <label for="bertemu" class="block text-white font-medium text-sm mb-1">Pegawai yang ditemui:</label>
           <select id="bertemu" name="bertemu" class="w-full rounded text-xs px-3 py-2 bg-white text-black focus:outline-none">
             <option disabled selected>Select your answer</option>
             <% employees.forEach(emp => { %>
@@ -82,7 +82,7 @@
         </div>
 
         <div>
-          <label for="rekan" class="block text-white font-medium text-sm mb-1">Jumlah rekan:</label>
+          <label for="rekan" class="block text-white font-medium text-sm mb-1">Jumlah Tamu:</label>
           <select id="rekan" name="rekan" class="w-full rounded text-xs px-3 py-2 bg-white text-black focus:outline-none">
             <option disabled selected>Select your answer</option>
             <option value="0">0</option>
