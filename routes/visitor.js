@@ -62,6 +62,7 @@ router.post('/', async (req, res) => {
       from: process.env.MY_GMAIL,
       to: employee.email,
       subject: `Permintaan Pertemuan dari ${nama}`,
+      replyTo: email,
       html: `
         <p>Yth. Bapak/Ibu <b>${bertemu}</b>,</p>
         <p>Anda memiliki permintaan pertemuan dari:</p>
