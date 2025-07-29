@@ -1,8 +1,9 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 const path = require('path');
+const session = require('express-session');
+const flash = require('connect-flash');
 
 const visitorRoutes = require('./routes/visitor');
 const packageRoutes = require('./routes/package');
@@ -11,39 +12,45 @@ const responseRoutes = require('./routes/response');
 
 const app = express();
 
-// Middleware
-app.use((req, res, next) => {
-  res.locals.request = req;
-  next();
-});
-
-// Middleware untuk parsing body
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.urlencoded({ extended: true }));
-app.use(bodyParser.urlencoded({ extended: true }));
+// Middleware parsing body (gunakan built-in express)
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Static folder
 app.use(express.static(path.join(__dirname, 'public')));
-app.set('view engine', 'ejs');
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-require('dotenv').config();
-// Setup view engine
+// View engine setup
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// DB Connection
+// DB connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected'))
-  .catch(err => console.log(err));
+  .catch(err => console.error(err));
 
-// Routing (pindahkan ke bawah setelah semua require)
+// Session & flash middleware
+app.use(session({
+  secret: 'secretkey',
+  resave: false,
+  saveUninitialized: true
+}));
+app.use(flash());
+
+// Agar flash message bisa diakses di semua view
+app.use((req, res, next) => {
+  res.locals.success = req.flash('success');
+  res.locals.error = req.flash('error');
+  next();
+});
+
+// Routes
 app.use('/visitor', visitorRoutes);
 app.use('/package', packageRoutes);
 app.use('/response', responseRoutes);
 app.use('/', dashboardRoute);
 
-// Server Start
+// Server start
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

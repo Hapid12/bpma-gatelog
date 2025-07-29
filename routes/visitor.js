@@ -10,14 +10,21 @@ router.get('/', async (req, res) => {
   try {
     const visitors = await Visitor.find().sort({ date: -1 });
     const employees = await Employee.find();
-    res.render('visitor', { visitors, employees });
+    const successMessage = req.flash('success');
+    const errorMessage = req.flash('error');
+    res.render('visitor', {
+      visitors,
+      employees,
+      successMessage,
+      errorMessage
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send('Gagal memuat data visitor');
   }
 });
 
-// POST: Form visitor (dari form action="/visitor")
+// POST: Form visitor
 router.post('/', async (req, res) => {
   try {
     const {
@@ -28,13 +35,15 @@ router.post('/', async (req, res) => {
       janji,
       keperluan,
       rekan,
-      tanggal
+      tanggal,
+      nik
     } = req.body;
 
-    // Cari email karyawan berdasarkan nama
+    // Cari email karyawan
     const employee = await Employee.findOne({ name: bertemu });
     if (!employee) {
-      return res.status(404).send('Karyawan tidak ditemukan.');
+      req.flash('error', 'Karyawan tidak ditemukan.');
+      return res.redirect('/visitor');
     }
 
     const newVisitor = await Visitor.create({
@@ -49,7 +58,6 @@ router.post('/', async (req, res) => {
       date: new Date()
     });
 
-    // Kirim email ke karyawan
     const mailOptions = {
       from: process.env.MY_GMAIL,
       to: employee.email,
@@ -59,7 +67,7 @@ router.post('/', async (req, res) => {
         <p>Anda memiliki permintaan pertemuan dari:</p>
         <ul>
           <li><b>Nama:</b> ${nama}</li>
-          <li><b>NIK:</b> ${req.body.nik || 'Tidak ada NIK'}</li>
+          <li><b>NIK:</b> ${nik || 'Tidak ada NIK'}</li>
           <li><b>Instansi:</b> ${instansi}</li>
           <li><b>Email:</b> ${email}</li>
           <li><b>Keperluan:</b> ${keperluan}</li>
@@ -77,11 +85,13 @@ router.post('/', async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
-    console.log(`Email terkirim ke ${employee.email}`);
+
+    req.flash('success', 'Data berhasil dikirim dan email telah dikirim ke karyawan.');
     res.redirect('/visitor');
   } catch (error) {
     console.error(error);
-    res.status(500).send('Gagal menyimpan data visitor');
+    req.flash('error', 'Gagal menyimpan data visitor.');
+    res.redirect('/visitor');
   }
 });
 
@@ -97,10 +107,8 @@ router.get('/edit/:id', async (req, res) => {
 });
 
 // POST: Update visitor
-router.post('/', async (req, res) => {
+router.post('/edit/:id', async (req, res) => {
   try {
-    console.log('Data masuk:', req.body); // debug 1
-
     const {
       nama,
       email,
@@ -111,9 +119,6 @@ router.post('/', async (req, res) => {
       rekan,
       tanggal
     } = req.body;
-
-    // lanjut...
-
 
     await Visitor.findByIdAndUpdate(req.params.id, {
       name: nama,
@@ -126,10 +131,12 @@ router.post('/', async (req, res) => {
       schedule: new Date(tanggal)
     });
 
+    req.flash('success', 'Data visitor berhasil diperbarui.');
     res.redirect('/visitor');
   } catch (error) {
     console.error(error);
-    res.status(500).send('Gagal mengupdate data visitor');
+    req.flash('error', 'Gagal memperbarui data visitor.');
+    res.redirect('/visitor');
   }
 });
 
@@ -137,10 +144,12 @@ router.post('/', async (req, res) => {
 router.post('/delete/:id', async (req, res) => {
   try {
     await Visitor.findByIdAndDelete(req.params.id);
+    req.flash('success', 'Data visitor berhasil dihapus.');
     res.redirect('/visitor');
   } catch (error) {
     console.error(error);
-    res.status(500).send('Gagal menghapus data visitor');
+    req.flash('error', 'Gagal menghapus data visitor.');
+    res.redirect('/visitor');
   }
 });
 
