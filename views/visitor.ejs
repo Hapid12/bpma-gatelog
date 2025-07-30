@@ -20,7 +20,7 @@
       <!-- Left Section -->
       <div class="flex flex-col max-w-xl w-full md:w-1/2 text-center md:text-left">
         <div class="flex justify-center md:justify-start mb-6">
-          <img alt="BPMA Logo" src="/logoBPMA.png" width="100" class="mb-28" />
+          <img alt="BPMA Logo" src="/logoBPMA.png" width="150" class="mb-18" />
         </div>
         <h1 class="text-4xl font-extrabold leading-tight mb-3">
           GateLog BPMA<br/>Sistem Registrasi Tamu
@@ -95,14 +95,19 @@
           </select>
         </div>
 
-        <div>
-          <label for="tanggal" class="block text-white font-medium text-sm mb-1">Tanggal Kunjungan:</label>
-          <input id="tanggal" name="tanggal" type="date" class="w-full rounded text-xs px-3 py-2 bg-white text-black focus:outline-none" required />
-        </div>
+       <div>
+        <label for="tanggal" class="block text-white font-medium text-sm mb-1">Tanggal Kunjungan:</label>
+        <input id="tanggal" name="tanggal" type="date" class="w-full rounded text-xs px-3 py-2 bg-white text-black focus:outline-none" required />
+      </div>
 
-        <button type="submit" class="w-full bg-[#5ca82f] text-white font-semibold text-xs py-2 rounded">
-          Kirim
-        </button>
+      <div class="mt-3">
+        <label for="jam" class="block text-white font-medium text-sm mb-1">Jam Kunjungan:</label>
+        <input id="jam" name="jam" type="time" class="w-full rounded text-xs px-3 py-2 bg-white text-black focus:outline-none" required />
+      </div>
+
+      <button type="submit" class="w-full bg-[#5ca82f] text-white font-semibold text-xs py-2 rounded mt-4">
+        Kirim
+      </button>
       </form>
     </div>
 

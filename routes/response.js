@@ -7,7 +7,11 @@ const transporter = require('../utils/mailer');
 router.get('/approved/:id', async (req, res) => {
   try {
     const visitor = await Visitor.findByIdAndUpdate(req.params.id, { status: 'approved' }, { new: true });
-    if (!visitor) return res.status(404).send('Visitor tidak ditemukan');
+    if (!visitor) return res.status(404).render('status', {
+      status: 'error',
+      title: 'Data Tidak Ditemukan',
+      message: 'Visitor dengan ID tersebut tidak ditemukan.'
+    });
 
     await transporter.sendMail({
       to: visitor.email,
@@ -16,10 +20,18 @@ router.get('/approved/:id', async (req, res) => {
       replyTo: visitor.email
     });
 
-    res.send('Permintaan telah di-approve dan visitor sudah diberi notifikasi.');
+    res.render('status', {
+      status: 'approved',
+      title: 'Permintaan Di-approve',
+      message: `notifikasi telah dikirim ke email visitor.`
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).send('Terjadi kesalahan saat memproses permintaan.');
+    res.status(500).render('status', {
+      status: 'error',
+      title: 'Terjadi Kesalahan',
+      message: 'Terjadi kesalahan saat memproses permintaan.'
+    });
   }
 });
 
@@ -27,7 +39,11 @@ router.get('/approved/:id', async (req, res) => {
 router.get('/rejected/:id', async (req, res) => {
   try {
     const visitor = await Visitor.findByIdAndUpdate(req.params.id, { status: 'rejected' }, { new: true });
-    if (!visitor) return res.status(404).send('Visitor tidak ditemukan');
+    if (!visitor) return res.status(404).render('status', {
+      status: 'error',
+      title: 'Data Tidak Ditemukan',
+      message: 'Visitor dengan ID tersebut tidak ditemukan.'
+    });
 
     await transporter.sendMail({
       to: visitor.email,
@@ -36,10 +52,18 @@ router.get('/rejected/:id', async (req, res) => {
       replyTo: visitor.email
     });
 
-    res.send('Permintaan telah ditolak dan visitor sudah diberi notifikasi.');
+    res.render('status', {
+      status: 'rejected',
+      title: 'Permintaan Ditolak',
+      message: `notifikasi telah dikirim ke email visitor.`
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).send('Terjadi kesalahan saat memproses permintaan.');
+    res.status(500).render('status', {
+      status: 'error',
+      title: 'Terjadi Kesalahan',
+      message: 'Terjadi kesalahan saat memproses permintaan.'
+    });
   }
 });
 
@@ -47,7 +71,11 @@ router.get('/rejected/:id', async (req, res) => {
 router.get('/reschedule/:id', async (req, res) => {
   try {
     const visitor = await Visitor.findByIdAndUpdate(req.params.id, { status: 'reschedule' }, { new: true });
-    if (!visitor) return res.status(404).send('Visitor tidak ditemukan');
+    if (!visitor) return res.status(404).render('status', {
+      status: 'error',
+      title: 'Data Tidak Ditemukan',
+      message: 'Visitor dengan ID tersebut tidak ditemukan.'
+    });
 
     await transporter.sendMail({
       to: visitor.email,
@@ -56,10 +84,18 @@ router.get('/reschedule/:id', async (req, res) => {
       replyTo: visitor.email
     });
 
-    res.send('Permintaan perlu dijadwalkan ulang dan visitor sudah diberi notifikasi.');
+    res.render('status', {
+      status: 'reschedule',
+      title: 'Perlu Penjadwalan Ulang',
+      message: `notifikasi telah dikirim ke email visitor.`
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).send('Terjadi kesalahan saat memproses permintaan.');
+    res.status(500).render('status', {
+      status: 'error',
+      title: 'Terjadi Kesalahan',
+      message: 'Terjadi kesalahan saat memproses permintaan.'
+    });
   }
 });
 
