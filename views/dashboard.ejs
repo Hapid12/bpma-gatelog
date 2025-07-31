@@ -363,61 +363,175 @@
           <div class="d-flex justify-content-between align-items-center mt-3">
             <div>Menampilkan <%= Math.min(5, allVisitors.length) %> dari <%= allVisitors.length %> entri</div>
             <div id="visitorPagination"></div>
+            <!-- Tombol Detail -->
+<button class="btn btn-sm btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#detailModal">
+  Detail
+</button>
+
+<!-- Modal Detail -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detailModalLabel">Detail Semua Visitor</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped table-sm">
+            <thead class="table-light">
+              <tr>
+                <th>No</th>
+                <th>Nama</th>
+                <th>Keperluan</th>
+                <th>Waktu</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% allVisitors.forEach((v, i) => { %>
+                <tr>
+                  <td><%= i + 1 %></td>
+                  <td><%= v.name %></td>
+                  <td><%= v.purpose %></td>
+                  <td><%= new Date(v.date).toLocaleString("id-ID") %></td>
+                  <td>
+                    <span class="px-2 py-1 rounded-full text-xs font-semibold
+                      <%= v.status === 'approved' ? 'bg-green-200 text-green-800' 
+                        : v.status === 'rejected' ? 'bg-red-200 text-red-800' 
+                        : v.status === 'reschedule' ? 'bg-blue-200 text-blue-800' 
+                        : 'bg-yellow-200 text-yellow-800' %>">
+                      <%= v.status || 'pending' %>
+                    </span>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
           </div>
         </div>
       </div>
       
-      <div class="col-lg-6">
-        <div class="table-container">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5><i class="bi bi-box-seam me-2"></i> Semua Paket</h5>
-            <div class="input-group" style="width: 200px;">
-              <input type="text" class="form-control form-control-sm search-box" placeholder="Cari paket...">
-              <button class="btn btn-sm btn-outline-secondary" type="button"><i class="bi bi-search"></i></button>
-            </div>
-          </div>
-          <div class="table-responsive">
-            <table id="packageTable" class="table table-hover">
-              <thead class="table-light">
+      <!-- Tabel Paket -->
+<div class="col-lg-6">
+  <div class="table-container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5><i class="bi bi-box-seam me-2"></i> Semua Paket</h5>
+      <div class="input-group" style="width: 200px;">
+        <input type="text" class="form-control form-control-sm search-box" placeholder="Cari paket...">
+        <button class="btn btn-sm btn-outline-secondary" type="button"><i class="bi bi-search"></i></button>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table id="packageTable" class="table table-hover">
+        <thead class="table-light">
+          <tr>
+            <th>No</th>
+            <th>No Resi</th>
+            <th>Nama Kurir</th>
+            <th>Penerima Paket</th>
+            <th>Waktu</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="packageTableBody">
+          <% if (allPackages.length === 0) { %>
+            <tr><td colspan="6" class="text-center py-4">Belum ada paket.</td></tr>
+          <% } else { %>
+            <% allPackages.forEach((p, i) => { %>
+              <tr>
+                <td><%= i + 1 %></td>
+                <td><%= p.nomorResi %></td>
+                <td><%= p.namaKurir %></td>
+                <td><strong><%= p.penerimaNama %></strong></td>
+                <td><%= p.createdAt ? new Date(p.createdAt).toLocaleString("id-ID") : '-' %></td>
+                <td>
+                  <span class="badge badge-pending"><i class="bi bi-box-seam me-1"></i> Belum diambil</span>
+                </td>
+              </tr>
+            <% }) %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Tombol Detail + Pagination -->
+    <!-- Tabel Paket: Info + Pagination + Tombol Detail -->
+<div class="d-flex justify-content-between align-items-center mt-3">
+  <!-- Kiri: Info entri -->
+  <div>Menampilkan <%= Math.min(5, allPackages.length) %> dari <%= allPackages.length %> entri</div>
+
+  <!-- Tengah: Pagination -->
+  <div class="d-flex justify-content-center flex-grow-1">
+    <div id="packagePagination"></div>
+  </div>
+
+  <!-- Kanan: Tombol Detail -->
+  <div>
+    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#detailPackageModal">
+      Detail
+    </button>
+  </div>
+</div>
+  </div>
+  <!-- Modal Detail Paket -->
+<div class="modal fade" id="detailPackageModal" tabindex="-1" aria-labelledby="detailPackageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detailPackageModalLabel">Detail Semua Paket</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped table-sm">
+            <thead class="table-light">
+              <tr>
+                <th>No</th>
+                <th>No Resi</th>
+                <th>Nama Kurir</th>
+                <th>Penerima Paket</th>
+                <th>Waktu</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% allPackages.forEach((p, i) => { %>
                 <tr>
-                  <th>No</th>
-                  <th>No Resi</th>
-                  <th>Nama Kurir</th>
-                  <th>Penerima Paket</th>
-                  <th>Waktu</th>
-                  <th>Status</th>
+                  <td><%= i + 1 %></td>
+                  <td><%= p.nomorResi %></td>
+                  <td><%= p.namaKurir %></td>
+                  <td><%= p.penerimaNama %></td>
+                  <td><%= p.createdAt ? new Date(p.createdAt).toLocaleString("id-ID") : '-' %></td>
+                  <td>
+                    <span class="badge badge-pending"><i class="bi bi-box-seam me-1"></i> Belum diambil</span>
+                  </td>
                 </tr>
-              </thead>
-              <tbody id="packageTableBody">
-                <% if (allPackages.length === 0) { %>
-                  <tr><td colspan="6" class="text-center py-4">Belum ada paket.</td></tr>
-                <% } else { %>
-                  <% allPackages.forEach((p, i) => { %>
-                    <tr>
-                      <td><%= i + 1 %></td>
-                      <td><%= p.nomorResi %></td>
-                      <td><%= p.namaKurir %></td>
-                      <td><strong><%= p.penerimaNama %></strong></td>
-                      <td><%= p.createdAt ? new Date(p.createdAt).toLocaleString("id-ID") : '-' %></td>
-                      <td>
-                        <!-- Untuk Paket, jika ada status -->
-                        <span class="badge badge-pending"><i class="bi bi-box-seam me-1"></i> Belum diambil</span>
-                      </td>
-                    </tr>
-                  <% }) %>
-                <% } %>
-              </tbody>
-            </table>
-          </div>
-          <!-- Tabel Paket -->
-          <div class="d-flex justify-content-between align-items-center mt-3">
-            <div>Menampilkan <%= Math.min(5, allPackages.length) %> dari <%= allPackages.length %> entri</div>
-            <div id="packagePagination"></div>
-          </div>
+              <% }) %>
+            </tbody>
+          </table>
         </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
       </div>
     </div>
   </div>
+</div>
+
+</div>
+
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
