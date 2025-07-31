@@ -317,7 +317,7 @@
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h5><i class="bi bi-people-fill me-2"></i> Semua Visitor</h5>
             <div class="input-group" style="width: 200px;">
-              <input type="text" class="form-control form-control-sm search-box" placeholder="Cari visitor...">
+              <input type="text" id="searchVisitorInput" class="form-control form-control-sm search-box" placeholder="Cari visitor...">
               <button class="btn btn-sm btn-outline-secondary" type="button"><i class="bi bi-search"></i></button>
             </div>
           </div>
@@ -428,7 +428,7 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h5><i class="bi bi-box-seam me-2"></i> Semua Paket</h5>
       <div class="input-group" style="width: 200px;">
-        <input type="text" class="form-control form-control-sm search-box" placeholder="Cari paket...">
+        <input type="text" class="form-control form-control-sm search-box package" placeholder="Cari paket...">
         <button class="btn btn-sm btn-outline-secondary" type="button"><i class="bi bi-search"></i></button>
       </div>
     </div>
@@ -705,6 +705,78 @@
 
     paginateTable('visitorTable', 'visitorPagination', 5);
     paginateTable('packageTable', 'packagePagination', 5);
+
+    // Visitor search filter
+const searchInput = document.getElementById('searchVisitorInput');
+const visitorTableBody = document.getElementById('visitorTableBody');
+
+if (searchInput && visitorTableBody) {
+  searchInput.addEventListener('input', function () {
+    const filter = this.value.toLowerCase();
+    const rows = visitorTableBody.getElementsByTagName('tr');
+
+    Array.from(rows).forEach(row => {
+      const match = Array.from(row.getElementsByTagName('td')).some(cell =>
+        cell.textContent.toLowerCase().includes(filter)
+      );
+      row.style.display = match ? '' : 'none';
+    });
+  });
+}
+
+function setupPaginatedSearch(tableId, paginationId, searchInputId, itemsPerPage) {
+  const table = document.getElementById(tableId);
+  const tbody = table.querySelector('tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  const pagination = document.getElementById(paginationId);
+  const searchInput = document.getElementById(searchInputId);
+
+  let currentPage = 1;
+  let filteredRows = rows;
+
+  function showRows() {
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    rows.forEach(row => row.style.display = 'none');
+    filteredRows.slice(start, end).forEach(row => row.style.display = '');
+  }
+
+  function renderPagination() {
+    pagination.innerHTML = '';
+    const totalPages = Math.ceil(filteredRows.length / itemsPerPage);
+    if (totalPages <= 1) return;
+    for (let i = 1; i <= totalPages; i++) {
+      const btn = document.createElement('button');
+      btn.textContent = i;
+      btn.className = 'btn btn-sm mx-1 ' + (i === currentPage ? 'btn-primary' : 'btn-outline-primary');
+      btn.onclick = () => {
+        currentPage = i;
+        showRows();
+        renderPagination();
+      };
+      pagination.appendChild(btn);
+    }
+  }
+
+  function filterRows() {
+    const keyword = searchInput.value.toLowerCase();
+    filteredRows = rows.filter(row =>
+      row.innerText.toLowerCase().includes(keyword)
+    );
+    currentPage = 1;
+    renderPagination();
+    showRows();
+  }
+
+  searchInput.addEventListener('input', filterRows);
+
+  filterRows(); // Initial render
+}
+
+// Aktifkan untuk masing-masing tabel
+setupPaginatedSearch('visitorTable', 'visitorPagination', 'searchVisitorInput', 5);
+setupPaginatedSearch('packageTable', 'packagePagination', 'searchPackageInput', 5);
+
   </script>
   <%- include('partials/footer') %>
 </body>
