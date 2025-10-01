@@ -8,10 +8,8 @@ mongoose.connect(process.env.MONGO_URI)
     console.log('MongoDB Connected');
 
     await Employee.create([
-      { name: 'haykal', email: 'muhammadhafizhhaykal01@gmail.com' },
-      { name: 'Siti Aminah', email: 'siti.aminah@example.com' },
-      { name: 'Dian Pratama', email: 'dian.pratama@example.com' },
-      { name: 'verrel', email: 'verrellmuhammad23@gmail.com' },
+      { name: 'haykal', email: 'muhammadhafizhhaykal01@gmail.com', position: 'Developer' },
+      { name: 'verrel', email: 'verrellmuhammad23@gmail.com', position: 'Designer' },
     ]);
 
     console.log('Data employee berhasil ditambahkan.');

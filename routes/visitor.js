@@ -5,6 +5,7 @@ const Visitor = require('../models/Visitor');
 const Employee = require('../models/Employee');
 const transporter = require('../utils/mailer');
 
+
 // GET: Halaman visitor
 router.get('/', async (req, res) => {
   try {
@@ -40,7 +41,8 @@ router.post('/', async (req, res) => {
     } = req.body;
 
     // Cari email karyawan
-    const employee = await Employee.findOne({ name: bertemu });
+    const employeeName = bertemu.split(' - ')[0]; // hanya ambil nama
+    const employee = await Employee.findOne({ name: employeeName });
     if (!employee) {
       req.flash('error', 'Karyawan tidak ditemukan.');
       return res.redirect('/visitor');
@@ -53,37 +55,59 @@ router.post('/', async (req, res) => {
       targetEmployee: bertemu,
       hasAppointment: janji,
       purpose: keperluan,
-      companions: rekan,
+      companions: Number(rekan),
       schedule: new Date(tanggal),
       date: new Date()
     });
 
     const mailOptions = {
-      from: process.env.MY_GMAIL,
-      to: employee.email,
-      subject: `Permintaan Pertemuan dari ${nama}`,
-      replyTo: email,
-      html: `
-        <p>Yth. Bapak/Ibu <b>${bertemu}</b>,</p>
-        <p>Anda memiliki permintaan pertemuan dari:</p>
-        <ul>
-          <li><b>Nama:</b> ${nama}</li>
-          <li><b>NIK:</b> ${nik || 'Tidak ada NIK'}</li>
-          <li><b>Instansi:</b> ${instansi}</li>
-          <li><b>Email:</b> ${email}</li>
-          <li><b>Keperluan:</b> ${keperluan}</li>
-          <li><b>Jumlah Rekan:</b> ${rekan}</li>
-          <li><b>Jadwal:</b> ${new Date(tanggal).toLocaleString('id-ID')}</li>
-        </ul>
-        <p>Apakah Anda bersedia menerima tamu ini?</p>
-        <p>
-          <a href="http://localhost:3000/response/approved/${newVisitor._id}">✅ Approve</a> |
-          <a href="http://localhost:3000/response/rejected/${newVisitor._id}">❌ Reject</a> |
-          <a href="http://localhost:3000/response/reschedule/${newVisitor._id}">📆 Reschedule</a>
-        </p>
-        <p>Terima kasih.</p>
-      `
-    };
+  from: process.env.MY_GMAIL,
+  to: employee.email,
+  subject: `Permintaan Pertemuan dari ${nama}`,
+  replyTo: email,
+  html: `
+  <div style="font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 20px; text-align: center;">
+    
+    <!-- Card Container -->
+    <div style="max-width: 600px; margin: auto; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 30px;">
+      
+      <!-- Icon Visitor -->
+      <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" 
+           alt="Visitor Icon" 
+           style="width: 80px; height: 80px; margin-bottom: 20px;" />
+
+      <!-- Title -->
+      <h2 style="color: #333; margin-bottom: 10px;">Permintaan Pertemuan</h2>
+      <p style="color: #666; margin-bottom: 20px;">Yth. Bapak/Ibu <b>${bertemu}</b></p>
+
+      <!-- Detail Data -->
+      <table style="width: 100%; text-align: left; border-collapse: collapse; margin-bottom: 25px;">
+        <tr><td><b>Nama</b></td><td>: ${nama}</td></tr>
+        <tr><td><b>NIK</b></td><td>: ${nik || 'Tidak ada NIK'}</td></tr>
+        <tr><td><b>Instansi</b></td><td>: ${instansi}</td></tr>
+        <tr><td><b>Email</b></td><td>: ${email}</td></tr>
+        <tr><td><b>Keperluan</b></td><td>: ${keperluan}</td></tr>
+        <tr><td><b>Jumlah Rekan</b></td><td>: ${rekan}</td></tr>
+        <tr><td><b>Jadwal</b></td><td>: ${new Date(tanggal).toLocaleString('id-ID')}</td></tr>
+      </table>
+
+      <!-- Buttons -->
+      <div style="margin-top: 20px;">
+        <a href="http://localhost:3000/response/approved/${newVisitor._id}" 
+           style="background: #4CAF50; color: white; padding: 12px 20px; text-decoration: none; border-radius: 6px; margin: 0 5px;">✅ Approve</a>
+        
+        <a href="http://localhost:3000/response/rejected/${newVisitor._id}" 
+           style="background: #f44336; color: white; padding: 12px 20px; text-decoration: none; border-radius: 6px; margin: 0 5px;">❌ Reject</a>
+        
+        <a href="http://localhost:3000/response/reschedule/${newVisitor._id}" 
+           style="background: #2196F3; color: white; padding: 12px 20px; text-decoration: none; border-radius: 6px; margin: 0 5px;">📆 Reschedule</a>
+      </div>
+      
+      <p style="margin-top: 30px; color: #777; font-size: 12px;">Terima kasih atas perhatian Anda.</p>
+    </div>
+  </div>
+  `
+};
 
     await transporter.sendMail(mailOptions);
 
@@ -98,13 +122,9 @@ router.post('/', async (req, res) => {
 
 // GET: Form edit visitor
 router.get('/edit/:id', async (req, res) => {
-  try {
-    const visitor = await Visitor.findById(req.params.id);
-    res.render('editVisitor', { visitor });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Gagal memuat form edit visitor');
-  }
+  const visitor = await Visitor.findById(req.params.id);
+  const employees = await Employee.find();
+  res.render('editVisitor', { visitor, employees });
 });
 
 // POST: Update visitor
@@ -153,5 +173,8 @@ router.post('/delete/:id', async (req, res) => {
     res.redirect('/visitor');
   }
 });
+
+
+
 
 module.exports = router;

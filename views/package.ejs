@@ -1,192 +1,202 @@
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="utf-8" />
-      <meta content="width=device-width, initial-scale=1" name="viewport" />
-      <title>PackageLog BPMA Registration</title>
-      <script src="https://cdn.tailwindcss.com"></script>
-      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-      <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
-        body {
-          font-family: 'Inter', Poppins;
-        }
-      </style>
-    </head>
-    <body class="bg-[#f7f8f8] min-h-screen flex items-center justify-center p-6">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <title>PackageLog BPMA Registration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+      body {
+        font-family: 'Inter', Poppins;
+        background: url('/images/bg-plant.jpg') no-repeat center center fixed;
+        background-size: cover;
+      }
+      .container, .card, .content {
+        background: rgba(255,255,255,0.92);
+        border-radius: 10px;
+        padding: 20px;
+      }
+    </style>
+  </head>
+  <!-- ✅ Background + overlay -->
+  <body class="min-h-screen bg-cover bg-center" style="background-image: url('/images/bg-plant.jpg');">
+    <div class="min-h-screen w-full bg-black/50 flex items-center justify-center p-6">
       <div class="max-w-7xl w-full flex flex-col md:flex-row items-center md:items-start justify-center gap-12">
-        
-        <!-- Left Section (Informasi) -->
-        <div class="flex flex-col max-w-xl w-full md:w-1/2 text-center md:text-left">
+
+        <!-- Left Section -->
+        <div class="flex flex-col max-w-xl w-full md:w-1/2 text-center md:text-left text-white">
           <div class="flex justify-center md:justify-start mb-6">
             <img alt="BPMA Logo" src="/logoBPMA.png" width="165" class="mb-28" />
           </div>
           <h1 class="text-4xl font-extrabold leading-tight mb-3">
             PackageLog BPMA<br/>Sistem Mencatat Paket
           </h1>
-          <p class="text-sm text-black/90 max-w-md mx-auto md:mx-0">
+          <p class="text-sm text-white max-w-md mx-auto md:mx-0">
             Sebuah sistem web untuk mencatat dan melacak paket yang masuk ke kantor.
             Menyediakan fitur pencatatan real-time, pencarian cepat, dan konfirmasi penerimaan oleh pegawai.
           </p>
         </div>
 
-        <!-- Form -->
-        <form id="packageForm" class="bg-[#3a3a3a] rounded-lg p-6 w-full max-w-md space-y-4" onsubmit="return submitForm(event)" enctype="multipart/form-data">
-          <!-- Informasi Paket -->
+      <!-- Form -->
+      <form id="packageForm" class="bg-[#3a3a3a] rounded-lg p-6 w-full max-w-md space-y-4" onsubmit="return submitForm(event)" enctype="multipart/form-data">
+        <!-- Informasi Paket -->
+        <div>
+          <h2 class="text-lg font-bold mb-6 block text-white border-b pb-2">Informasi Paket</h2>
+          <div class="mb-4">
+            <label for="nomorResi" class="block text-white font-medium text-sm mb-1">Nomor Resi</label>
+            <input id="nomorResi" name="nomorResi" type="text" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div class="mb-4">
+            <label for="tipePaket" class="block text-white font-medium text-sm mb-1">Jenis Paket</label>
+            <input id="tipePaket" name="tipePaket" type="text" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
           <div>
-            <h2 class="text-lg font-bold mb-6 block text-white border-b pb-2">Informasi Paket</h2>
-            <div class="mb-4">
-              <label for="nomorResi" class="block text-white font-medium text-sm mb-1">Nomor Resi</label>
-              <input id="nomorResi" name="nomorResi" type="text" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <div class="mb-4">
-              <label for="tipePaket" class="block text-white font-medium text-sm mb-1">Jenis Paket</label>
-              <input id="tipePaket" name="tipePaket" type="text" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <div>
-              <label for="deskripsiPaket" class="block text-white font-medium text-sm mb-1">Deskripsi Paket (Opsional)</label>
-              <textarea id="deskripsiPaket" name="deskripsiPaket" rows="3" class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-            </div>
+            <label for="deskripsiPaket" class="block text-white font-medium text-sm mb-1">Deskripsi Paket (Opsional)</label>
+            <textarea id="deskripsiPaket" name="deskripsiPaket" rows="3" class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
           </div>
+        </div>
 
-          <!-- Informasi Kurir -->
-          <div>
-            <h2 class="text-lg font-bold mb-6 block text-white border-b pb-2">Informasi Kurir</h2>
-            <div class="mb-4">
-              <label for="namaKurir" class="block text-white font-medium text-sm mb-1">Nama Kurir</label>
-              <input id="namaKurir" name="namaKurir" type="text" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <div class="mb-4">
-              <label for="emailKurir" class="block text-white font-medium text-sm mb-1">Email Kurir</label>
-              <input id="emailKurir" name="emailKurir" type="email" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <div class="mb-4">
-              <label for="nomorHpKurir" class="block text-white font-medium text-sm mb-1">Nomor HP Kurir</label>
-              <input id="nomorHpKurir" name="nomorHpKurir" type="text" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <div class="mb-4">
-              <label for="pengirim" class="block text-white font-medium text-sm mb-1">Pengirim</label>
-              <input id="pengirim" name="pengirim" type="text" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
+        <!-- Informasi Kurir -->
+        <div>
+          <h2 class="text-lg font-bold mb-6 block text-white border-b pb-2">Informasi Kurir</h2>
+          <div class="mb-4">
+            <label for="namaKurir" class="block text-white font-medium text-sm mb-1">Nama Kurir</label>
+            <input id="namaKurir" name="namaKurir" type="text" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
-
-          <!-- Tujuan Paket / Penerima -->
-          <div>
-            <h2 class="text-lg font-bold mb-6 block text-white border-b pb-2">Penerima Paket</h2>
-            <label for="tujuanPaket" class="block text-white font-medium text-sm mb-1">Pilih Karyawan</label>
-            <select id="tujuanPaket" name="tujuanPaket" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </html><option value="" disabled selected>Pilih Karyawan</option>
-                <% employees.forEach(emp => { %>
-                  <option value="<%= emp._id %>"><%= emp.name %> - <%= emp.email %></option>
-                <% }) %>
-              </select>
+          <div class="mb-4">
+            <label for="emailKurir" class="block text-white font-medium text-sm mb-1">Email Kurir</label>
+            <input id="emailKurir" name="emailKurir" type="email" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
-
-          <!-- Upload Foto Paket -->
-          <div>
-            <h2 class="text-lg font-bold mb-6 block text-white border-b pb-2">Upload Foto Paket</h2>
-            <input id="fotoPaket" name="fotoPaket" type="file" accept="image/*" required class="block text-white font-medium text-sm mb-1 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700" />
+          <div class="mb-4">
+            <label for="nomorHpKurir" class="block text-white font-medium text-sm mb-1">Nomor HP Kurir</label>
+            <input id="nomorHpKurir" name="nomorHpKurir" type="text" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
-
-          <!-- Submit -->
-          <div class="text-center pt-4">
-            <button type="submit" class="w-full bg-[#5ca82f] text-white font-semibold text-xs py-2 rounded">
-              Kirim
-            </button>
+          <div class="mb-4">
+            <label for="pengirim" class="block text-white font-medium text-sm mb-1">Pengirim</label>
+            <input id="pengirim" name="pengirim" type="text" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
-        </form>
-      </div>
+        </div>
 
-      <script>
-        async function submitForm(event) {
-          event.preventDefault();
+        <!-- Tujuan Paket / Penerima -->
+        <div>
+          <h2 class="text-lg font-bold mb-6 block text-white border-b pb-2">Penerima Paket</h2>
+          <label for="tujuanPaket" class="block text-white font-medium text-sm mb-1">Pilih Karyawan</label>
+          <select id="tujuanPaket" name="tujuanPaket" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </html><option value="" disabled selected>Pilih Karyawan</option>
+              <% employees.forEach(emp => { %>
+                <option value="<%= emp._id %>"><%= emp.name %> - <%= emp.position %></option>
+              <% }) %>
+            </select>
+        </div>
 
-          const form = document.getElementById('packageForm');
-          const formData = new FormData(form);
+        <!-- Upload Foto Paket -->
+        <div>
+          <h2 class="text-lg font-bold mb-6 block text-white border-b pb-2">Upload Foto Paket</h2>
+          <input id="fotoPaket" name="fotoPaket" type="file" accept="image/*" required class="block text-white font-medium text-sm mb-1 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700" />
+        </div>
 
-          // Show loading
-          Swal.fire({
-            title: 'Mengirim Data...',
-            text: 'Mohon tunggu sebentar',
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            didOpen: () => {
-              Swal.showLoading();
-            }
+        <!-- Submit -->
+        <div class="text-center pt-4">
+          <button type="submit" class="w-full bg-[#5ca82f] text-white font-semibold text-xs py-2 rounded">
+            Kirim
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      async function submitForm(event) {
+        event.preventDefault();
+
+        const form = document.getElementById('packageForm');
+        const formData = new FormData(form);
+
+        // Show loading
+        Swal.fire({
+          title: 'Mengirim Data...',
+          text: 'Mohon tunggu sebentar',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        try {
+          console.log('Sending package data...');
+
+          // Submit dengan FormData untuk support file upload
+          const response = await fetch('/package', {
+            method: 'POST',
+            body: formData // Tidak perlu set Content-Type untuk FormData
           });
 
-          try {
-            console.log('Sending package data...');
+          console.log('Response status:', response.status);
+          console.log('Response ok:', response.ok);
 
-            // Submit dengan FormData untuk support file upload
-            const response = await fetch('/package', {
-              method: 'POST',
-              body: formData // Tidak perlu set Content-Type untuk FormData
-            });
-
-            console.log('Response status:', response.status);
-            console.log('Response ok:', response.ok);
-
-            // Jika response berhasil (status 200-299), anggap data berhasil disimpan
-            if (response.ok) {
-              // Coba parse JSON, tapi jika gagal tidak masalah
-              let result = {};
-              try {
-                const contentType = response.headers.get('content-type');
-                if (contentType && contentType.includes('application/json')) {
-                  result = await response.json();
-                  console.log('Response data:', result);
-                } else {
-                  // Jika bukan JSON, baca sebagai text untuk debug
-                  const textResponse = await response.text();
-                  console.log('Response text:', textResponse);
-                }
-              } catch (parseError) {
-                console.log('JSON parse error (but request was successful):', parseError);
+          // Jika response berhasil (status 200-299), anggap data berhasil disimpan
+          if (response.ok) {
+            // Coba parse JSON, tapi jika gagal tidak masalah
+            let result = {};
+            try {
+              const contentType = response.headers.get('content-type');
+              if (contentType && contentType.includes('application/json')) {
+                result = await response.json();
+                console.log('Response data:', result);
+              } else {
+                // Jika bukan JSON, baca sebagai text untuk debug
+                const textResponse = await response.text();
+                console.log('Response text:', textResponse);
               }
-
-              // Tutup loading dan tampilkan success message
-              Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: result.message || 'Data paket berhasil dikirim!',
-                confirmButtonColor: '#5ca82f'
-              }).then(() => {
-                form.reset();
-              });
-            } else {
-              // Jika status bukan 2xx, coba baca error message
-              let errorMessage = 'Terjadi kesalahan saat mengirim data paket.';
-              try {
-                const contentType = response.headers.get('content-type');
-                if (contentType && contentType.includes('application/json')) {
-                  const errorResult = await response.json();
-                  errorMessage = errorResult.message || errorMessage;
-                } else {
-                  const textError = await response.text();
-                  console.error('Error response text:', textError);
-                }
-              } catch (parseError) {
-                console.error('Error parsing error response:', parseError);
-              }
-
-              Swal.fire({
-                icon: 'error',
-                title: 'Gagal!',
-                text: errorMessage,
-              });
+            } catch (parseError) {
+              console.log('JSON parse error (but request was successful):', parseError);
             }
-          } catch (err) {
-            console.error('Network error:', err);
+
+            // Tutup loading dan tampilkan success message
+            Swal.fire({
+              icon: 'success',
+              title: 'Berhasil!',
+              text: result.message || 'Data paket berhasil dikirim!',
+              confirmButtonColor: '#5ca82f'
+            }).then(() => {
+              form.reset();
+            });
+          } else {
+            // Jika status bukan 2xx, coba baca error message
+            let errorMessage = 'Terjadi kesalahan saat mengirim data paket.';
+            try {
+              const contentType = response.headers.get('content-type');
+              if (contentType && contentType.includes('application/json')) {
+                const errorResult = await response.json();
+                errorMessage = errorResult.message || errorMessage;
+              } else {
+                const textError = await response.text();
+                console.error('Error response text:', textError);
+              }
+            } catch (parseError) {
+              console.error('Error parsing error response:', parseError);
+            }
+
             Swal.fire({
               icon: 'error',
-              title: 'Network Error!',
-              text: 'Gagal mengirim data. Periksa koneksi internet atau coba lagi nanti.',
+              title: 'Gagal!',
+              text: errorMessage,
             });
           }
-
-          return false;
+        } catch (err) {
+          console.error('Network error:', err);
+          Swal.fire({
+            icon: 'error',
+            title: 'Network Error!',
+            text: 'Gagal mengirim data. Periksa koneksi internet atau coba lagi nanti.',
+          });
         }
-      </script>
-    </body>
+
+        return false;
+      }
+    </script>
+  </body>
+</html>

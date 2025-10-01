@@ -156,9 +156,7 @@
         <i class="bi bi-plus-circle"></i> Tambah Data
       </button>
 
-      <button class="btn btn-secondary quick-action-btn">
-        <i class="bi bi-printer"></i> Cetak Laporan
-      </button>
+     
     </div>
 
     <!-- Modal Pilihan Form -->
@@ -190,7 +188,7 @@
               <div class="col-8">
                 <h5 class="text-muted mb-2">Visitor Hari Ini</h5>
                 <h2 class="mb-0"><%= visitorsToday.length %></h2>
-                <p class="mb-0 text-muted"><span class="text-success"><i class="bi bi-arrow-up"></i> 12%</span> dari kemarin</p>
+                
               </div>
               <div class="col-4 text-end">
                 <i class="bi bi-people stat-icon text-primary"></i>
@@ -207,7 +205,7 @@
               <div class="col-8">
                 <h5 class="text-muted mb-2">Paket Hari Ini</h5>
                 <h2 class="mb-0"><%= packagesToday.length %></h2>
-                <p class="mb-0 text-muted"><span class="text-success"><i class="bi bi-arrow-up"></i> 5%</span> dari kemarin</p>
+                
               </div>
               <div class="col-4 text-end">
                 <i class="bi bi-box-seam stat-icon text-success"></i>
@@ -224,7 +222,7 @@
               <div class="col-8">
                 <h5 class="text-muted mb-2">Visitor Bulan Ini</h5>
                 <h2 class="mb-0"><%= monthlyVisitors %></h2>
-                <p class="mb-0 text-muted"><span class="text-success"><i class="bi bi-arrow-up"></i> 8%</span> dari bulan lalu</p>
+                
               </div>
               <div class="col-4 text-end">
                 <i class="bi bi-calendar-month stat-icon text-danger"></i>
@@ -241,7 +239,7 @@
               <div class="col-8">
                 <h5 class="text-muted mb-2">Paket Bulan Ini</h5>
                 <h2 class="mb-0"><%= monthlyPackages %></h2>
-                <p class="mb-0 text-muted"><span class="text-danger"><i class="bi bi-arrow-down"></i> 3%</span> dari bulan lalu</p>
+                
               </div>
               <div class="col-4 text-end">
                 <i class="bi bi-truck stat-icon text-primary"></i>
@@ -386,6 +384,7 @@
                 <th>Keperluan</th>
                 <th>Waktu</th>
                 <th>Status</th>
+                <th>Aksi</th> <!-- Tambahkan kolom aksi di modal -->
               </tr>
             </thead>
             <tbody>
@@ -403,6 +402,13 @@
                         : 'bg-yellow-200 text-yellow-800' %>">
                       <%= v.status || 'pending' %>
                     </span>
+                  </td>
+                  <td>
+                    <!-- Tombol aksi CRUD hanya di modal -->
+                    <a href="/visitor/edit/<%= v._id %>" class="btn btn-sm btn-warning me-1"><i class="bi bi-pencil"></i></a>
+                    <form action="/visitor/delete/<%= v._id %>" method="POST" style="display:inline;" onsubmit="return confirm('Yakin hapus data ini?')">
+                      <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                    </form>
                   </td>
                 </tr>
               <% }) %>
@@ -428,7 +434,7 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h5><i class="bi bi-box-seam me-2"></i> Semua Paket</h5>
       <div class="input-group" style="width: 200px;">
-        <input type="text" class="form-control form-control-sm search-box package" placeholder="Cari paket...">
+        <input type="text" id="searchPackageInput" class="form-control form-control-sm search-box package" placeholder="Cari paket...">
         <button class="btn btn-sm btn-outline-secondary" type="button"><i class="bi bi-search"></i></button>
       </div>
     </div>
@@ -530,11 +536,82 @@
   </div>
 </div>
 
+<!-- Modal Edit Visitor -->
+<div class="modal fade" id="editVisitorModal" tabindex="-1" aria-labelledby="editVisitorModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="editVisitorForm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editVisitorModalLabel">Edit Visitor</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editVisitorId" name="id">
+          <div class="mb-3">
+            <label for="editVisitorName" class="form-label">Nama</label>
+            <input type="text" class="form-control" id="editVisitorName" name="name" required>
+          </div>
+          <div class="mb-3">
+            <label for="editVisitorNik" class="form-label">NIK</label>
+            <input type="text" class="form-control" id="editVisitorNik" name="nik" required>
+          </div>
+          <div class="mb-3">
+            <label for="editVisitorEmail" class="form-label">Email</label>
+            <input type="email" class="form-control" id="editVisitorEmail" name="email" required>
+          </div>
+          <div class="mb-3">
+            <label for="editVisitorInstansi" class="form-label">Instansi</label>
+            <input type="text" class="form-control" id="editVisitorInstansi" name="instansi" required>
+          </div>
+          <div class="mb-3">
+            <label for="editVisitorBertemu" class="form-label">Pegawai yang ingin ditemui</label>
+            <input type="text" class="form-control" id="editVisitorBertemu" name="bertemu" required>
+          </div>
+          <div class="mb-3">
+            <label for="editVisitorJanji" class="form-label">Janji</label>
+            <select class="form-select" id="editVisitorJanji" name="janji" required>
+              <option value="ya">Ya</option>
+              <option value="tidak">Tidak</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="editVisitorPurpose" class="form-label">Keperluan</label>
+            <input type="text" class="form-control" id="editVisitorPurpose" name="purpose" required>
+          </div>
+          <div class="mb-3">
+            <label for="editVisitorRekan" class="form-label">Jumlah Tamu</label>
+            <input type="text" class="form-control" id="editVisitorRekan" name="rekan" required>
+          </div>
+          <div class="mb-3">
+            <label for="editVisitorTanggal" class="form-label">Tanggal Kunjungan</label>
+            <input type="date" class="form-control" id="editVisitorTanggal" name="tanggal" required>
+          </div>
+          <div class="mb-3">
+            <label for="editVisitorJam" class="form-label">Jam Kunjungan</label>
+            <input type="time" class="form-control" id="editVisitorJam" name="jam" required>
+          </div>
+          <div class="mb-3">
+            <label for="editVisitorStatus" class="form-label">Status</label>
+            <select class="form-select" id="editVisitorStatus" name="status">
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+              <option value="reschedule">Reschedule</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Simpan</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
-
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     // Update current date and time
     function updateDateTime() {
@@ -637,7 +714,8 @@
       options: {
         responsive: true,
         plugins: {
-          legend: {
+          legend:
+          {
             position: 'top',
           }
         },
@@ -776,6 +854,73 @@ function setupPaginatedSearch(tableId, paginationId, searchInputId, itemsPerPage
 // Aktifkan untuk masing-masing tabel
 setupPaginatedSearch('visitorTable', 'visitorPagination', 'searchVisitorInput', 5);
 setupPaginatedSearch('packageTable', 'packagePagination', 'searchPackageInput', 5);
+
+    // Edit button handler (inside modal detail visitor)
+document.querySelectorAll('#detailModal .btn-warning').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    const row = btn.closest('tr');
+    const id = btn.getAttribute('href').split('/').pop();
+    document.getElementById('editVisitorId').value = id;
+    document.getElementById('editVisitorName').value = row.children[1].innerText;
+    document.getElementById('editVisitorPurpose').value = row.children[2].innerText;
+    document.getElementById('editVisitorStatus').value = row.children[4].innerText.trim().toLowerCase();
+    var modal = new bootstrap.Modal(document.getElementById('editVisitorModal'));
+    modal.show();
+  });
+});
+
+// Submit edit form via AJAX
+document.getElementById('editVisitorForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const id = document.getElementById('editVisitorId').value;
+  const name = document.getElementById('editVisitorName').value;
+  const purpose = document.getElementById('editVisitorPurpose').value;
+  const status = document.getElementById('editVisitorStatus').value;
+  fetch(`/visitor/edit/${id}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, purpose, status })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      location.reload(); // Refresh page to update table
+    } else {
+      alert('Gagal update data');
+    }
+  });
+});
+
+// Hapus visitor via AJAX
+document.querySelectorAll('#detailModal form[action^="/visitor/delete"]').forEach(form => {
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    Swal.fire({
+      title: 'Yakin hapus data ini?',
+      text: 'Data yang dihapus tidak dapat dikembalikan!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Ya, hapus!',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(form.action, { method: 'POST' })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              Swal.fire('Terhapus!', 'Data berhasil dihapus.', 'success')
+                .then(() => location.reload());
+            } else {
+              Swal.fire('Gagal!', 'Gagal menghapus data.', 'error');
+            }
+          });
+      }
+    });
+  });
+});
 
   </script>
   <%- include('partials/footer') %>

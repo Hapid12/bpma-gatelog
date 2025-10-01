@@ -14,18 +14,19 @@
       }
     </style>
   </head>
-  <body class="bg-[#f7f8f8] min-h-screen flex items-center justify-center p-6">
-    <div class="max-w-7xl w-full flex flex-col md:flex-row items-center md:items-start justify-center gap-12">
-
+  <body class="min-h-screen bg-cover bg-center" style="background-image: url('/images/bg-plant.jpg');">
+    <div class="min-h-screen w-full bg-black/50 flex items-center justify-center p-6">
+      >
+      <div class="max-w-7xl w-full flex flex-col md:flex-row items-center md:items-start justify-center gap-12">
       <!-- Left Section -->
-      <div class="flex flex-col max-w-xl w-full md:w-1/2 text-center md:text-left">
+      <div class="flex flex-col max-w-xl w-full md:w-1/2 text-center md:text-left text-white">
         <div class="flex justify-center md:justify-start mb-6">
           <img alt="BPMA Logo" src="/logoBPMA.png" width="150" class="mb-18" />
         </div>
         <h1 class="text-4xl font-extrabold leading-tight mb-3">
           GateLog BPMA<br/>Sistem Registrasi Tamu
         </h1>
-        <p class="text-sm text-black/90 max-w-md mx-auto md:mx-0">
+        <p class="text-sm text-white /90 max-w-md mx-auto md:mx-0 ">
           GateLog BPMA adalah sistem logbook digital yang dirancang untuk mencatat setiap kunjungan tamu ke lingkungan kantor Badan Pengelola Migas Aceh (BPMA).
         </p>
       </div>
@@ -38,18 +39,18 @@
         </div>
 
         <div>
-          <label for="nik" class="block text-white font-medium text-sm mb-1">NIK Tamu:</label>
-          <input id="nik" name="nik" type="text" placeholder="Cth: 1234567890123456"
-            pattern="\d{16}" maxlength="16" minlength="16" required
-            class="w-full rounded text-xs px-3 py-2 placeholder:text-gray-400 focus:outline-none" />
-          <small class="text-red-500 text-xs hidden" id="nikError">NIK harus terdiri dari 16 digit angka.</small>
-        </div>
+    <label for="nik" class="block text-white font-medium text-sm mb-1">NIK Tamu:</label>
+    <input id="nik" name="nik" type="text" placeholder="Cth: 1234567890123456"
+      maxlength="16" minlength="16" required
+      class="w-full rounded text-xs px-3 py-2 placeholder:text-gray-400 focus:outline-none" />
+    <small class="text-red-500 text-xs" id="nikError">NIK harus terdiri dari 16 digit angka.</small>
+      </div>
 
         <div>
           <label for="email" class="block text-white font-medium text-sm mb-1">Email Tamu:</label>
           <input id="email" name="email" type="email" placeholder="Cth : agus@gmail.com"
             required class="w-full rounded text-xs px-3 py-2 placeholder:text-gray-400 focus:outline-none" />
-          <small class="text-red-500 text-xs hidden" id="emailError">Format email tidak valid.</small>
+          <small class="text-red-500 text-xs" id="emailError">Format email harus valid.</small>
         </div>
 
         <div>
@@ -70,7 +71,7 @@
                 class="w-full rounded text-xs px-3 py-2 placeholder:text-gray-400 bg-white text-black focus:outline-none" required />
           <datalist id="employeeList">
             <% employees.forEach(emp => { %>
-              <option value="<%= emp.name %> - <%= emp.email %>"></option>
+              <option value="<%= emp.name %> - <%= emp.position %>"></option>
             <% }) %>
           </datalist>
         </div>
