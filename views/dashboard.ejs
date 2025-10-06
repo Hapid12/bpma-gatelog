@@ -133,6 +133,39 @@
       background-color: #fff3cd;
       color: #856404;
     }
+
+    .modal-xl {
+      max-width: 90vw;
+    }
+
+    .modal-dialog-scrollable {
+      max-height: 90vh;
+    }
+
+    .sticky-table-scroll {
+      max-height: 650px; /* Ubah dari 400px ke 650px atau sesuai kebutuhan */
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .sticky-table-scroll table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .sticky-table-scroll th,
+    .sticky-table-scroll td {
+      padding: 12px 15px;
+      text-align: left;
+      border: 1px solid #dee2e6;
+    }
+
+    .sticky-table-scroll th {
+      background-color: #f8f9fa;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
   </style>
 </head>
 <body>
@@ -320,42 +353,44 @@
             </div>
           </div>
           <div class="table-responsive">
-            <table id="visitorTable" class="table table-hover">
-              <thead class="table-light">
-                <tr>
-                  <th>No</th>
-                  <th>Nama</th>
-                  <th>Keperluan</th>
-                  <th>Waktu</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody id="visitorTableBody">
-                <% if (allVisitors.length === 0) { %>
-                  <tr><td colspan="5" class="text-center py-4">Belum ada visitor.</td></tr>
-                <% } else { %>
-                  <% allVisitors.forEach((v, i) => { %>
-                    <tr>
-                      <td><%= i + 1 %></td>
-                      <td><strong><%= v.name %></strong></td>
-                      <td><%= v.purpose %></td>
-                      <td><%= new Date(v.date).toLocaleString("id-ID") %></td>
-                      <td>
-                        <!-- Untuk Visitor -->
-                        <span class="px-2 py-1 rounded-full text-xs font-semibold
-                            <%= v.status === 'approved' ? 'bg-green-200 text-green-800' 
-                              : v.status === 'rejected' ? 'bg-red-200 text-red-800' 
-                              : v.status === 'reschedule' ? 'bg-blue-200 text-blue-800' 
-                              : 'bg-yellow-200 text-yellow-800' %>">
+            <div class="sticky-table-scroll">
+              <table id="visitorTable" class="table table-hover">
+                <thead class="table-light">
+                  <tr>
+                    <th>No</th>
+                    <th>Nama</th>
+                    <th>Keperluan</th>
+                    <th>Waktu</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="visitorTableBody">
+                  <% if (allVisitors.length === 0) { %>
+                    <tr><td colspan="5" class="text-center py-4">Belum ada visitor.</td></tr>
+                  <% } else { %>
+                    <% allVisitors.forEach((v, i) => { %>
+                      <tr>
+                        <td><%= i + 1 %></td>
+                        <td><strong><%= v.name %></strong></td>
+                        <td><%= v.purpose %></td>
+                        <td><%= new Date(v.date).toLocaleString("id-ID") %></td>
+                        <td>
+                          <!-- Untuk Visitor -->
+                          <span class="px-2 py-1 rounded-full text-xs font-semibold
+                              <%= v.status === 'approved' ? 'bg-green-200 text-green-800' 
+                                : v.status === 'rejected' ? 'bg-red-200 text-red-800' 
+                                : v.status === 'reschedule' ? 'bg-blue-200 text-blue-800' 
+                                : 'bg-yellow-200 text-yellow-800' %>">
                             <%= v.status || 'pending' %>
                           </span>
 
-                      </td>
-                    </tr>
-                  <% }) %>
-                <% } %>
-              </tbody>
-            </table>
+                        </td>
+                      </tr>
+                    <% }) %>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
           </div>
           <!-- Tabel Visitor -->
           <div class="d-flex justify-content-between align-items-center mt-3">
@@ -375,26 +410,42 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
       </div>
       <div class="modal-body">
-        <div class="table-responsive">
-          <table class="table table-bordered table-striped table-sm">
+        <div class="sticky-table-scroll">
+          <table class="table table-bordered table-striped align-middle">
             <thead class="table-light">
               <tr>
-                <th>No</th>
-                <th>Nama</th>
-                <th>Keperluan</th>
-                <th>Waktu</th>
-                <th>Status</th>
-                <th>Aksi</th> <!-- Tambahkan kolom aksi di modal -->
+                <th class="text-center" style="min-width:40px">No</th>
+                <th style="min-width:120px">Nama</th>
+                <th style="min-width:120px">NIK</th>
+                <th style="min-width:150px">Email</th>
+                <th style="min-width:120px">Instansi</th>
+                <th style="min-width:150px">Pegawai yang ingin ditemui</th>
+                <th style="min-width:80px">Janji</th>
+                <th style="min-width:120px">Keperluan</th>
+                <th style="min-width:80px">Jumlah Tamu</th>
+                <th style="min-width:120px">Tanggal Kunjungan</th>
+                <th style="min-width:100px">Jam Kunjungan</th>
+                <th style="min-width:120px">Waktu Input</th>
+                <th class="text-center" style="min-width:80px">Status</th>
+                <th class="text-center" style="min-width:100px">Aksi</th>
               </tr>
             </thead>
             <tbody>
               <% allVisitors.forEach((v, i) => { %>
                 <tr>
-                  <td><%= i + 1 %></td>
+                  <td class="text-center"><%= i + 1 %></td>
                   <td><%= v.name %></td>
+                  <td><%= v.nik %></td>
+                  <td><%= v.email %></td>
+                  <td><%= v.instansi %></td>
+                  <td><%= v.bertemu %></td>
+                  <td><%= v.janji %></td>
                   <td><%= v.purpose %></td>
+                  <td class="text-center"><%= v.rekan %></td>
+                  <td><%= v.tanggal ? v.tanggal : '-' %></td>
+                  <td><%= v.jam ? v.jam : '-' %></td>
                   <td><%= new Date(v.date).toLocaleString("id-ID") %></td>
-                  <td>
+                  <td class="text-center">
                     <span class="px-2 py-1 rounded-full text-xs font-semibold
                       <%= v.status === 'approved' ? 'bg-green-200 text-green-800' 
                         : v.status === 'rejected' ? 'bg-red-200 text-red-800' 
@@ -403,10 +454,9 @@
                       <%= v.status || 'pending' %>
                     </span>
                   </td>
-                  <td>
-                    <!-- Tombol aksi CRUD hanya di modal -->
+                  <td class="text-center">
                     <a href="/visitor/edit/<%= v._id %>" class="btn btn-sm btn-warning me-1"><i class="bi bi-pencil"></i></a>
-                    <form action="/visitor/delete/<%= v._id %>" method="POST" style="display:inline;" onsubmit="return confirm('Yakin hapus data ini?')">
+                    <form action="/visitor/delete/<%= v._id %>" method="POST" style="display:inline;" class="form-delete-visitor">
                       <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
                     </form>
                   </td>
@@ -440,36 +490,63 @@
     </div>
 
     <div class="table-responsive">
-      <table id="packageTable" class="table table-hover">
-        <thead class="table-light">
-          <tr>
-            <th>No</th>
-            <th>No Resi</th>
-            <th>Nama Kurir</th>
-            <th>Penerima Paket</th>
-            <th>Waktu</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="packageTableBody">
-          <% if (allPackages.length === 0) { %>
-            <tr><td colspan="6" class="text-center py-4">Belum ada paket.</td></tr>
-          <% } else { %>
-            <% allPackages.forEach((p, i) => { %>
-              <tr>
-                <td><%= i + 1 %></td>
-                <td><%= p.nomorResi %></td>
-                <td><%= p.namaKurir %></td>
-                <td><strong><%= p.penerimaNama %></strong></td>
-                <td><%= p.createdAt ? new Date(p.createdAt).toLocaleString("id-ID") : '-' %></td>
-                <td>
-                  <span class="badge badge-pending"><i class="bi bi-box-seam me-1"></i> Belum diambil</span>
-                </td>
-              </tr>
-            <% }) %>
-          <% } %>
-        </tbody>
-      </table>
+      <div class="sticky-table-scroll">
+        <table id="packageTable" class="table table-hover">
+          <thead class="table-light">
+            <tr>
+              <th>No</th>
+              <th>No Resi</th>
+              <th>Jenis Paket</th>
+              <th>Deskripsi Paket</th>
+              <th>Nama Kurir</th>
+              <th>Email Kurir</th>
+              <th>No HP Kurir</th>
+              <th>Penerima Paket</th>
+              <th>Nama Penerima</th>
+              <th>Foto Paket</th>
+              <th>Waktu Input</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="packageTableBody">
+            <% if (allPackages.length === 0) { %>
+              <tr><td colspan="6" class="text-center py-4">Belum ada paket.</td></tr>
+            <% } else { %>
+              <% allPackages.forEach((p, i) => { %>
+                <tr>
+                  <td><%= i + 1 %></td>
+                  <td><%= p.nomorResi %></td>
+                  <td><%= p.jenisPaket %></td>
+                  <td><%= p.deskripsiPaket %></td>
+                  <td><%= p.namaKurir %></td>
+                  <td><%= p.emailKurir %></td>
+                  <td><%= p.nomorHpKurir %></td>
+                  <td><%= p.penerimaPaket ? p.penerimaPaket.name : '-' %></td>
+                  <td><%= p.penerimaNama %></td>
+                  <td>
+                    <% if (p.fotoPaket) { %>
+                      <img src="/uploads/<%= p.fotoPaket %>" alt="Foto Paket" style="max-width:60px;max-height:60px;">
+                    <% } else { %>
+                      -
+                    <% } %>
+                  </td>
+                  <td><%= p.createdAt ? new Date(p.createdAt).toLocaleString("id-ID") : '-' %></td>
+                  <td>
+                    <span class="badge badge-pending"><i class="bi bi-box-seam me-1"></i> Belum diambil</span>
+                  </td>
+                  <td>
+                    <a href="/package/edit/<%= p._id %>" class="btn btn-sm btn-warning me-1 btn-edit-package"><i class="bi bi-pencil"></i></a>
+                    <form action="/package/delete/<%= p._id %>" method="POST" style="display:inline;" class="form-delete-package">
+                      <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                    </form>
+                  </td>
+                </tr>
+              <% }) %>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- Tombol Detail + Pagination -->
@@ -501,32 +578,59 @@
       </div>
       <div class="modal-body">
         <div class="table-responsive">
-          <table class="table table-bordered table-striped table-sm">
-            <thead class="table-light">
-              <tr>
-                <th>No</th>
-                <th>No Resi</th>
-                <th>Nama Kurir</th>
-                <th>Penerima Paket</th>
-                <th>Waktu</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% allPackages.forEach((p, i) => { %>
+          <div class="sticky-table-scroll">
+            <table class="table table-bordered table-striped align-middle">
+              <thead class="table-light">
                 <tr>
-                  <td><%= i + 1 %></td>
-                  <td><%= p.nomorResi %></td>
-                  <td><%= p.namaKurir %></td>
-                  <td><%= p.penerimaNama %></td>
-                  <td><%= p.createdAt ? new Date(p.createdAt).toLocaleString("id-ID") : '-' %></td>
-                  <td>
-                    <span class="badge badge-pending"><i class="bi bi-box-seam me-1"></i> Belum diambil</span>
-                  </td>
+                  <th class="text-center" style="min-width:40px">No</th>
+                  <th style="min-width:120px">No Resi</th>
+                  <th style="min-width:120px">Jenis Paket</th>
+                  <th style="min-width:150px">Deskripsi Paket</th>
+                  <th style="min-width:120px">Nama Kurir</th>
+                  <th style="min-width:150px">Email Kurir</th>
+                  <th style="min-width:120px">No HP Kurir</th>
+                  <th style="min-width:120px">Penerima Paket</th>
+                  <th style="min-width:120px">Nama Penerima</th>
+                  <th style="min-width:80px">Foto Paket</th>
+                  <th style="min-width:120px">Waktu Input</th>
+                  <th class="text-center" style="min-width:80px">Status</th>
+                  <th class="text-center" style="min-width:100px">Aksi</th>
                 </tr>
-              <% }) %>
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                <% allPackages.forEach((p, i) => { %>
+                  <tr>
+                    <td class="text-center"><%= i + 1 %></td>
+                    <td><%= p.nomorResi %></td>
+                    <td><%= p.jenisPaket %></td>
+                    <td><%= p.deskripsiPaket %></td>
+                    <td><%= p.namaKurir %></td>
+                    <td><%= p.emailKurir %></td>
+                    <td><%= p.nomorHpKurir %></td>
+                    <td><%= p.penerimaPaket ? p.penerimaPaket.name : '-' %></td>
+                    <td><%= p.penerimaNama %></td>
+                    <td class="text-center">
+                      <% if (p.fotoPaket) { %>
+                        <img src="/uploads/<%= p.fotoPaket %>" alt="Foto Paket" style="max-width:60px;max-height:60px;">
+                      <% } else { %>
+                        -
+                      <% } %>
+                    </td>
+                    <td><%= p.createdAt ? new Date(p.createdAt).toLocaleString("id-ID") : '-' %></td>
+                    <td class="text-center">
+                      <span class="badge badge-pending"><i class="bi bi-box-seam me-1"></i> Belum diambil</span>
+                    </td>
+                    <td class="text-center">
+                      <a href="/package/edit/<%= p._id %>" class="btn btn-sm btn-warning me-1 btn-edit-package"><i class="bi bi-pencil"></i></a>
+                      <form action="/package/delete/<%= p._id %>" method="POST" style="display:inline;" class="form-delete-package">
+                        <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                      </form>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
@@ -598,6 +702,47 @@
               <option value="rejected">Rejected</option>
               <option value="reschedule">Reschedule</option>
             </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Simpan</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Edit Package -->
+<div class="modal fade" id="editPackageModal" tabindex="-1" aria-labelledby="editPackageModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="editPackageForm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editPackageModalLabel">Edit Paket</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editPackageId" name="id">
+          <div class="mb-3">
+            <label for="editNomorResi" class="form-label">No Resi</label>
+            <input type="text" class="form-control" id="editNomorResi" name="nomorResi" required>
+          </div>
+          <div class="mb-3">
+            <label for="editNamaKurir" class="form-label">Nama Kurir</label>
+            <input type="text" class="form-control" id="editNamaKurir" name="namaKurir" required>
+          </div>
+          <div class="mb-3">
+            <label for="editPenerimaNama" class="form-label">Penerima Paket</label>
+            <input type="text" class="form-control" id="editPenerimaNama" name="penerimaNama" required>
+          </div>
+          <div class="mb-3">
+            <label for="editDeskripsiPaket" class="form-label">Deskripsi Paket</label>
+            <input type="text" class="form-control" id="editDeskripsiPaket" name="deskripsiPaket">
+          </div>
+          <div class="mb-3">
+            <label for="editJenisPaket" class="form-label">Jenis Paket</label>
+            <input type="text" class="form-control" id="editJenisPaket" name="jenisPaket">
           </div>
         </div>
         <div class="modal-footer">
@@ -861,11 +1006,49 @@ document.querySelectorAll('#detailModal .btn-warning').forEach(btn => {
     e.preventDefault();
     const row = btn.closest('tr');
     const id = btn.getAttribute('href').split('/').pop();
+
+    // Isi semua field sesuai urutan kolom tabel
     document.getElementById('editVisitorId').value = id;
     document.getElementById('editVisitorName').value = row.children[1].innerText;
-    document.getElementById('editVisitorPurpose').value = row.children[2].innerText;
-    document.getElementById('editVisitorStatus').value = row.children[4].innerText.trim().toLowerCase();
+    document.getElementById('editVisitorNik').value = row.children[2].innerText;
+    document.getElementById('editVisitorEmail').value = row.children[3].innerText;
+    document.getElementById('editVisitorInstansi').value = row.children[4].innerText;
+    document.getElementById('editVisitorBertemu').value = row.children[5].innerText;
+    document.getElementById('editVisitorJanji').value = row.children[6].innerText.toLowerCase();
+    document.getElementById('editVisitorPurpose').value = row.children[7].innerText;
+    document.getElementById('editVisitorRekan').value = row.children[8].innerText;
+    document.getElementById('editVisitorTanggal').value = row.children[9].innerText !== '-' ? row.children[9].innerText : '';
+    document.getElementById('editVisitorJam').value = row.children[10].innerText !== '-' ? row.children[10].innerText : '';
+    document.getElementById('editVisitorStatus').value = row.children[12].innerText.trim().toLowerCase();
+
+    // Tutup modal detail sebelum buka modal edit
+    var detailModal = bootstrap.Modal.getInstance(document.getElementById('detailModal'));
+    if (detailModal) detailModal.hide();
+
     var modal = new bootstrap.Modal(document.getElementById('editVisitorModal'));
+    modal.show();
+  });
+});
+
+// Edit button handler (modal detail package)
+document.querySelectorAll('#detailPackageModal .btn-edit-package').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    const row = btn.closest('tr');
+    const id = btn.getAttribute('href').split('/').pop();
+
+    document.getElementById('editPackageId').value = id;
+    document.getElementById('editNomorResi').value = row.children[1].innerText;
+    document.getElementById('editJenisPaket').value = row.children[2].innerText;
+    document.getElementById('editDeskripsiPaket').value = row.children[3].innerText;
+    document.getElementById('editNamaKurir').value = row.children[4].innerText;
+    document.getElementById('editPenerimaNama').value = row.children[8].innerText;
+
+    // Tutup modal detail sebelum buka modal edit
+    var detailModal = bootstrap.Modal.getInstance(document.getElementById('detailPackageModal'));
+    if (detailModal) detailModal.hide();
+
+    var modal = new bootstrap.Modal(document.getElementById('editPackageModal'));
     modal.show();
   });
 });
@@ -874,20 +1057,30 @@ document.querySelectorAll('#detailModal .btn-warning').forEach(btn => {
 document.getElementById('editVisitorForm').addEventListener('submit', function(e) {
   e.preventDefault();
   const id = document.getElementById('editVisitorId').value;
-  const name = document.getElementById('editVisitorName').value;
-  const purpose = document.getElementById('editVisitorPurpose').value;
-  const status = document.getElementById('editVisitorStatus').value;
+  const data = {
+    name: document.getElementById('editVisitorName').value,
+    nik: document.getElementById('editVisitorNik').value,
+    email: document.getElementById('editVisitorEmail').value,
+    instansi: document.getElementById('editVisitorInstansi').value,
+    bertemu: document.getElementById('editVisitorBertemu').value,
+    janji: document.getElementById('editVisitorJanji').value,
+    purpose: document.getElementById('editVisitorPurpose').value,
+    rekan: document.getElementById('editVisitorRekan').value,
+    tanggal: document.getElementById('editVisitorTanggal').value,
+    jam: document.getElementById('editVisitorJam').value,
+    status: document.getElementById('editVisitorStatus').value
+  };
   fetch(`/visitor/edit/${id}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, purpose, status })
+    body: JSON.stringify(data)
   })
   .then(res => res.json())
   .then(data => {
     if (data.success) {
-      location.reload(); // Refresh page to update table
+      location.reload();
     } else {
-      alert('Gagal update data');
+      Swal.fire('Gagal!', 'Gagal update data.', 'error');
     }
   });
 });
@@ -915,6 +1108,62 @@ document.querySelectorAll('#detailModal form[action^="/visitor/delete"]').forEac
                 .then(() => location.reload());
             } else {
               Swal.fire('Gagal!', 'Gagal menghapus data.', 'error');
+            }
+          });
+      }
+    });
+  });
+});
+
+// Submit edit package form via AJAX
+document.getElementById('editPackageForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const id = document.getElementById('editPackageId').value;
+  const data = {
+    nomorResi: document.getElementById('editNomorResi').value,
+    namaKurir: document.getElementById('editNamaKurir').value,
+    penerimaNama: document.getElementById('editPenerimaNama').value,
+    deskripsiPaket: document.getElementById('editDeskripsiPaket').value,
+    jenisPaket: document.getElementById('editJenisPaket').value
+  };
+  fetch(`/package/edit/${id}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      location.reload();
+    } else {
+      Swal.fire('Gagal!', 'Gagal update data paket.', 'error');
+    }
+  });
+});
+
+// Hapus package via AJAX
+document.querySelectorAll('#detailPackageModal .form-delete-package').forEach(form => {
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    Swal.fire({
+      title: 'Yakin hapus data paket ini?',
+      text: 'Data yang dihapus tidak dapat dikembalikan!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Ya, hapus!',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(form.action, { method: 'POST' })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              Swal.fire('Terhapus!', 'Data paket berhasil dihapus.', 'success')
+                .then(() => location.reload());
+            } else {
+              Swal.fire('Gagal!', 'Gagal menghapus data paket.', 'error');
             }
           });
       }

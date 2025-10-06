@@ -87,4 +87,24 @@ router.post('/', upload.single('fotoPaket'), async (req, res) => {
   }
 });
 
+// Edit Package
+router.post('/edit/:id', async (req, res) => {
+  try {
+    await Package.findByIdAndUpdate(req.params.id, req.body);
+    res.json({ success: true });
+  } catch (err) {
+    res.json({ success: false, error: err.message });
+  }
+});
+
+// Delete Package
+router.post('/delete/:id', async (req, res) => {
+  try {
+    await Package.findByIdAndDelete(req.params.id);
+    res.json({ success: true });
+  } catch (err) {
+    res.json({ success: false, error: err.message });
+  }
+});
+
 module.exports = router;

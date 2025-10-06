@@ -127,53 +127,25 @@ router.get('/edit/:id', async (req, res) => {
   res.render('editVisitor', { visitor, employees });
 });
 
-// POST: Update visitor
+// Edit Visitor
 router.post('/edit/:id', async (req, res) => {
   try {
-    const {
-      nama,
-      email,
-      instansi,
-      bertemu,
-      janji,
-      keperluan,
-      rekan,
-      tanggal
-    } = req.body;
-
-    await Visitor.findByIdAndUpdate(req.params.id, {
-      name: nama,
-      email: email,
-      institution: instansi,
-      targetEmployee: bertemu,
-      hasAppointment: janji,
-      purpose: keperluan,
-      companions: rekan,
-      schedule: new Date(tanggal)
-    });
-
-    req.flash('success', 'Data visitor berhasil diperbarui.');
-    res.redirect('/visitor');
-  } catch (error) {
-    console.error(error);
-    req.flash('error', 'Gagal memperbarui data visitor.');
-    res.redirect('/visitor');
+    await Visitor.findByIdAndUpdate(req.params.id, req.body);
+    res.json({ success: true });
+  } catch (err) {
+    res.json({ success: false, error: err.message });
   }
 });
 
-// POST: Hapus visitor
+// Delete Visitor
 router.post('/delete/:id', async (req, res) => {
   try {
     await Visitor.findByIdAndDelete(req.params.id);
-    req.flash('success', 'Data visitor berhasil dihapus.');
-    res.redirect('/visitor');
-  } catch (error) {
-    console.error(error);
-    req.flash('error', 'Gagal menghapus data visitor.');
-    res.redirect('/visitor');
+    res.json({ success: true });
+  } catch (err) {
+    res.json({ success: false, error: err.message });
   }
 });
-
 
 
 

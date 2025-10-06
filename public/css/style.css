@@ -8,3 +8,30 @@
   padding-top: 0.3rem;
   padding-bottom: 0.3rem;
 }
+
+/* Sticky horizontal scrollbar for table */
+.sticky-table-scroll {
+  position: relative;
+  max-height: 500px; /* Atur tinggi sesuai kebutuhan */
+  overflow: auto;
+}
+
+.sticky-table-scroll::-webkit-scrollbar {
+  height: 12px;
+}
+
+.sticky-table-scroll::-webkit-scrollbar-thumb {
+  background: #bdbdbd;
+  border-radius: 6px;
+}
+
+.sticky-table-scroll::-webkit-scrollbar-track {
+  background: #f8f9fa;
+}
+
+/* Optional: always show scrollbar */
+.sticky-table-scroll {
+  overflow-x: auto;
+  overflow-y: auto;
+  scrollbar-gutter: stable both-edges;
+}
