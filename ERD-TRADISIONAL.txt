@@ -1,0 +1,353 @@
+ ================================================================================
+                    DESAIN ERD TRADISIONAL - BPMA GATELOG
+                    (Entity Relationship Diagram - Chen Notation)
+================================================================================
+
+================================================================================
+                              DAFTAR ENTITAS
+================================================================================
+
++------------------------------------------------------------------------------+
+|                             ENTITAS: EMPLOYEE                                |
++------------------------------------------------------------------------------+
+| Deskripsi: Menyimpan data karyawan BPMA yang menjadi tujuan tamu/paket       |
++------------------------------------------------------------------------------+
+| ATRIBUT                | TIPE DATA       | KETERANGAN                        |
++------------------------------------------------------------------------------+
+| _id (PK)               | ObjectId        | Primary Key, auto-generated       |
+| name                   | String          | Nama lengkap karyawan             |
+| email                  | String          | Alamat email karyawan             |
+| position               | String          | Jabatan/posisi karyawan           |
++------------------------------------------------------------------------------+
+
+
++------------------------------------------------------------------------------+
+|                             ENTITAS: PACKAGE                                 |
++------------------------------------------------------------------------------+
+| Deskripsi: Menyimpan data paket/kiriman yang diterima di BPMA               |
++------------------------------------------------------------------------------+
+| ATRIBUT                | TIPE DATA       | KETERANGAN                        |
++------------------------------------------------------------------------------+
+| _id (PK)               | ObjectId        | Primary Key, auto-generated       |
+| nomorResi              | String          | Nomor resi pengiriman             |
+| jenisPaket             | String          | Jenis/kategori paket              |
+| deskripsiPaket         | String          | Deskripsi isi paket               |
+| namaKurir              | String          | Nama kurir pengantar              |
+| emailKurir             | String          | Email kurir                       |
+| nomorHpKurir           | String          | Nomor HP kurir                    |
+| penerimaPaket (FK)     | ObjectId        | Foreign Key → Employee._id        |
+| penerimaNama           | String          | Nama penerima (denormalisasi)     |
+| fotoPaket              | String          | Path/URL foto paket               |
+| createdAt              | Date            | Tanggal/waktu paket diterima      |
++------------------------------------------------------------------------------+
+
+
++------------------------------------------------------------------------------+
+|                             ENTITAS: VISITOR                                 |
++------------------------------------------------------------------------------+
+| Deskripsi: Menyimpan data tamu/pengunjung yang berkunjung ke BPMA           |
++------------------------------------------------------------------------------+
+| ATRIBUT                | TIPE DATA       | KETERANGAN                        |
++------------------------------------------------------------------------------+
+| _id (PK)               | ObjectId        | Primary Key, auto-generated       |
+| name                   | String          | Nama lengkap pengunjung           |
+| nik                    | String          | Nomor Induk Kependudukan          |
+| email                  | String          | Alamat email pengunjung           |
+| institution            | String          | Instansi/lembaga asal             |
+| targetEmployee         | String          | Nama karyawan yang dituju         |
+| hasAppointment         | String          | Status janji temu (Yes/No)        |
+| purpose                | String          | Tujuan kunjungan                  |
+| companions             | Number          | Jumlah rombongan/pendamping       |
+| schedule               | Date            | Jadwal kunjungan                  |
+| date                   | Date            | Tanggal registrasi kunjungan      |
+| status                 | String          | Status kunjungan (pending/etc)    |
++------------------------------------------------------------------------------+
+
+
+================================================================================
+                              RELASI ANTAR ENTITAS
+================================================================================
+
++------------------------------------------------------------------------------+
+|                    RELASI: EMPLOYEE - PACKAGE (One to Many)                  |
++------------------------------------------------------------------------------+
+|                                                                              |
+|   +-----------+          menerima          +------------+                    |
+|   | EMPLOYEE  |----------------------------| PACKAGE    |                    |
+|   +-----------+          1 : N             +------------+                    |
+|                                                                              |
+| Deskripsi:                                                                   |
+| - Satu Employee dapat MENERIMA banyak Package (1:N)                          |
+| - Satu Package hanya diterima oleh satu Employee                             |
+| - Foreign Key: penerimaPaket pada entitas Package merujuk ke _id Employee    |
+|                                                                              |
+| Kardinalitas:                                                                |
+|   EMPLOYEE (1) ←──────────────────→ (N) PACKAGE                              |
+|                                                                              |
++------------------------------------------------------------------------------+
+
+
++------------------------------------------------------------------------------+
+|                    RELASI: EMPLOYEE - VISITOR (One to Many)                  |
++------------------------------------------------------------------------------+
+|                                                                              |
+|   +-----------+          dikunjungi        +------------+                    |
+|   | EMPLOYEE  |----------------------------| VISITOR    |                    |
+|   +-----------+          1 : N             +------------+                    |
+|                                                                              |
+| Deskripsi:                                                                   |
+| - Satu Employee dapat DIKUNJUNGI oleh banyak Visitor (1:N)                   |
+| - Satu Visitor mengunjungi satu Employee (melalui targetEmployee)            |
+| - Relasi: targetEmployee pada entitas Visitor merujuk ke nama Employee       |
+|                                                                              |
+| Kardinalitas:                                                                |
+|   EMPLOYEE (1) ←──────────────────→ (N) VISITOR                              |
+|                                                                              |
+| Catatan:                                                                     |
+| - Relasi ini menggunakan nama employee (String) bukan ObjectId               |
+| - Disarankan untuk mengubah ke ObjectId reference untuk integritas data      |
+|                                                                              |
++------------------------------------------------------------------------------+
+
+
+================================================================================
+                         DIAGRAM ERD (ASCII FORMAT)
+================================================================================
+
+                          DIAGRAM ERD CHEN NOTATION
+                          ========================
+
+    ┌─────────────────────────────────────────────────────────────────────┐
+    │                                                                     │
+    │                           ┌─────────┐                               │
+    │                           │(name)   │                               │
+    │                           └────┬────┘                               │
+    │                                │                                    │
+    │      ┌─────────┐         ┌─────┴─────┐         ┌─────────┐          │
+    │      │(email)  ├─────────┤ EMPLOYEE  ├─────────┤(position)│         │
+    │      └─────────┘         └─────┬─────┘         └─────────┘          │
+    │                                │                                    │
+    │                           ┌────┴────┐                               │
+    │                           │ [_id]   │ ← Primary Key (underlined)    │
+    │                           └─────────┘                               │
+    │                                                                     │
+    │                     ┌──────────┴──────────┐                         │
+    │                     │                     │                         │
+    │                     ▼                     ▼                         │
+    │              ┌─────────────┐       ┌─────────────┐                  │
+    │              │  menerima   │       │ dikunjungi  │                  │
+    │              │     ◇       │       │     ◇       │                  │
+    │              └──────┬──────┘       └──────┬──────┘                  │
+    │                 1:N │                 1:N │                         │
+    │                     ▼                     ▼                         │
+    │              ┌───────────┐         ┌───────────┐                    │
+    │              │  PACKAGE  │         │  VISITOR  │                    │
+    │              └─────┬─────┘         └─────┬─────┘                    │
+    │                    │                     │                          │
+    │         ┌──────────┼──────────┐    ┌─────┼─────────┐                │
+    │         │          │          │    │     │         │                │
+    │    ┌────┴───┐ ┌────┴───┐ ┌────┴┐ ┌─┴──┐ ┌┴───┐ ┌───┴────┐           │
+    │    │[_id]   │ │nomorResi│ │...  │ │[_id]│ │name│ │purpose │          │
+    │    └────────┘ └────────┘ └─────┘ └────┘ └────┘ └────────┘           │
+    │                                                                     │
+    └─────────────────────────────────────────────────────────────────────┘
+
+    LEGENDA:
+    ┌──────────┐
+    │ ENTITY   │ = Entitas (Rectangle/Persegi Panjang)
+    └──────────┘
+
+    ┌──────────┐
+    │(attribute)│ = Atribut (Oval/Ellipse) - dalam teks: parentheses
+    └──────────┘
+
+    ┌──────────┐
+    │[_id]     │ = Primary Key (Underlined) - dalam teks: brackets
+    └──────────┘
+
+       ◇
+    ┌──────────┐
+    │relationship│ = Relasi (Diamond/Belah Ketupat)
+    └──────────┘
+
+    1:N = One to Many Relationship
+
+
+================================================================================
+                    DETAIL ATRIBUT PER ENTITAS (LENGKAP)
+================================================================================
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                               EMPLOYEE                                        ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║                          ┌────────────────────┐                              ║
+║                          │     EMPLOYEE       │                              ║
+║                          └─────────┬──────────┘                              ║
+║                                    │                                         ║
+║            ┌───────────────────────┼───────────────────────┐                 ║
+║            │                       │                       │                 ║
+║       ┌────┴────┐             ┌────┴────┐             ┌────┴────┐            ║
+║       │  [_id]  │             │  name   │             │  email  │            ║
+║       │   PK    │             │         │             │         │            ║
+║       └─────────┘             └─────────┘             └─────────┘            ║
+║            │                                                                 ║
+║       ┌────┴────┐                                                            ║
+║       │position │                                                            ║
+║       └─────────┘                                                            ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                PACKAGE                                        ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║                          ┌────────────────────┐                              ║
+║                          │      PACKAGE       │                              ║
+║                          └─────────┬──────────┘                              ║
+║                                    │                                         ║
+║     ┌──────────────────────────────┼──────────────────────────────┐          ║
+║     │         │         │          │          │         │         │          ║
+║ ┌───┴───┐ ┌───┴───┐ ┌───┴───┐ ┌────┴────┐ ┌───┴───┐ ┌───┴───┐ ┌───┴───┐     ║
+║ │ [_id] │ │nomor  │ │jenis  │ │deskripsi│ │nama   │ │email  │ │nomor  │     ║
+║ │  PK   │ │Resi   │ │Paket  │ │Paket    │ │Kurir  │ │Kurir  │ │HpKurir│     ║
+║ └───────┘ └───────┘ └───────┘ └─────────┘ └───────┘ └───────┘ └───────┘     ║
+║                                                                              ║
+║     ┌───────────┐       ┌───────────┐       ┌───────────┐                    ║
+║     │penerima   │       │penerima   │       │ fotoPaket │                    ║
+║     │Paket (FK) │       │Nama       │       │           │                    ║
+║     └───────────┘       └───────────┘       └───────────┘                    ║
+║           │                                                                  ║
+║     ┌─────┴─────┐                                                            ║
+║     │ createdAt │                                                            ║
+║     └───────────┘                                                            ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                VISITOR                                        ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║                          ┌────────────────────┐                              ║
+║                          │      VISITOR       │                              ║
+║                          └─────────┬──────────┘                              ║
+║                                    │                                         ║
+║     ┌──────────────────────────────┼──────────────────────────────┐          ║
+║     │       │       │       │      │      │       │       │       │          ║
+║ ┌───┴──┐ ┌──┴──┐ ┌──┴──┐ ┌──┴──┐ ┌─┴──┐ ┌─┴───┐ ┌─┴───┐ ┌─┴───┐ ┌─┴───┐     ║
+║ │[_id] │ │name │ │nik  │ │email│ │inst│ │target│ │hasAp│ │purp │ │comp │     ║
+║ │ PK   │ │     │ │     │ │     │ │itut│ │Emplo │ │point│ │ose  │ │anion│     ║
+║ └──────┘ └─────┘ └─────┘ └─────┘ │ion │ │yee   │ │ment │ │     │ │s    │     ║
+║                                  └────┘ └──────┘ └─────┘ └─────┘ └─────┘     ║
+║                                                                              ║
+║              ┌───────────┐       ┌───────────┐       ┌───────────┐           ║
+║              │ schedule  │       │   date    │       │  status   │           ║
+║              └───────────┘       └───────────┘       └───────────┘           ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+
+================================================================================
+                         RINGKASAN RELASI (SUMMARY)
+================================================================================
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ No │ Entitas 1  │ Relasi       │ Kardinalitas │ Entitas 2  │ Foreign Key    │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ 1  │ EMPLOYEE   │ menerima     │    1 : N     │ PACKAGE    │ penerimaPaket  │
+│ 2  │ EMPLOYEE   │ dikunjungi   │    1 : N     │ VISITOR    │ targetEmployee*│
+└──────────────────────────────────────────────────────────────────────────────┘
+
+* Catatan: targetEmployee menggunakan String (nama) bukan ObjectId
+
+
+================================================================================
+                    DEFINISI PRIMARY KEY & FOREIGN KEY
+================================================================================
+
+PRIMARY KEYS (PK):
+------------------
+1. Employee._id    → ObjectId (Auto-generated oleh MongoDB)
+2. Package._id     → ObjectId (Auto-generated oleh MongoDB)
+3. Visitor._id     → ObjectId (Auto-generated oleh MongoDB)
+
+
+FOREIGN KEYS (FK):
+------------------
+1. Package.penerimaPaket → Merujuk ke Employee._id
+   - Tipe: ObjectId
+   - Referensi: Employee collection
+   - Constraint: One Package → One Employee (Many-to-One dari sisi Package)
+
+
+================================================================================
+                         NOTASI KARDINALITAS
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│   ONE TO MANY (1:N) - Satu ke Banyak                                        │
+│   ═══════════════════════════════════                                       │
+│                                                                             │
+│   ┌──────────┐         ┌──────────┐                                         │
+│   │ EMPLOYEE │─────────│ PACKAGE  │                                         │
+│   └──────────┘   1:N   └──────────┘                                         │
+│        │                    │                                               │
+│        │                    │                                               │
+│        1                    N                                               │
+│   (Satu Employee)     (Banyak Package)                                      │
+│                                                                             │
+│   Artinya:                                                                  │
+│   - Satu employee dapat menerima BANYAK paket                               │
+│   - Satu paket hanya dikirim ke SATU employee                               │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│   ┌──────────┐         ┌──────────┐                                         │
+│   │ EMPLOYEE │─────────│ VISITOR  │                                         │
+│   └──────────┘   1:N   └──────────┘                                         │
+│        │                    │                                               │
+│        │                    │                                               │
+│        1                    N                                               │
+│   (Satu Employee)     (Banyak Visitor)                                      │
+│                                                                             │
+│   Artinya:                                                                  │
+│   - Satu employee dapat dikunjungi oleh BANYAK visitor                      │
+│   - Satu visitor hanya mengunjungi SATU employee (per kunjungan)            │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+                              CATATAN TAMBAHAN
+================================================================================
+
+1. NORMALISASI:
+   - Database menggunakan MongoDB (NoSQL) dengan struktur semi-normalized
+   - Field 'penerimaNama' pada Package merupakan denormalisasi untuk 
+     mempercepat query (tidak perlu JOIN/populate untuk menampilkan nama)
+
+2. INTEGRITAS REFERENSIAL:
+   - Package.penerimaPaket memiliki referensi ObjectId ke Employee
+   - Visitor.targetEmployee menggunakan String (nama), disarankan untuk 
+     mengubah ke ObjectId reference untuk integritas data yang lebih baik
+
+3. TIPE DATA MONGODB:
+   - ObjectId: ID unik 12-byte yang di-generate otomatis oleh MongoDB
+   - String: Teks/karakter
+   - Number: Angka
+   - Date: Tanggal dan waktu
+
+4. REKOMENDASI PERBAIKAN:
+   - Ubah Visitor.targetEmployee dari String ke ObjectId dengan referensi 
+     ke collection Employee untuk menjaga integritas referensial
+   - Tambahkan indexing pada field yang sering di-query (nomorResi, email)
+
+
+================================================================================
+                           AKHIR DOKUMEN ERD
+================================================================================
