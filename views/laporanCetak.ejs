@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laporan Keamanan & Log BPMA - <%= selectedMonth.toLocaleDateString('id-ID', { month: 'long' , year: 'numeric'
+      }) %>
+  </title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Times+New+Roman&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* Mode Layar (Browser preview) */
+    body {
+      background-color: #f1f5f9;
+      font-family: 'Inter', sans-serif;
+      color: #0f172a;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    .paper {
+      background-color: white;
+      width: 210mm;
+      /* A4 width */
+      min-height: 297mm;
+      /* A4 height */
+      margin: 40px auto;
+      padding: 20mm;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Tabel Styling untuk Print */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      font-size: 11px;
+    }
+
+    th,
+    td {
+      border: 1px solid #000;
+      padding: 6px 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f1f5f9 !important;
+      font-weight: bold;
+    }
+
+    /* Print Specific CSS */
+    @media print {
+      body {
+        background-color: white;
+        margin: 0;
+        padding: 0;
+      }
+
+      .paper {
+        margin: 0;
+        padding: 10mm;
+        box-shadow: none;
+        width: 100%;
+        min-height: auto;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      @page {
+        size: A4 portrait;
+        margin: 10mm;
+      }
+
+      h1,
+      h2,
+      h3,
+      p,
+      th,
+      td {
+        color: #000 !important;
+      }
+    }
+
+    /* Header Kop Surat */
+    .kop-surat {
+      display: flex;
+      align-items: center;
+      border-bottom: 3px solid #000;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .logo-bpma {
+      width: 150px;
+      /* Lebar disesuaikan agar proporsional */
+      height: auto;
+      margin-right: 20px;
+      object-fit: contain;
+    }
+
+    .kop-text {
+      flex: 1;
+      text-align: center;
+      font-family: 'Times New Roman', Times, serif;
+    }
+
+    .kop-text h1 {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 0;
+      text-transform: uppercase;
+    }
+
+    .kop-text p {
+      font-size: 12px;
+      margin: 2px 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Controls for preview before printing -->
+  <div class="no-print bg-slate-800 text-white p-4 flex justify-between items-center fixed top-0 w-full z-50">
+    <div class="text-sm font-semibold">
+      Pratinjau Laporan Bulanan (Gunakan 'Save as PDF' di menu Print)
+    </div>
+    <div class="space-x-3">
+      <button onclick="window.close()"
+        class="px-4 py-2 bg-slate-600 hover:bg-slate-500 rounded text-xs font-semibold">Tutup</button>
+      <button onclick="window.print()"
+        class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded text-xs font-semibold shadow">Cetak / Simpan PDF</button>
+    </div>
+  </div>
+
+  <div class="no-print h-16"></div> <!-- spacer -->
+
+  <div class="paper">
+
+    <!-- KOP SURAT RESMI -->
+    <div class="kop-surat">
+      <!-- Logo BPMA Resmi -->
+      <img src="/images/logo-bpma.png" class="logo-bpma" alt="Logo BPMA">
+      <div class="kop-text">
+        <h1>KEMENTERIAN ENERGI DAN SUMBER DAYA MINERAL REPUBLIK INDONESIA</h1>
+        <h1 style="font-size: 22px; margin-top: 5px;">BADAN PENGELOLA MIGAS ACEH (BPMA)</h1>
+        <p>Jl. Stadion H. Dimurthala No.8, Kota Baru, Kec. Kuta Alam, Kota Banda Aceh, Aceh 23125</p>
+        <p>Telepon: 0651-8060100 | Email: info@bpma.go.id | Website: www.bpma.go.id</p>
+      </div>
+    </div>
+
+    <!-- Judul Dokumen -->
+    <div class="text-center mb-8">
+      <h2 class="text-lg font-bold underline mb-1">LAPORAN KEAMANAN & REKAPITULASI GATE LOG</h2>
+      <p class="text-sm font-medium">Periode Bulan: <%= selectedMonth.toLocaleDateString('id-ID', { month: 'long' ,
+          year: 'numeric' }) %>
+      </p>
+    </div>
+
+    <!-- Ringkasan Eksekutif -->
+    <div class="mb-6">
+      <h3 class="font-bold text-sm mb-2">1. Ringkasan Eksekutif</h3>
+      <p class="text-xs text-justify leading-relaxed">
+        Laporan ini menyajikan rekapitulasi data Pengunjung di Badan Pengelola Migas Aceh untuk periode <%=
+          selectedMonth.toLocaleDateString('id-ID', { month: 'long' , year: 'numeric' }) %>. Selama periode tersebut,
+          tercatat jumlah pengunjung yang telah diproses adalah sebanyak <strong>
+            <%= visitors.length %>
+          </strong> orang dan jumlah paket barang masuk yang diterima melalui pos keamanan adalah sebanyak <strong>
+            <%= packages.length %>
+          </strong> paket.
+      </p>
+    </div>
+
+    <!-- Tabel Data Pengunjung -->
+    <div class="mb-8">
+      <h3 class="font-bold text-sm mb-2">2. Daftar Log Kunjungan (Visitor)</h3>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 5%; text-align: center;">No</th>
+            <th style="width: 15%;">Tanggal</th>
+            <th style="width: 25%;">Nama Pengunjung</th>
+            <th style="width: 20%;">Instansi/Asal</th>
+            <th style="width: 20%;">Keperluan</th>
+            <th style="width: 15%;">Status Akhir</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (visitors.length===0) { %>
+            <tr>
+              <td colspan="6" style="text-align: center;">Tidak ada data kunjungan pada periode ini.</td>
+            </tr>
+            <% } else { %>
+              <% visitors.forEach((v, index)=> { %>
+                <tr>
+                  <td style="text-align: center;">
+                    <%= index + 1 %>
+                  </td>
+                  <td>
+                    <%= new Date(v.date).toLocaleDateString('id-ID') %>
+                  </td>
+                  <td><strong>
+                      <%= v.name %>
+                    </strong></td>
+                  <td>
+                    <%= v.institution || v.instansi || '-' %>
+                  </td>
+                  <td>
+                    <%= v.purpose %>
+                  </td>
+                  <td style="text-transform: capitalize;">
+                    <%= v.status %>
+                  </td>
+                </tr>
+                <% }) %>
+                  <% } %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Tabel Data Paket -->
+    <div class="mb-8">
+      <h3 class="font-bold text-sm mb-2">3. Daftar Log Barang Masuk (Paket)</h3>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 5%; text-align: center;">No</th>
+            <th style="width: 15%;">Tanggal</th>
+            <th style="width: 20%;">Nomor Resi</th>
+            <th style="width: 20%;">Kurir / Ekspedisi</th>
+            <th style="width: 25%;">Penerima (Internal)</th>
+            <th style="width: 15%;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (packages.length===0) { %>
+            <tr>
+              <td colspan="6" style="text-align: center;">Tidak ada data paket masuk pada periode ini.</td>
+            </tr>
+            <% } else { %>
+              <% packages.forEach((p, index)=> { %>
+                <tr>
+                  <td style="text-align: center;">
+                    <%= index + 1 %>
+                  </td>
+                  <td>
+                    <%= p.createdAt ? new Date(p.createdAt).toLocaleDateString('id-ID') : '-' %>
+                  </td>
+                  <td><strong>
+                      <%= p.nomorResi %>
+                    </strong></td>
+                  <td>
+                    <%= p.namaKurir %>
+                  </td>
+                  <td>
+                    <%= p.penerimaNama || '-' %>
+                  </td>
+                  <td style="text-transform: capitalize;">
+                    <%= p.status || 'Belum Diambil' %>
+                  </td>
+                </tr>
+                <% }) %>
+                  <% } %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Bagian Tanda Tangan Pengesahan -->
+    <div style="margin-top: 60px; display: flex; justify-content: flex-end;">
+      <div style="text-align: center; width: 250px;">
+        <p class="text-xs mb-1">Banda Aceh, <%= new Date().toLocaleDateString('id-ID', { day: 'numeric' , month: 'long'
+            , year: 'numeric' }) %>
+        </p>
+        <p class="text-xs font-bold mb-20">Mengetahui,<br>Kepala Divisi Formalitas, Hubungan Eksternal,<br>dan Sekuriti KKKS</p>
+
+        <p class="text-xs font-bold underline">_________________________</p>
+        <p class="text-[10px] mt-1">NIP. ............................</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Membuka print dialog secara otomatis setelah halaman dimuat (Optional)
+    // window.onload = () => { setTimeout(() => window.print(), 500); };
+  </script>
+</body>
+
+</html>

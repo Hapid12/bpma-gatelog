@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visitor Pass - <%= v.name %> - BPMA GateLog</title>
+  
+  <!-- Imports -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #f8fafc;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    .pass-card {
+      width: 320px;
+      height: 500px;
+      margin: 20px auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background-color: white;
+        margin: 0;
+        padding: 0;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .pass-card {
+        margin: 0;
+        box-shadow: none;
+        border: 2px solid #cbd5e1;
+        page-break-inside: avoid;
+      }
+      @page {
+        size: 320px 500px;
+        margin: 0;
+      }
+    }
+
+    .pattern-bg {
+      background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+  </style>
+</head>
+<body class="antialiased font-sans flex flex-col items-center justify-center min-h-screen py-8">
+
+  <!-- Print Controls -->
+  <div class="no-print mb-8 space-x-4 flex items-center">
+    <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-lg shadow-blue-600/20 transition-all duration-200 flex items-center gap-2">
+      <i class="bi bi-printer text-lg"></i> Cetak Kartu Pass
+    </button>
+    <button onclick="window.close()" class="bg-white border border-slate-300 text-slate-600 hover:bg-slate-50 font-semibold py-2 px-6 rounded-lg transition-all duration-200">
+      Tutup
+    </button>
+  </div>
+
+  <% const visitorIdShort = `VP-${v._id.toString().substring(18, 24).toUpperCase()}`; %>
+
+  <!-- Visitor Pass Card -->
+  <div class="pass-card flex flex-col">
+    
+    <!-- Card Header -->
+    <div class="bg-[#0f172a] text-white p-5 relative overflow-hidden shrink-0">
+      <!-- Decorative circles -->
+      <div class="absolute -top-8 -left-8 w-24 h-24 rounded-full bg-blue-500/20 blur-xl"></div>
+      <div class="absolute -bottom-8 -right-8 w-24 h-24 rounded-full bg-emerald-500/20 blur-xl"></div>
+      
+      <div class="flex items-center gap-3 relative z-10">
+        <div class="bg-white p-1.5 rounded-lg">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3C12 3 6 8.5 6 13C6 16.3137 8.68629 19 12 19C15.3137 19 18 16.3137 18 13C18 8.5 12 3 12 3Z" fill="#10B981"/>
+            <path d="M12 8C12 8 9.5 11 9.5 13C9.5 14.3807 10.6193 15.5 12 15.5C13.3807 15.5 14.5 14.3807 14.5 13C14.5 11 12 8 12 8Z" fill="#FFFFFF"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="font-bold text-lg leading-tight tracking-wide">BPMA</h1>
+          <p class="text-[9px] text-blue-300 font-medium tracking-widest uppercase">Badan Pengelola Migas Aceh</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Banner "VISITOR" -->
+    <div class="bg-blue-600 text-white text-center py-2 shrink-0">
+      <h2 class="text-xl font-extrabold tracking-[0.2em] uppercase">Visitor</h2>
+    </div>
+
+    <!-- Card Body -->
+    <div class="flex-1 p-5 pattern-bg relative bg-white/95">
+      
+      <!-- ID & Date -->
+      <div class="flex justify-between items-start mb-5">
+        <div>
+          <p class="text-[9px] text-slate-400 font-semibold uppercase tracking-wider">Pass ID</p>
+          <p class="font-mono font-bold text-slate-800 text-sm"><%= visitorIdShort %></p>
+        </div>
+        <div class="text-right">
+          <p class="text-[9px] text-slate-400 font-semibold uppercase tracking-wider">Tanggal</p>
+          <p class="font-bold text-slate-800 text-xs">
+            <%= v.tanggal || (v.date ? new Date(v.date).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : '-') %>
+          </p>
+        </div>
+      </div>
+
+      <!-- Visitor Details -->
+      <div class="space-y-4">
+        <div>
+          <p class="text-[9px] text-slate-400 font-semibold uppercase tracking-wider mb-0.5">Nama Lengkap</p>
+          <p class="font-bold text-slate-900 text-lg leading-tight"><%= v.name %></p>
+        </div>
+        
+        <div>
+          <p class="text-[9px] text-slate-400 font-semibold uppercase tracking-wider mb-0.5">Instansi / Perusahaan</p>
+          <p class="font-semibold text-slate-700 text-sm leading-tight"><%= v.institution || v.instansi || '-' %></p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-200">
+          <div>
+            <p class="text-[9px] text-slate-400 font-semibold uppercase tracking-wider mb-0.5">Keperluan</p>
+            <p class="font-semibold text-slate-700 text-xs leading-tight line-clamp-2"><%= v.purpose %></p>
+          </div>
+          <div>
+            <p class="text-[9px] text-slate-400 font-semibold uppercase tracking-wider mb-0.5">Menemui</p>
+            <p class="font-semibold text-slate-700 text-xs leading-tight line-clamp-2"><%= v.targetEmployee || v.bertemu || '-' %></p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Card Footer (QR Code) -->
+    <div class="bg-slate-50 p-4 border-t border-slate-200 shrink-0 flex items-center justify-between">
+      <div class="flex flex-col justify-center">
+        <% 
+          let statusText = v.status || 'Pending';
+          let statusColor = 'text-amber-500';
+          if(statusText === 'approved') { statusText = 'Approved'; statusColor = 'text-emerald-500'; }
+          else if(statusText === 'checked-in') { statusText = 'Checked-In'; statusColor = 'text-blue-500'; }
+        %>
+        <p class="text-[10px] text-slate-500 font-semibold uppercase">Status Akses</p>
+        <p class="font-bold text-sm <%= statusColor %>"><i class="bi bi-shield-check mr-1"></i> <%= statusText %></p>
+        
+        <p class="text-[8px] text-slate-400 mt-3 leading-tight max-w-[120px]">
+          Kartu ini harus selalu dipakai selama berada di area BPMA.
+        </p>
+      </div>
+      
+      <!-- QR Code Container -->
+      <div class="bg-white p-1 border border-slate-200 rounded-lg shadow-sm">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=<%= visitorIdShort %>&margin=0" alt="QR Code" class="w-20 h-20">
+      </div>
+    </div>
+
+    <!-- Expiration line -->
+    <div class="bg-rose-500 py-1 text-center text-white text-[8px] font-bold tracking-widest uppercase">
+      Berlaku Hanya Hari Ini
+    </div>
+  </div>
+
+</body>
+</html>

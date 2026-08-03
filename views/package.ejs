@@ -23,93 +23,253 @@
   </head>
   <!-- ✅ Background + overlay -->
   <body class="min-h-screen bg-cover bg-center" style="background-image: url('/images/bg-plant.jpg');">
-    <div class="min-h-screen w-full bg-black/50 flex items-center justify-center p-6">
-      <div class="max-w-7xl w-full flex flex-col md:flex-row items-center md:items-start justify-center gap-12">
+    <div class="min-h-screen w-full bg-white/80 backdrop-blur-sm flex items-center justify-center p-6">
+      <div class="max-w-7xl w-full flex flex-col md:flex-row items-center md:items-start justify-center gap-12 py-8">
 
         <!-- Left Section -->
-        <div class="flex flex-col max-w-xl w-full md:w-1/2 text-center md:text-left text-white">
+        <div class="flex flex-col max-w-xl w-full md:w-1/2 text-center md:text-left">
           <div class="flex justify-center md:justify-start mb-6">
-            <img alt="BPMA Logo" src="/logoBPMA.png" width="165" class="mb-28" />
+            <img alt="BPMA Logo" src="/logoBPMA.png" width="165" class="mb-6" />
           </div>
-          <h1 class="text-4xl font-extrabold leading-tight mb-3">
+          <h1 class="text-4xl font-extrabold leading-tight text-[#1e3a8a] mb-4">
             PackageLog BPMA<br/>Sistem Mencatat Paket
           </h1>
-          <p class="text-sm text-white max-w-md mx-auto md:mx-0">
+          <p class="text-base text-slate-600 leading-relaxed max-w-md mx-auto md:mx-0">
             Sebuah sistem web untuk mencatat dan melacak paket yang masuk ke kantor.
             Menyediakan fitur pencatatan real-time, pencarian cepat, dan konfirmasi penerimaan oleh pegawai.
           </p>
         </div>
 
-      <!-- Form -->
-      <form id="packageForm" class="bg-[#3a3a3a] rounded-lg p-6 w-full max-w-md space-y-4" onsubmit="return submitForm(event)" enctype="multipart/form-data">
-        <!-- Informasi Paket -->
-        <div>
-          <h2 class="text-lg font-bold mb-6 block text-white border-b pb-2">Informasi Paket</h2>
-          <div class="mb-4">
-            <label for="nomorResi" class="block text-white font-medium text-sm mb-1">Nomor Resi</label>
-            <input id="nomorResi" name="nomorResi" type="text" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-          <div class="mb-4">
-            <label for="tipePaket" class="block text-white font-medium text-sm mb-1">Jenis Paket</label>
-            <input id="tipePaket" name="tipePaket" type="text" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-          <div>
-            <label for="deskripsiPaket" class="block text-white font-medium text-sm mb-1">Deskripsi Paket (Opsional)</label>
-            <textarea id="deskripsiPaket" name="deskripsiPaket" rows="3" class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-          </div>
-        </div>
+        <!-- Form -->
+        <form id="packageForm" class="bg-white rounded-2xl shadow-2xl border border-slate-100 p-8 w-full max-w-2xl space-y-6" onsubmit="return submitForm(event)" enctype="multipart/form-data">
+          <h2 class="text-2xl font-bold text-[#1e3a8a] pb-2 border-b border-slate-100">Registrasi Paket Masuk</h2>
+          
+          <!-- Grid Section -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+            
+            <!-- Informasi Paket -->
+            <div class="sm:col-span-2">
+              <h3 class="text-sm font-bold text-[#1e3a8a] uppercase tracking-wider mb-1 flex items-center gap-2">
+                <i class="fas fa-box text-xs"></i> Informasi Paket
+              </h3>
+              <div class="border-b border-slate-100 mb-3"></div>
+            </div>
+            
+            <div>
+              <label for="nomorResi" class="block text-slate-700 font-semibold text-xs uppercase tracking-wider mb-1">Nomor Resi</label>
+              <input id="nomorResi" name="nomorResi" type="text" placeholder="Cth: 123456789" required class="w-full px-3.5 py-2 bg-slate-50 text-slate-900 rounded-lg border border-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a8a] focus:bg-white transition-all text-sm" oninvalid="this.setCustomValidity('Nomor resi wajib diisi!')" oninput="this.setCustomValidity('')" />
+            </div>
+            
+            <div>
+              <label for="tipePaket" class="block text-slate-700 font-semibold text-xs uppercase tracking-wider mb-1">Jenis Paket</label>
+              <input id="tipePaket" name="tipePaket" type="text" placeholder="Cth: Dokumen, Elektronik" required class="w-full px-3.5 py-2 bg-slate-50 text-slate-900 rounded-lg border border-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a8a] focus:bg-white transition-all text-sm" oninvalid="this.setCustomValidity('Jenis paket wajib diisi!')" oninput="this.setCustomValidity('')" />
+            </div>
 
-        <!-- Informasi Kurir -->
-        <div>
-          <h2 class="text-lg font-bold mb-6 block text-white border-b pb-2">Informasi Kurir</h2>
-          <div class="mb-4">
-            <label for="namaKurir" class="block text-white font-medium text-sm mb-1">Nama Kurir</label>
-            <input id="namaKurir" name="namaKurir" type="text" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-          <div class="mb-4">
-            <label for="emailKurir" class="block text-white font-medium text-sm mb-1">Email Kurir</label>
-            <input id="emailKurir" name="emailKurir" type="email" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-          <div class="mb-4">
-            <label for="nomorHpKurir" class="block text-white font-medium text-sm mb-1">Nomor HP Kurir</label>
-            <input id="nomorHpKurir" name="nomorHpKurir" type="text" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-          <div class="mb-4">
-            <label for="pengirim" class="block text-white font-medium text-sm mb-1">Pengirim</label>
-            <input id="pengirim" name="pengirim" type="text" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-        </div>
+            <!-- Informasi Kurir -->
+            <div class="sm:col-span-2 mt-2">
+              <h3 class="text-sm font-bold text-[#1e3a8a] uppercase tracking-wider mb-1 flex items-center gap-2">
+                <i class="fas fa-truck text-xs"></i> Informasi Kurir & Pengirim
+              </h3>
+              <div class="border-b border-slate-100 mb-3"></div>
+            </div>
 
-        <!-- Tujuan Paket / Penerima -->
-        <div>
-          <h2 class="text-lg font-bold mb-6 block text-white border-b pb-2">Penerima Paket</h2>
-          <label for="tujuanPaket" class="block text-white font-medium text-sm mb-1">Pilih Karyawan</label>
-          <select id="tujuanPaket" name="tujuanPaket" required class="w-full px-4 py-2 bg-gray-50 text-gray-900 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          </html><option value="" disabled selected>Pilih Karyawan</option>
-              <% employees.forEach(emp => { %>
-                <option value="<%= emp._id %>"><%= emp.name %> - <%= emp.position %></option>
-              <% }) %>
-            </select>
-        </div>
+            <div>
+              <label for="namaKurir" class="block text-slate-700 font-semibold text-xs uppercase tracking-wider mb-1">Nama Kurir</label>
+              <input id="namaKurir" name="namaKurir" type="text" placeholder="Cth: JNE, J&T, Sicepat" required class="w-full px-3.5 py-2 bg-slate-50 text-slate-900 rounded-lg border border-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a8a] focus:bg-white transition-all text-sm" oninvalid="this.setCustomValidity('Nama kurir wajib diisi!')" oninput="this.setCustomValidity('')" />
+            </div>
 
-        <!-- Upload Foto Paket -->
-        <div>
-          <h2 class="text-lg font-bold mb-6 block text-white border-b pb-2">Upload Foto Paket</h2>
-          <input id="fotoPaket" name="fotoPaket" type="file" accept="image/*" required class="block text-white font-medium text-sm mb-1 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700" />
-        </div>
+            <div>
+              <label for="pengirim" class="block text-slate-700 font-semibold text-xs uppercase tracking-wider mb-1">Pengirim</label>
+              <input id="pengirim" name="pengirim" type="text" placeholder="Cth: PT Maju Jaya" required class="w-full px-3.5 py-2 bg-slate-50 text-slate-900 rounded-lg border border-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a8a] focus:bg-white transition-all text-sm" oninvalid="this.setCustomValidity('Nama pengirim wajib diisi!')" oninput="this.setCustomValidity('')" />
+            </div>
 
-        <!-- Submit -->
-        <div class="text-center pt-4">
-          <button type="submit" class="w-full bg-[#5ca82f] text-white font-semibold text-xs py-2 rounded">
-            Kirim
-          </button>
-        </div>
-      </form>
+            <div>
+              <label for="emailKurir" class="block text-slate-700 font-semibold text-xs uppercase tracking-wider mb-1">Email Kurir</label>
+              <input id="emailKurir" name="emailKurir" type="email" placeholder="Cth: kurir@ekspedisi.com" required class="w-full px-3.5 py-2 bg-slate-50 text-slate-900 rounded-lg border border-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a8a] focus:bg-white transition-all text-sm" oninvalid="this.setCustomValidity('Format email wajib diisi dengan benar!')" oninput="this.setCustomValidity('')" />
+              <small class="text-red-500 text-xs mt-1 hidden" id="emailError">Format email tidak valid.</small>
+            </div>
+
+            <div>
+              <label for="nomorHpKurir" class="block text-slate-700 font-semibold text-xs uppercase tracking-wider mb-1">Nomor HP Kurir</label>
+              <input id="nomorHpKurir" name="nomorHpKurir" type="tel" placeholder="Cth: 081234567890" required class="w-full px-3.5 py-2 bg-slate-50 text-slate-900 rounded-lg border border-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a8a] focus:bg-white transition-all text-sm" oninvalid="this.setCustomValidity('Nomor HP kurir wajib diisi!')" oninput="this.setCustomValidity('')" />
+              <small class="text-red-500 text-xs mt-1 hidden" id="phoneError">Nomor HP harus terdiri dari 10-14 digit angka.</small>
+            </div>
+
+            <!-- Penerima & Detail -->
+            <div class="sm:col-span-2 mt-2">
+              <h3 class="text-sm font-bold text-[#1e3a8a] uppercase tracking-wider mb-1 flex items-center gap-2">
+                <i class="fas fa-user-check text-xs"></i> Penerima & Detail
+              </h3>
+              <div class="border-b border-slate-100 mb-3"></div>
+            </div>
+
+            <div class="sm:col-span-2">
+              <label for="tujuanPaket" class="block text-slate-700 font-semibold text-xs uppercase tracking-wider mb-1">Pilih Karyawan</label>
+              <select id="tujuanPaket" name="tujuanPaket" required class="w-full px-3.5 py-2.5 bg-slate-50 text-slate-900 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#1e3a8a] focus:bg-white transition-all text-sm" oninvalid="this.setCustomValidity('Karyawan penerima wajib dipilih!')" onchange="this.setCustomValidity('')">
+                <option value="" disabled selected>Pilih Karyawan</option>
+                <% employees.forEach(emp => { %>
+                  <option value="<%= emp._id %>"><%= emp.name %> - <%= emp.position %></option>
+                <% }) %>
+              </select>
+            </div>
+
+            <div class="sm:col-span-2">
+              <label for="deskripsiPaket" class="block text-slate-700 font-semibold text-xs uppercase tracking-wider mb-1">Deskripsi Paket (Opsional)</label>
+              <textarea id="deskripsiPaket" name="deskripsiPaket" rows="2" placeholder="Tambahkan keterangan paket..." class="w-full px-3.5 py-2 bg-slate-50 text-slate-900 rounded-lg border border-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a8a] focus:bg-white transition-all text-sm"></textarea>
+            </div>
+
+            <!-- Upload Foto Paket -->
+            <div class="sm:col-span-2 mt-2">
+              <h3 class="text-sm font-bold text-[#1e3a8a] uppercase tracking-wider mb-1 flex items-center gap-2">
+                <i class="fas fa-camera text-xs"></i> Dokumentasi Paket
+              </h3>
+              <div class="border-b border-slate-100 mb-3"></div>
+              
+              <label class="block text-slate-700 font-semibold text-xs uppercase tracking-wider mb-1">Foto Paket</label>
+              
+              <!-- Custom Dropzone Area -->
+              <div id="dropzone" class="border-2 border-dashed border-slate-200 rounded-xl p-5 text-center cursor-pointer hover:border-[#5ca82f] hover:bg-slate-50/50 transition-all flex flex-col items-center justify-center space-y-2 relative min-h-[140px] bg-slate-50/20">
+                <div id="dropzoneContent" class="flex flex-col items-center justify-center space-y-2">
+                  <i class="fas fa-cloud-upload-alt text-3xl text-slate-400" id="uploadIcon"></i>
+                  <span class="text-xs font-semibold text-slate-600" id="uploadText">Tarik & lepas foto paket di sini, atau klik untuk memilih</span>
+                  <span class="text-[10px] text-slate-400">Format yang didukung: JPG, PNG, WEBP (Maks 5MB)</span>
+                </div>
+                
+                <input id="fotoPaket" name="fotoPaket" type="file" accept="image/*" class="hidden" required oninvalid="this.setCustomValidity('Foto paket wajib diunggah!')" onchange="this.setCustomValidity('')" />
+                
+                <div id="previewContainer" class="hidden flex flex-col items-center justify-center space-y-2 w-full">
+                  <img id="imagePreview" class="max-h-36 rounded-lg object-cover shadow-md" />
+                  <button type="button" id="btnRemovePreview" class="text-xs font-bold text-rose-500 hover:text-rose-700 flex items-center gap-1">
+                    <i class="fas fa-trash-alt"></i> Hapus Foto
+                  </button>
+                </div>
+              </div>
+              <small class="text-red-500 text-xs mt-1 hidden" id="photoError">Foto paket wajib diunggah.</small>
+            </div>
+
+          </div>
+
+          <!-- Submit -->
+          <div class="pt-2">
+            <button type="submit" class="w-full bg-[#5ca82f] hover:bg-[#4d8b26] text-white font-bold text-sm py-3 rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+              <i class="fas fa-paper-plane"></i> Kirim Registrasi Paket
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <script>
+      const dropzone = document.getElementById('dropzone');
+      const fileInput = document.getElementById('fotoPaket');
+      const imagePreview = document.getElementById('imagePreview');
+      const previewContainer = document.getElementById('previewContainer');
+      const dropzoneContent = document.getElementById('dropzoneContent');
+      const btnRemovePreview = document.getElementById('btnRemovePreview');
+      const photoError = document.getElementById('photoError');
+
+      // Click to open file dialog
+      dropzone.addEventListener('click', (e) => {
+        if (e.target.closest('#btnRemovePreview')) return;
+        fileInput.click();
+      });
+
+      // Handle file selection
+      fileInput.addEventListener('change', () => {
+        handleFiles(fileInput.files);
+      });
+
+      // Drag and drop events
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropzone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          dropzone.classList.add('border-[#5ca82f]', 'bg-slate-50');
+        }, false);
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropzone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          dropzone.classList.remove('border-[#5ca82f]', 'bg-slate-50');
+        }, false);
+      });
+
+      dropzone.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        handleFiles(files);
+        
+        fileInput.files = files;
+      });
+
+      function handleFiles(files) {
+        if (files.length > 0) {
+          const file = files[0];
+          if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = () => {
+              imagePreview.src = reader.result;
+              previewContainer.classList.remove('hidden');
+              dropzoneContent.classList.add('hidden');
+              photoError.classList.add('hidden');
+            };
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Format salah!',
+              text: 'Silakan pilih file berupa gambar (JPG, PNG, WEBP).'
+            });
+            clearImage();
+          }
+        }
+      }
+
+      btnRemovePreview.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        clearImage();
+      });
+
+      function clearImage() {
+        fileInput.value = '';
+        imagePreview.src = '';
+        previewContainer.classList.add('hidden');
+        dropzoneContent.classList.remove('hidden');
+      }
+
       async function submitForm(event) {
         event.preventDefault();
+
+        // Validasi Email, Nomor HP, dan Foto Paket
+        const emailInput = document.getElementById('emailKurir');
+        const nomorHpInput = document.getElementById('nomorHpKurir');
+        const emailError = document.getElementById('emailError');
+        const phoneError = document.getElementById('phoneError');
+
+        let isValid = true;
+        emailError.classList.add('hidden');
+        phoneError.classList.add('hidden');
+        photoError.classList.add('hidden');
+
+        const email = emailInput.value.trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          emailError.classList.remove('hidden');
+          isValid = false;
+        }
+
+        const nomorHp = nomorHpInput.value.trim();
+        if (!/^\d{10,14}$/.test(nomorHp)) {
+          phoneError.classList.remove('hidden');
+          isValid = false;
+        }
+
+        if (!fileInput.files || fileInput.files.length === 0) {
+          photoError.classList.remove('hidden');
+          isValid = false;
+        }
+
+        if (!isValid) return false;
 
         const form = document.getElementById('packageForm');
         const formData = new FormData(form);
@@ -128,57 +288,40 @@
         try {
           console.log('Sending package data...');
 
-          // Submit dengan FormData untuk support file upload
           const response = await fetch('/package', {
             method: 'POST',
-            body: formData // Tidak perlu set Content-Type untuk FormData
+            body: formData
           });
 
           console.log('Response status:', response.status);
-          console.log('Response ok:', response.ok);
 
-          // Jika response berhasil (status 200-299), anggap data berhasil disimpan
           if (response.ok) {
-            // Coba parse JSON, tapi jika gagal tidak masalah
             let result = {};
             try {
               const contentType = response.headers.get('content-type');
               if (contentType && contentType.includes('application/json')) {
                 result = await response.json();
-                console.log('Response data:', result);
-              } else {
-                // Jika bukan JSON, baca sebagai text untuk debug
-                const textResponse = await response.text();
-                console.log('Response text:', textResponse);
               }
-            } catch (parseError) {
-              console.log('JSON parse error (but request was successful):', parseError);
-            }
+            } catch (e) {}
 
-            // Tutup loading dan tampilkan success message
             Swal.fire({
               icon: 'success',
               title: 'Berhasil!',
-              text: result.message || 'Data paket berhasil dikirim!',
+              text: result.message || 'Data paket berhasil terdaftar!',
               confirmButtonColor: '#5ca82f'
             }).then(() => {
               form.reset();
+              clearImage();
             });
           } else {
-            // Jika status bukan 2xx, coba baca error message
             let errorMessage = 'Terjadi kesalahan saat mengirim data paket.';
             try {
               const contentType = response.headers.get('content-type');
               if (contentType && contentType.includes('application/json')) {
                 const errorResult = await response.json();
                 errorMessage = errorResult.message || errorMessage;
-              } else {
-                const textError = await response.text();
-                console.error('Error response text:', textError);
               }
-            } catch (parseError) {
-              console.error('Error parsing error response:', parseError);
-            }
+            } catch (e) {}
 
             Swal.fire({
               icon: 'error',

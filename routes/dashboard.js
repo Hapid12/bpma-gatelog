@@ -101,7 +101,8 @@ router.get('/', async (req, res) => {
     ...data,
     allVisitors,
     allPackages,
-    recentActivities, // <-- tambahkan ini
+    recentActivities,
+    user: req.session, // Data session user (role, name, username)
     request: req
   });
 });

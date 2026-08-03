@@ -1,1177 +1,1685 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - BPMA GateLog</title>
+
+  <!-- ================= IMPORT FONTS & LIBRARIES ================= -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-  <link href="/css/style.css" rel="stylesheet">
+
+  <!-- ================= CONFIG TAILWIND CUSTOM FONT ================= -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+
+  <!-- ================= CUSTOM CSS OVERRIDES (DARK MODALS & SCROLLBAR) ================= -->
   <style>
-    :root {
-      --primary-blue: #3498db;
-      --secondary-green: #2ecc71;
-      --accent-red: #e74c3c;
-      --light-gray: #f8f9fa;
-      --dark-gray: #343a40;
-    }
-    
-    body {
-      background-color: #ffffff;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    
-    .dashboard-header {
-      background: linear-gradient(135deg, var(--primary-blue), var(--secondary-green));
-      color: white;
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 30px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    }
-    
-    .stat-card {
-      border-radius: 10px;
-      border: none;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-      transition: transform 0.3s ease;
-      margin-bottom: 20px;
-    }
-    
-    .stat-card:hover {
-      transform: translateY(-5px);
-    }
-    
-    .stat-card.blue {
-      border-left: 4px solid var(--primary-blue);
-    }
-    
-    .stat-card.green {
-      border-left: 4px solid var(--secondary-green);
-    }
-    
-    .stat-card.red {
-      border-left: 4px solid var(--accent-red);
-    }
-    
-    .stat-icon {
-      font-size: 2rem;
-      opacity: 0.8;
-    }
-    
-    .chart-container {
-      background: white;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-      margin-bottom: 30px;
-    }
-    
-    .table-container {
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-      padding: 20px;
-      margin-bottom: 30px;
-    }
-    
-    .badge-visitor {
-      background-color: rgba(52, 152, 219, 0.2);
-      color: var(--primary-blue);
-    }
-    
-    .badge-package {
-      background-color: rgba(46, 204, 113, 0.2);
-      color: var(--secondary-green);
-    }
-    
-    .badge-alert {
-      background-color: rgba(231, 76, 60, 0.2);
-      color: var(--accent-red);
-    }
-    
-    .nav-pills .nav-link.active {
-      background: linear-gradient(135deg, var(--primary-blue), var(--secondary-green));
-    }
-    
-    .search-box {
-      border-radius: 20px;
-      border: 1px solid #e0e0e0;
-      padding-left: 20px;
-    }
-    
-    .quick-actions {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    
-    .quick-action-btn {
-      border-radius: 8px;
-      padding: 10px 15px;
-      font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    
-    .recent-activity-item {
-      border-left: 3px solid var(--primary-blue);
-      padding-left: 15px;
-      margin-bottom: 15px;
-    }
-    
-    .activity-time {
-      font-size: 0.8rem;
-      color: #6c757d;
+    /* Desain custom scrollbar bertema gelap */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
     }
 
-    .badge-pending {
-      background-color: #fff3cd;
-      color: #856404;
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
     }
 
-    .modal-xl {
-      max-width: 90vw;
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
     }
 
-    .modal-dialog-scrollable {
-      max-height: 90vh;
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
     }
 
+    /* Penyesuaian tema gelap untuk Modal Bootstrap */
+    .modal-content {
+      background-color: #ffffff !important;
+      border: 1px solid #e2e8f0 !important;
+      color: #1e293b !important;
+    }
+
+    .modal-header {
+      border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    .modal-footer {
+      border-top: 1px solid #e2e8f0 !important;
+    }
+
+    .btn-close {
+      /* normal close button */
+    }
+
+    .modal-body table th {
+      background-color: #f8fafc !important;
+      color: #1e293b !important;
+      border-color: #e2e8f0 !important;
+    }
+
+    .modal-body table td {
+      border-color: #e2e8f0 !important;
+      color: #334155 !important;
+    }
+
+    .modal-body table {
+      border-color: #e2e8f0 !important;
+    }
+
+    /* Sticky header untuk tabel di dalam modal */
     .sticky-table-scroll {
-      max-height: 650px; /* Ubah dari 400px ke 650px atau sesuai kebutuhan */
-      overflow-y: auto;
+      max-height: 550px;
+      overflow: auto;
       position: relative;
     }
 
-    .sticky-table-scroll table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .sticky-table-scroll th,
-    .sticky-table-scroll td {
-      padding: 12px 15px;
-      text-align: left;
-      border: 1px solid #dee2e6;
-    }
-
     .sticky-table-scroll th {
-      background-color: #f8f9fa;
       position: sticky;
       top: 0;
       z-index: 10;
+      background-color: #f8fafc !important;
     }
   </style>
 </head>
-<body>
-  <div class="container-fluid py-4">
-    <div class="dashboard-header">
-      <div class="row align-items-center">
-        <div class="col-md-6">
-          <h1><i class="bi bi-door-open"></i> GateLog Dashboard</h1>
-          <p class="mb-0">Selamat datang di sistem manajemen akses BPMA</p>
-        </div>
-        <div class="col-md-6 text-md-end">
-          <span class="badge bg-light text-dark me-2"><i class="bi bi-calendar me-1"></i> <span id="current-date"></span></span>
-          <span class="badge bg-light text-dark"><i class="bi bi-clock me-1"></i> <span id="current-time"></span></span>
-        </div>
-      </div>
-    </div>
 
-    <!-- Quick Actions -->
-    <div class="quick-actions">
-      <button class="btn btn-primary quick-action-btn" id="btnTambahVisitor" type="button">
-        <i class="bi bi-plus-circle"></i> Tambah Data
-      </button>
+<body class="bg-slate-50 text-slate-800 antialiased overflow-hidden font-sans">
 
-     
-    </div>
+  <!-- ================= CONTAINER UTAMA (SIDEBAR + KONTEN) ================= -->
+  <div class="flex h-screen w-screen overflow-hidden">
 
-    <!-- Modal Pilihan Form -->
-    <div class="modal fade" id="modalPilihForm" tabindex="-1" aria-labelledby="modalPilihFormLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="modalPilihFormLabel">Pilih Jenis Form</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+    <!-- ================= BAGIAN SIDEBAR NAVIGASI KIRI ================= -->
+    <aside class="w-64 bg-[#1e3a8a] border-r border-[#1e3a8a]/20 flex flex-col justify-between shrink-0 z-20">
+      <div>
+        <!-- Logo BPMA GateLog -->
+        <div class="flex items-center px-6 py-5 border-b border-[#1e3a8a]/20">
+          <svg class="w-8 h-8 mr-2.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3C12 3 6 8.5 6 13C6 16.3137 8.68629 19 12 19C15.3137 19 18 16.3137 18 13C18 8.5 12 3 12 3Z"
+              fill="url(#leafGradient)" />
+            <path
+              d="M12 8C12 8 9.5 11 9.5 13C9.5 14.3807 10.6193 15.5 12 15.5C13.3807 15.5 14.5 14.3807 14.5 13C14.5 11 12 8 12 8Z"
+              fill="#FFFFFF" />
+            <defs>
+              <linearGradient id="leafGradient" x1="6" y1="3" x2="18" y2="19" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#10B981" />
+                <stop stop-color="#059669" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="flex flex-col">
+            <span class="text-base font-bold tracking-wider text-white">BPMA</span>
+            <span class="text-xs font-semibold tracking-wide text-[#5ca82f] -mt-1">GateLog</span>
           </div>
-          <div class="modal-body text-center">
-            <a href="/visitor" class="btn btn-primary m-2">
-              <i class="bi bi-person-plus"></i> Form Tamu
+        </div>
+
+        <!-- Menu Navigasi Sidebar (Dinamis berdasarkan Role) -->
+        <nav class="flex-1 px-4 space-y-1.5 py-6">
+          <!-- Menu Dashboard (Semua Role) -->
+          <a href="/"
+            class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium text-white bg-[#5ca82f]/90 shadow-md shadow-[#5ca82f]/20 transition-all duration-200">
+            <i class="bi bi-grid-fill mr-3 text-base"></i>
+            <span>Dashboard</span>
+          </a>
+
+          <!-- Menu Visitor (Semua Role) -->
+          <a href="/visitor"
+            class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium text-blue-200 hover:text-white hover:bg-white/10 transition-all duration-200">
+            <i class="bi bi-people mr-3 text-base"></i>
+            <span>Visitor</span>
+          </a>
+
+          <!-- Menu Paket Masuk (Semua Role) -->
+          <a href="/package"
+            class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium text-blue-200 hover:text-white hover:bg-white/10 transition-all duration-200">
+            <i class="bi bi-box-seam mr-3 text-base"></i>
+            <span>Paket Masuk</span>
+          </a>
+
+          <% if (user && user.role==='admin' ) { %>
+            <!-- Menu Appointment (Hanya Admin) -->
+            <a href="/appointment"
+              class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium text-blue-200 hover:text-white hover:bg-white/10 transition-all duration-200">
+              <i class="bi bi-calendar-event mr-3 text-base"></i>
+              <span>Appointment</span>
             </a>
-            <a href="/package" class="btn btn-success m-2">
-              <i class="bi bi-box-seam"></i> Form Paket
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
+            <% } %>
 
-    <!-- Stat Cards -->
-    <div class="row">
-      <div class="col-xl-3 col-md-6">
-        <div class="stat-card blue card">
-          <div class="card-body">
-            <div class="row align-items-center">
-              <div class="col-8">
-                <h5 class="text-muted mb-2">Visitor Hari Ini</h5>
-                <h2 class="mb-0"><%= visitorsToday.length %></h2>
-                
-              </div>
-              <div class="col-4 text-end">
-                <i class="bi bi-people stat-icon text-primary"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="col-xl-3 col-md-6">
-        <div class="stat-card green card">
-          <div class="card-body">
-            <div class="row align-items-center">
-              <div class="col-8">
-                <h5 class="text-muted mb-2">Paket Hari Ini</h5>
-                <h2 class="mb-0"><%= packagesToday.length %></h2>
-                
-              </div>
-              <div class="col-4 text-end">
-                <i class="bi bi-box-seam stat-icon text-success"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="col-xl-3 col-md-6">
-        <div class="stat-card red card">
-          <div class="card-body">
-            <div class="row align-items-center">
-              <div class="col-8">
-                <h5 class="text-muted mb-2">Visitor Bulan Ini</h5>
-                <h2 class="mb-0"><%= monthlyVisitors %></h2>
-                
-              </div>
-              <div class="col-4 text-end">
-                <i class="bi bi-calendar-month stat-icon text-danger"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="col-xl-3 col-md-6">
-        <div class="stat-card blue card">
-          <div class="card-body">
-            <div class="row align-items-center">
-              <div class="col-8">
-                <h5 class="text-muted mb-2">Paket Bulan Ini</h5>
-                <h2 class="mb-0"><%= monthlyPackages %></h2>
-                
-              </div>
-              <div class="col-4 text-end">
-                <i class="bi bi-truck stat-icon text-primary"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="row mt-4">
-      <!-- Main Charts -->
-      <div class="col-lg-8">
-        <div class="chart-container">
-          <ul class="nav nav-pills mb-3" id="chart-tab" role="tablist">
-            <li class="nav-item" role="presentation">
-              <button class="nav-link active" id="visitor-chart-tab" data-bs-toggle="pill" data-bs-target="#visitor-chart" type="button" role="tab">Visitor</button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button class="nav-link" id="package-chart-tab" data-bs-toggle="pill" data-bs-target="#package-chart" type="button" role="tab">Paket</button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button class="nav-link" id="comparison-chart-tab" data-bs-toggle="pill" data-bs-target="#comparison-chart" type="button" role="tab">Perbandingan</button>
-            </li>
-          </ul>
-          <div class="tab-content" id="chart-tabContent">
-            <div class="tab-pane fade show active" id="visitor-chart" role="tabpanel">
-              <canvas id="visitorChart" height="150"></canvas>
-            </div>
-            <div class="tab-pane fade" id="package-chart" role="tabpanel">
-              <canvas id="packageChart" height="150"></canvas>
-            </div>
-            <div class="tab-pane fade" id="comparison-chart" role="tabpanel">
-              <canvas id="comparisonChart" height="150"></canvas>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Recent Activity -->
-      <div class="col-lg-4">
-        <div class="chart-container">
-          <h5><i class="bi bi-activity me-2"></i> Aktivitas Terkini</h5>
-          <div class="mt-3">
-            <% if (recentActivities.length === 0) { %>
-              <div class="recent-activity-item">
-                <p class="mb-1">Belum ada aktivitas hari ini.</p>
-              </div>
-            <% } else { %>
-              <% recentActivities.slice(0, 5).forEach(a => { %>
-                <div class="recent-activity-item">
-                  <% if (a.type === 'visitor') { %>
-                    <h6>Visitor baru: <%= a.name %></h6>
-                    <p class="mb-1">Keperluan: <%= a.purpose %></p>
-                  <% } else if (a.type === 'package') { %>
-                    <h6>Paket diterima: <%= a.recipient %></h6>
-                    <p class="mb-1">Kurir: <%= a.courier %></p>
-                  <% } %>
-                  <p class="activity-time"><%= new Date(a.date).toLocaleTimeString('id-ID') %></p>
+              <!-- Menu Approval (Semua Role) -->
+              <a href="/approval"
+                class="flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-medium text-blue-200 hover:text-white hover:bg-white/10 transition-all duration-200">
+                <div class="flex items-center">
+                  <i class="bi bi-shield-check mr-3 text-base"></i>
+                  <span>Approval</span>
                 </div>
-              <% }) %>
-            <% } %>
-          </div>
-          <a href="#" class="btn btn-sm btn-outline-primary mt-2">Lihat Semua Aktivitas</a>
-        </div>
-      </div>
-    </div>
+              </a>
 
-    <!-- Data Tables -->
-    <div class="row mt-4">
-      <div class="col-lg-6">
-        <div class="table-container">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5><i class="bi bi-people-fill me-2"></i> Semua Visitor</h5>
-            <div class="input-group" style="width: 200px;">
-              <input type="text" id="searchVisitorInput" class="form-control form-control-sm search-box" placeholder="Cari visitor...">
-              <button class="btn btn-sm btn-outline-secondary" type="button"><i class="bi bi-search"></i></button>
+              <% if (user && user.role==='admin' ) { %>
+                <!-- Menu Laporan (Hanya Admin) -->
+                <a href="/laporan"
+                  class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium text-blue-200 hover:text-white hover:bg-white/10 transition-all duration-200">
+                  <i class="bi bi-file-earmark-text mr-3 text-base"></i>
+                  <span>Laporan</span>
+                </a>
+
+                <!-- Menu Audit Log (Hanya Admin) -->
+                <a href="/audit-log"
+                  class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium text-blue-200 hover:text-white hover:bg-white/10 transition-all duration-200">
+                  <i class="bi bi-journal-code mr-3 text-base"></i>
+                  <span>Audit Log</span>
+                </a>
+                <% } %>
+
+                <!-- Menu Pengaturan (Admin & Satpam) -->
+                <a href="/pengaturan"
+                  class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium text-blue-200 hover:text-white hover:bg-white/10 transition-all duration-200">
+                  <i class="bi bi-gear mr-3 text-base"></i>
+                  <span>Pengaturan</span>
+                </a>
+        </nav>
+      </div>
+
+      <!-- Info Profil User Aktif (Bawah Sidebar) + Tombol Logout -->
+      <div class="p-4 border-t border-[#1e3a8a]/20">
+        <a href="/logout"
+          class="flex items-center justify-between p-2 rounded-lg hover:bg-rose-950/20 group cursor-pointer transition-colors duration-200">
+          <div class="flex items-center space-x-3">
+            <div
+              class="w-8 h-8 rounded-full bg-<%= (user && user.role === 'admin') ? 'blue' : 'emerald' %>-600 flex items-center justify-center font-bold text-white text-xs shadow-md shadow-[#5ca82f]/10">
+              <%= user && user.name ? user.name[0].toUpperCase() : 'U' %>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-xs font-semibold text-white">
+                <%= user && user.name ? user.name : 'User' %>
+              </span>
+              <span class="text-[10px] text-blue-200 capitalize">Role: <%= user && user.role ? user.role : 'Guest' %>
+              </span>
             </div>
           </div>
-          <div class="table-responsive">
-            <div class="sticky-table-scroll">
-              <table id="visitorTable" class="table table-hover">
-                <thead class="table-light">
-                  <tr>
-                    <th>No</th>
-                    <th>Nama</th>
-                    <th>Keperluan</th>
-                    <th>Waktu</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody id="visitorTableBody">
-                  <% if (allVisitors.length === 0) { %>
-                    <tr><td colspan="5" class="text-center py-4">Belum ada visitor.</td></tr>
-                  <% } else { %>
-                    <% allVisitors.forEach((v, i) => { %>
-                      <tr>
-                        <td><%= i + 1 %></td>
-                        <td><strong><%= v.name %></strong></td>
-                        <td><%= v.purpose %></td>
-                        <td><%= new Date(v.date).toLocaleString("id-ID") %></td>
-                        <td>
-                          <!-- Untuk Visitor -->
-                          <span class="px-2 py-1 rounded-full text-xs font-semibold
-                              <%= v.status === 'approved' ? 'bg-green-200 text-green-800' 
-                                : v.status === 'rejected' ? 'bg-red-200 text-red-800' 
-                                : v.status === 'reschedule' ? 'bg-blue-200 text-blue-800' 
-                                : 'bg-yellow-200 text-yellow-800' %>">
-                            <%= v.status || 'pending' %>
-                          </span>
+          <i class="bi bi-box-arrow-right text-blue-300 group-hover:text-rose-400 text-sm transition-colors"></i>
+        </a>
+      </div>
+    </aside>
 
-                        </td>
-                      </tr>
+    <!-- ================= BAGIAN PANEL KONTEN KANAN ================= -->
+    <div class="flex-1 flex flex-col overflow-hidden bg-slate-50">
+
+      <!-- ================= BAGIAN TOPBAR (HEADER ATAS) ================= -->
+      <header
+        class="h-20 bg-white/90 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-8 z-10 shrink-0">
+        <div>
+          <h1 class="text-xl font-bold text-slate-800 tracking-wide">Dashboard</h1>
+          <p class="text-[11px] text-slate-600 mt-0.5">Monitoring kunjungan dan barang masuk secara real-time</p>
+        </div>
+
+        <div class="flex items-center space-x-6">
+          <!-- Kotak Pencarian Global -->
+          <div class="relative w-72">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <i class="bi bi-search text-slate-600 text-xs"></i>
+            </span>
+            <input type="text" id="globalSearchInput"
+              class="w-full bg-white border border-slate-200 text-xs text-slate-800 rounded-lg pl-9 pr-4 py-2 focus:outline-none focus:border-[#5ca82f] focus:ring-1 focus:ring-[#5ca82f] placeholder-slate-500"
+              placeholder="Cari visitor, paket, atau karyawan...">
+          </div>
+
+
+          <!-- Widget Tanggal & Jam Digital -->
+          <div class="flex items-center space-x-3 text-xs">
+            <div
+              class="flex items-center space-x-2 bg-white border border-slate-200 px-3 py-2 rounded-lg text-slate-700">
+              <i class="bi bi-calendar3 text-[#5ca82f]"></i>
+              <span id="current-date" class="font-medium">Minggu, 7 Juni 2026</span>
+            </div>
+            <div
+              class="flex items-center space-x-2 bg-white border border-slate-200 px-3 py-2 rounded-lg text-slate-700">
+              <i class="bi bi-clock text-[#5ca82f]"></i>
+              <span id="current-time" class="font-mono font-medium">13:57:12</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- ================= AREA UTAMA DASHBOARD ================= -->
+      <main class="flex-1 overflow-y-auto p-8 space-y-6">
+
+        <!-- Header Aksi Ringkasan -->
+        <div class="flex justify-between items-center">
+          <h2 class="text-base font-semibold text-slate-600 uppercase tracking-wider">Ringkasan Aktivitas</h2>
+          <button
+            class="bg-[#5ca82f] hover:bg-[#4a8a24] text-white font-medium text-xs px-4 py-2 rounded-lg transition-all duration-200 shadow-lg shadow-[#5ca82f]/10 flex items-center gap-1.5"
+            id="btnTambahVisitor">
+            <i class="bi bi-plus-circle"></i> Tambah Data
+          </button>
+        </div>
+
+        <!-- ================= BAGIAN KARTU METRIK RINGKASAN (GRID OF 4) ================= -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+          <!-- Metrik 1: Visitor Hari Ini -->
+          <div
+            class="bg-white shadow-sm border border-slate-200 rounded-xl p-5 hover:border-[#5ca82f]/30 hover:shadow-lg hover:shadow-[#5ca82f]/5 transition-all duration-300 flex flex-col justify-between h-32 relative overflow-hidden group">
+            <div class="absolute top-0 left-0 w-1.5 h-full bg-[#5ca82f] rounded-l-xl"></div>
+            <div class="flex justify-between items-start pl-2 z-10">
+              <div>
+                <p class="text-[10px] font-medium text-slate-600 uppercase tracking-wider">Visitor Hari Ini</p>
+                <h3 class="text-2xl font-bold text-slate-800 mt-1.5 leading-none">
+                  <%= visitorsToday.length %>
+                </h3>
+                <p class="text-[10px] font-semibold text-emerald-400 mt-2 flex items-center">
+                  <i class="bi bi-arrow-up-right mr-1"></i> 12% <span class="text-slate-600 font-normal ml-1">dari
+                    kemarin</span>
+                </p>
+              </div>
+              <div
+                class="w-9 h-9 rounded-lg bg-blue-500/10 flex items-center justify-center border border-[#5ca82f]/20 group-hover:scale-105 transition-transform duration-300">
+                <i class="bi bi-people text-[#5ca82f] text-base"></i>
+              </div>
+            </div>
+            <!-- Sparkline grafik mini visitor hari ini -->
+            <div class="absolute bottom-2 right-4 w-24 h-8 z-0 opacity-80" id="sparkline-visitor"></div>
+          </div>
+
+          <!-- Metrik 2: Paket Hari Ini -->
+          <div
+            class="bg-white shadow-sm border border-slate-200 rounded-xl p-5 hover:border-emerald-500/30 hover:shadow-lg hover:shadow-emerald-500/5 transition-all duration-300 flex flex-col justify-between h-32 relative overflow-hidden group">
+            <div class="absolute top-0 left-0 w-1.5 h-full bg-emerald-500 rounded-l-xl"></div>
+            <div class="flex justify-between items-start pl-2 z-10">
+              <div>
+                <p class="text-[10px] font-medium text-slate-600 uppercase tracking-wider">Paket Hari Ini</p>
+                <h3 class="text-2xl font-bold text-slate-800 mt-1.5 leading-none">
+                  <%= packagesToday.length %>
+                </h3>
+                <p class="text-[10px] font-semibold text-emerald-400 mt-2 flex items-center">
+                  <i class="bi bi-arrow-up-right mr-1"></i> 8% <span class="text-slate-600 font-normal ml-1">dari
+                    kemarin</span>
+                </p>
+              </div>
+              <div
+                class="w-9 h-9 rounded-lg bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 group-hover:scale-105 transition-transform duration-300">
+                <i class="bi bi-box-seam text-emerald-400 text-base"></i>
+              </div>
+            </div>
+            <!-- Sparkline grafik mini paket hari ini -->
+            <div class="absolute bottom-2 right-4 w-24 h-8 z-0 opacity-80" id="sparkline-package"></div>
+          </div>
+
+          <!-- Metrik 3: Visitor Bulan Ini -->
+          <div
+            class="bg-white shadow-sm border border-slate-200 rounded-xl p-5 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/5 transition-all duration-300 flex flex-col justify-between h-32 relative overflow-hidden group">
+            <div class="absolute top-0 left-0 w-1.5 h-full bg-purple-500 rounded-l-xl"></div>
+            <div class="flex justify-between items-start pl-2 z-10">
+              <div>
+                <p class="text-[10px] font-medium text-slate-600 uppercase tracking-wider">Visitor Bulan Ini</p>
+                <h3 class="text-2xl font-bold text-slate-800 mt-1.5 leading-none">
+                  <%= monthlyVisitors %>
+                </h3>
+                <p class="text-[10px] font-semibold text-emerald-400 mt-2 flex items-center">
+                  <i class="bi bi-arrow-up-right mr-1"></i> 24% <span class="text-slate-600 font-normal ml-1">dari bulan
+                    lalu</span>
+                </p>
+              </div>
+              <div
+                class="w-9 h-9 rounded-lg bg-purple-500/10 flex items-center justify-center border border-purple-500/20 group-hover:scale-105 transition-transform duration-300">
+                <i class="bi bi-calendar-month text-purple-400 text-base"></i>
+              </div>
+            </div>
+            <!-- Sparkline grafik mini visitor bulanan -->
+            <div class="absolute bottom-2 right-4 w-24 h-8 z-0 opacity-80" id="sparkline-monthly-visitor"></div>
+          </div>
+
+          <!-- Metrik 4: Paket Bulan Ini -->
+          <div
+            class="bg-white shadow-sm border border-slate-200 rounded-xl p-5 hover:border-amber-500/30 hover:shadow-lg hover:shadow-amber-500/5 transition-all duration-300 flex flex-col justify-between h-32 relative overflow-hidden group">
+            <div class="absolute top-0 left-0 w-1.5 h-full bg-amber-500 rounded-l-xl"></div>
+            <div class="flex justify-between items-start pl-2 z-10">
+              <div>
+                <p class="text-[10px] font-medium text-slate-600 uppercase tracking-wider">Paket Bulan Ini</p>
+                <h3 class="text-2xl font-bold text-slate-800 mt-1.5 leading-none">
+                  <%= monthlyPackages %>
+                </h3>
+                <p class="text-[10px] font-semibold text-emerald-400 mt-2 flex items-center">
+                  <i class="bi bi-arrow-up-right mr-1"></i> 15% <span class="text-slate-600 font-normal ml-1">dari bulan
+                    lalu</span>
+                </p>
+              </div>
+              <div
+                class="w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center border border-amber-500/20 group-hover:scale-105 transition-transform duration-300">
+                <i class="bi bi-truck text-amber-400 text-base"></i>
+              </div>
+            </div>
+            <!-- Sparkline grafik mini paket bulanan -->
+            <div class="absolute bottom-2 right-4 w-24 h-8 z-0 opacity-80" id="sparkline-monthly-package"></div>
+          </div>
+        </div>
+
+        <!-- ================= BAGIAN VISUALISASI UTAMA & AKTIVITAS (GRID OF 3 SECTIONS) ================= -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+          <!-- Area 1: Grafik Garis Ganda Tren Kunjungan (7 Hari) -->
+          <div
+            class="bg-white shadow-sm border border-slate-200 rounded-xl p-5 lg:col-span-5 flex flex-col justify-between h-[360px]">
+            <div class="flex justify-between items-center mb-2">
+              <h4 class="text-xs font-bold text-slate-800 tracking-wide uppercase">Trend Kunjungan (7 Hari Terakhir)
+              </h4>
+              <div class="flex items-center space-x-3 text-[10px] uppercase font-bold text-slate-600">
+                <span class="flex items-center"><span
+                    class="w-2.5 h-2.5 rounded-full bg-blue-500 mr-1.5"></span>Visitor</span>
+                <span class="flex items-center"><span
+                    class="w-2.5 h-2.5 rounded-full bg-emerald-500 mr-1.5"></span>Paket</span>
+              </div>
+            </div>
+            <div class="flex-1" id="main-trend-chart"></div>
+          </div>
+
+          <!-- Area 2: Grafik Donat Status Kunjungan -->
+          <div
+            class="bg-white shadow-sm border border-slate-200 rounded-xl p-5 lg:col-span-3 flex flex-col justify-between h-[360px]">
+            <h4 class="text-xs font-bold text-slate-800 tracking-wide uppercase mb-2">Status Kunjungan</h4>
+            <div class="relative flex justify-center items-center h-48">
+              <div class="w-full h-full" id="visitor-status-chart"></div>
+            </div>
+            <!-- Legenda Donat Chart -->
+            <div class="grid grid-cols-2 gap-x-3 gap-y-1 text-[10px] text-slate-600 border-t border-slate-800/60 pt-3">
+              <div class="flex items-center"><span class="w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span>Approved
+              </div>
+              <div class="flex items-center"><span class="w-2 h-2 rounded-full bg-amber-500 mr-1.5"></span>Pending</div>
+              <div class="flex items-center"><span class="w-2 h-2 rounded-full bg-blue-500 mr-1.5"></span>Checked-in
+              </div>
+              <div class="flex items-center"><span class="w-2 h-2 rounded-full bg-purple-500 mr-1.5"></span>Reschedule
+              </div>
+              <div class="flex items-center col-span-2"><span
+                  class="w-2 h-2 rounded-full bg-rose-500 mr-1.5"></span>Rejected</div>
+            </div>
+          </div>
+
+          <!-- Area 3: Feed Garis Waktu Aktivitas Terkini -->
+          <div class="bg-white shadow-sm border border-slate-200 rounded-xl p-5 lg:col-span-4 flex flex-col h-[360px]">
+            <div class="flex justify-between items-center mb-4">
+              <h4 class="text-xs font-bold text-slate-800 tracking-wide uppercase">Aktivitas Terkini</h4>
+              <button class="text-[10px] font-bold text-[#5ca82f] hover:underline" data-bs-toggle="modal"
+                data-bs-target="#detailModal">Lihat Semua</button>
+            </div>
+            <div class="flex-1 overflow-y-auto space-y-4 pr-1">
+              <% if (recentActivities.length===0) { %>
+                <div class="text-center text-slate-600 py-12 text-xs">Belum ada aktivitas hari ini.</div>
+                <% } else { %>
+                  <% recentActivities.slice(0, 5).forEach(a=> { %>
+                    <div class="flex items-start justify-between text-xs py-1 group">
+                      <div class="flex items-start space-x-3">
+                        <!-- Tipe Aktivitas Visitor -->
+                        <% if (a.type==='visitor' ) { %>
+                          <div
+                            class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0 border border-[#5ca82f]/20 group-hover:scale-105 transition-transform duration-200">
+                            <i class="bi bi-person text-[#5ca82f] text-sm"></i>
+                          </div>
+                          <div>
+                            <p class="font-semibold text-slate-800">Visitor baru: <%= a.name %>
+                            </p>
+                            <p class="text-[10px] text-slate-600 mt-0.5">Keperluan: <%= a.purpose %>
+                            </p>
+                          </div>
+                          <!-- Tipe Aktivitas Paket -->
+                          <% } else if (a.type==='package' ) { %>
+                            <div
+                              class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0 border border-emerald-500/20 group-hover:scale-105 transition-transform duration-200">
+                              <i class="bi bi-box-seam text-emerald-400 text-sm"></i>
+                            </div>
+                            <div>
+                              <p class="font-semibold text-slate-800">Paket baru diterima</p>
+                              <p class="text-[10px] text-slate-600 mt-0.5">Penerima: <%= a.recipient %> (Kurir: <%=
+                                    a.courier %>)</p>
+                            </div>
+                            <% } %>
+                      </div>
+                      <!-- Waktu Aktivitas -->
+                      <span class="text-[9px] text-slate-600 font-mono mt-1 shrink-0">
+                        <%= new Date(a.date).toLocaleTimeString('id-ID', { hour: '2-digit' , minute: '2-digit' }) %>
+                      </span>
+                    </div>
                     <% }) %>
-                  <% } %>
-                </tbody>
-              </table>
+                      <% } %>
             </div>
           </div>
-          <!-- Tabel Visitor -->
-          <div class="d-flex justify-content-between align-items-center mt-3">
-            <div>Menampilkan <%= Math.min(5, allVisitors.length) %> dari <%= allVisitors.length %> entri</div>
-            <div id="visitorPagination"></div>
-            <!-- Tombol Detail -->
-<button class="btn btn-sm btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#detailModal">
-  Detail
-</button>
-
-<!-- Modal Detail -->
-<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="detailModalLabel">Detail Semua Visitor</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-      </div>
-      <div class="modal-body">
-        <div class="sticky-table-scroll">
-          <table class="table table-bordered table-striped align-middle">
-            <thead class="table-light">
-              <tr>
-                <th class="text-center" style="min-width:40px">No</th>
-                <th style="min-width:120px">Nama</th>
-                <th style="min-width:120px">NIK</th>
-                <th style="min-width:150px">Email</th>
-                <th style="min-width:120px">Instansi</th>
-                <th style="min-width:150px">Pegawai yang ingin ditemui</th>
-                <th style="min-width:80px">Janji</th>
-                <th style="min-width:120px">Keperluan</th>
-                <th style="min-width:80px">Jumlah Tamu</th>
-                <th style="min-width:120px">Tanggal Kunjungan</th>
-                <th style="min-width:100px">Jam Kunjungan</th>
-                <th style="min-width:120px">Waktu Input</th>
-                <th class="text-center" style="min-width:80px">Status</th>
-                <th class="text-center" style="min-width:100px">Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% allVisitors.forEach((v, i) => { %>
-                <tr>
-                  <td class="text-center"><%= i + 1 %></td>
-                  <td><%= v.name %></td>
-                  <td><%= v.nik %></td>
-                  <td><%= v.email %></td>
-                  <td><%= v.instansi %></td>
-                  <td><%= v.bertemu %></td>
-                  <td><%= v.janji %></td>
-                  <td><%= v.purpose %></td>
-                  <td class="text-center"><%= v.rekan %></td>
-                  <td><%= v.tanggal ? v.tanggal : '-' %></td>
-                  <td><%= v.jam ? v.jam : '-' %></td>
-                  <td><%= new Date(v.date).toLocaleString("id-ID") %></td>
-                  <td class="text-center">
-                    <span class="px-2 py-1 rounded-full text-xs font-semibold
-                      <%= v.status === 'approved' ? 'bg-green-200 text-green-800' 
-                        : v.status === 'rejected' ? 'bg-red-200 text-red-800' 
-                        : v.status === 'reschedule' ? 'bg-blue-200 text-blue-800' 
-                        : 'bg-yellow-200 text-yellow-800' %>">
-                      <%= v.status || 'pending' %>
-                    </span>
-                  </td>
-                  <td class="text-center">
-                    <a href="/visitor/edit/<%= v._id %>" class="btn btn-sm btn-warning me-1"><i class="bi bi-pencil"></i></a>
-                    <form action="/visitor/delete/<%= v._id %>" method="POST" style="display:inline;" class="form-delete-visitor">
-                      <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
-                    </form>
-                  </td>
-                </tr>
-              <% }) %>
-            </tbody>
-          </table>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-      </div>
-    </div>
-  </div>
-</div>
 
+        <!-- ================= BAGIAN TABEL DATA PREVIEW (GRID OF 2 TABLES) ================= -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
 
+          <!-- ================= BAGIAN TABEL VISITOR TERBARU ================= -->
+          <div
+            class="bg-white shadow-sm border border-slate-200 rounded-xl p-5 flex flex-col justify-between min-h-[350px]">
+            <div>
+              <div class="flex justify-between items-center mb-4">
+                <h4 class="text-xs font-bold text-slate-800 tracking-wide uppercase">Daftar Visitor Terbaru</h4>
+                <!-- Search input tabel visitor -->
+                <div class="relative w-44">
+                  <span class="absolute inset-y-0 left-0 flex items-center pl-2.5 pointer-events-none">
+                    <i class="bi bi-search text-slate-400 text-[10px]"></i>
+                  </span>
+                  <input type="text" id="searchVisitorInput"
+                    class="w-full bg-slate-50 border border-slate-200 text-[11px] text-slate-800 rounded-lg pl-7 pr-3 py-1 focus:outline-none focus:ring-1 focus:ring-[#1e3a8a] focus:border-transparent placeholder-slate-400"
+                    placeholder="Cari visitor...">
+                </div>
+              </div>
+
+              <div class="overflow-x-auto">
+                <table id="visitorTable" class="w-full text-left border-collapse text-[11px]">
+                  <thead>
+                    <tr
+                      class="border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider text-[9px]">
+                      <th class="py-2.5 pb-2">No</th>
+                      <th class="py-2.5 pb-2">Nama / Instansi / HP</th>
+                      <th class="py-2.5 pb-2">Kunjungan & Keperluan</th>
+                      <th class="py-2.5 pb-2">Karyawan</th>
+                      <th class="py-2.5 pb-2">Prioritas</th>
+                      <th class="py-2.5 pb-2">Waktu</th>
+                      <th class="py-2.5 pb-2 text-right">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="visitorTableBody" class="divide-y divide-slate-100">
+                    <% if (allVisitors.length===0) { %>
+                      <tr>
+                        <td colspan="7" class="text-center py-8 text-slate-600">Belum ada visitor.</td>
+                      </tr>
+                      <% } else { %>
+                        <% allVisitors.forEach((v, i)=> { %>
+                          <tr class="hover:bg-slate-800/10 transition-colors text-slate-700">
+                            <td class="py-2.5">
+                              <%= i + 1 %>
+                            </td>
+                            <td class="py-2.5">
+                              <span class="font-semibold text-slate-800">
+                                <%= v.name %>
+                              </span>
+                              <% if (v.institution || v.instansi) { %>
+                                <span class="block text-[9px] text-slate-500 mt-0.5"><i
+                                    class="far fa-building mr-1"></i>
+                                  <%= v.institution || v.instansi %>
+                                </span>
+                                <% } %>
+                                  <% if (v.phoneNumber && v.phoneNumber !=='-' ) { %>
+                                    <% let waPhone=v.phoneNumber.replace(/\D/g, '' ); if (waPhone.startsWith('0')) {
+                                      waPhone='62' + waPhone.substring(1); } %>
+                                      <span class="block text-[9px] mt-0.5">
+                                        <a href="https://wa.me/<%= waPhone %>" target="_blank"
+                                          class="text-emerald-600 hover:text-emerald-700 font-medium inline-flex items-center gap-1">
+                                          <i class="fab fa-whatsapp"></i>
+                                          <%= v.phoneNumber %>
+                                        </a>
+                                      </span>
+                                      <% } %>
+                            </td>
+                            <td class="py-2.5">
+                              <span
+                                class="inline-block px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 text-[8px] font-bold uppercase mb-1 tracking-wider">
+                                <%= v.visitCategory || 'Meeting' %>
+                              </span>
+                              <span class="block text-slate-800 max-w-[120px] truncate" title="<%= v.purpose %>">
+                                <%= v.purpose %>
+                              </span>
+                            </td>
+                            <td class="py-2.5 text-slate-600">
+                              <%= v.targetEmployee ? v.targetEmployee.split(' - ')[0] : (v.bertemu ? v.bertemu.split(' - ')[0] : ' -') %>
+                            </td>
+                            <td class="py-2.5 font-medium">
+                              <% let prioText=v.priority || 'Normal' ; let
+                                prioClass='bg-emerald-50 text-emerald-700 border border-emerald-200' ; let prioIcon='🟢'
+                                ; if (prioText==='Mendesak' ) {
+                                prioClass='bg-rose-50 text-rose-700 border border-rose-200' ; prioIcon='🔴' ; } else if
+                                (prioText==='Penting' ) { prioClass='bg-amber-50 text-amber-700 border border-amber-200'
+                                ; prioIcon='🟡' ; } %>
+                                <span
+                                  class="inline-block px-2 py-0.5 rounded text-[9px] font-semibold tracking-wide <%= prioClass %>">
+                                  <%= prioIcon %>
+                                    <%= prioText %>
+                                </span>
+                            </td>
+                            <td class="py-2.5 text-slate-600 font-mono">
+                              <%= new Date(v.date).toLocaleDateString('id-ID', {day: '2-digit' , month: '2-digit' }) %>
+                                <span class="block text-[9px]">
+                                  <%= new Date(v.date).toLocaleTimeString('id-ID', {hour: '2-digit' , minute:'2-digit'})
+                                    %>
+                                </span>
+                            </td>
+                            <td class="py-2.5 text-right">
+                              <!-- Pengaturan warna badge status visitor -->
+                              <% let statusText=v.status || 'pending' ; let badgeClass='' ; if (statusText==='approved'
+                                ) { badgeClass='bg-emerald-50 text-emerald-700 border border-emerald-200' ;
+                                statusText='Approved' ; } else if (statusText==='rejected' ) {
+                                badgeClass='bg-rose-50 text-rose-700 border border-rose-200' ; statusText='Rejected' ; }
+                                else if (statusText==='reschedule' ) {
+                                badgeClass='bg-purple-50 text-purple-700 border border-purple-200' ;
+                                statusText='Rescheduled' ; } else if (statusText==='checked-in' ) {
+                                badgeClass='bg-blue-50 text-blue-700 border border-blue-200' ; statusText='Checked-In' ;
+                                } else if (statusText==='checked-out' ) {
+                                badgeClass='bg-slate-100 text-slate-700 border border-slate-200' ;
+                                statusText='Checked-Out' ; } else {
+                                badgeClass='bg-amber-50 text-amber-700 border border-amber-200' ; statusText='Pending' ;
+                                } %>
+                                <span
+                                  class="inline-block px-2 py-0.5 rounded text-[9px] font-semibold tracking-wide <%= badgeClass %>">
+                                  <%= statusText %>
+                                </span>
+                            </td>
+                          </tr>
+                          <% }) %>
+                            <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Footer tabel visitor (Pagination & Detail modal trigger) -->
+            <div
+              class="flex justify-between items-center mt-4 border-t border-slate-200 pt-3 text-[10px] text-slate-600 shrink-0">
+              <div>Menampilkan <span class="text-slate-700 font-semibold">
+                  <%= Math.min(5, allVisitors.length) %>
+                </span> dari <span class="text-slate-700 font-semibold">
+                  <%= allVisitors.length %>
+                </span> entri</div>
+              <div class="flex items-center space-x-1" id="visitorPagination"></div>
+              <button
+                class="bg-[#5ca82f] hover:bg-[#4d8b26] text-white font-semibold px-3 py-1.5 rounded-lg text-[10px] transition-colors"
+                data-bs-toggle="modal" data-bs-target="#detailModal">
+                Detail
+              </button>
+            </div>
+          </div>
+
+          <!-- ================= BAGIAN TABEL PAKET TERBARU ================= -->
+          <div
+            class="bg-white shadow-sm border border-slate-200 rounded-xl p-5 flex flex-col justify-between min-h-[350px]">
+            <div>
+              <div class="flex justify-between items-center mb-4">
+                <h4 class="text-xs font-bold text-slate-800 tracking-wide uppercase">Paket Masuk Terbaru</h4>
+                <!-- Search input tabel paket -->
+                <div class="relative w-44">
+                  <span class="absolute inset-y-0 left-0 flex items-center pl-2.5 pointer-events-none">
+                    <i class="bi bi-search text-slate-400 text-[10px]"></i>
+                  </span>
+                  <input type="text" id="searchPackageInput"
+                    class="w-full bg-slate-50 border border-slate-200 text-[11px] text-slate-800 rounded-lg pl-7 pr-3 py-1 focus:outline-none focus:ring-1 focus:ring-[#1e3a8a] focus:border-transparent placeholder-slate-400"
+                    placeholder="Cari paket...">
+                </div>
+              </div>
+
+              <div class="overflow-x-auto">
+                <table id="packageTable" class="w-full text-left border-collapse text-[11px]">
+                  <thead>
+                    <tr
+                      class="border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider text-[9px]">
+                      <th class="py-2.5 pb-2">No</th>
+                      <th class="py-2.5 pb-2">No. Resi</th>
+                      <th class="py-2.5 pb-2">Kurir</th>
+                      <th class="py-2.5 pb-2">Penerima</th>
+                      <th class="py-2.5 pb-2">Waktu</th>
+                      <th class="py-2.5 pb-2 text-right">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="packageTableBody" class="divide-y divide-slate-100">
+                    <% if (allPackages.length===0) { %>
+                      <tr>
+                        <td colspan="6" class="text-center py-8 text-slate-600">Belum ada paket.</td>
+                      </tr>
+                      <% } else { %>
+                        <% allPackages.forEach((p, i)=> { %>
+                          <tr class="hover:bg-slate-800/10 transition-colors text-slate-700">
+                            <td class="py-2.5">
+                              <%= i + 1 %>
+                            </td>
+                            <td class="py-2.5"><span class="font-semibold text-slate-800">
+                                <%= p.nomorResi %>
+                              </span></td>
+                            <td class="py-2.5">
+                              <%= p.namaKurir %>
+                            </td>
+                            <td class="py-2.5 text-slate-600">
+                              <%= p.penerimaNama || '-' %>
+                            </td>
+                            <td class="py-2.5 text-slate-600 font-mono">
+                              <%= p.createdAt ? new Date(p.createdAt).toLocaleDateString('id-ID', {day: '2-digit' ,
+                                month: '2-digit' }) : '-' %>
+                                <span class="block text-[9px]">
+                                  <%= p.createdAt ? new Date(p.createdAt).toLocaleTimeString('id-ID', {hour: '2-digit' ,
+                                    minute:'2-digit'}) : '-' %>
+                                </span>
+                            </td>
+                            <td class="py-2.5 text-right">
+                              <!-- Pengaturan warna badge status paket -->
+                              <% let pkgStatus=p.status || 'belum diambil' ; let pkgStatusText='Belum Diambil' ; let
+                                pkgBadgeClass='bg-amber-500/10 text-amber-400 border border-amber-500/20' ; if
+                                (pkgStatus==='diambil' ) { pkgStatusText='Diambil' ;
+                                pkgBadgeClass='bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' ; } %>
+                                <span
+                                  class="inline-block px-2 py-0.5 rounded text-[9px] font-semibold tracking-wide <%= pkgBadgeClass %>">
+                                  <%= pkgStatusText %>
+                                </span>
+                            </td>
+                          </tr>
+                          <% }) %>
+                            <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Footer tabel paket (Pagination & Detail modal trigger) -->
+            <div
+              class="flex justify-between items-center mt-4 border-t border-slate-800/40 pt-3 text-[10px] text-slate-600 shrink-0">
+              <div>Menampilkan <span class="text-slate-700 font-semibold">
+                  <%= Math.min(5, allPackages.length) %>
+                </span> dari <span class="text-slate-700 font-semibold">
+                  <%= allPackages.length %>
+                </span> entri</div>
+              <div class="flex items-center space-x-1" id="packagePagination"></div>
+              <button
+                class="bg-[#5ca82f]/90 hover:bg-[#4a8a24] text-slate-800 font-semibold px-3 py-1.5 rounded-lg text-[10px] transition-colors"
+                data-bs-toggle="modal" data-bs-target="#detailPackageModal">
+                Detail
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      
-      <!-- Tabel Paket -->
-<div class="col-lg-6">
-  <div class="table-container">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h5><i class="bi bi-box-seam me-2"></i> Semua Paket</h5>
-      <div class="input-group" style="width: 200px;">
-        <input type="text" id="searchPackageInput" class="form-control form-control-sm search-box package" placeholder="Cari paket...">
-        <button class="btn btn-sm btn-outline-secondary" type="button"><i class="bi bi-search"></i></button>
+
+        <!-- Footer Copyright Penulis -->
+        <footer class="text-center text-slate-600 text-[10px] pt-12 pb-4">
+          © 2026 BPMA GateLog - Sistem Informasi Manajemen Akses BPMA
+        </footer>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- ======================== MODALS SECTION ========================= -->
+  <!-- ================================================================= -->
+
+  <!-- ================= BAGIAN MODAL PILIH FORM ================= -->
+  <div class="modal fade" id="modalPilihForm" tabindex="-1" aria-labelledby="modalPilihFormLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title font-bold" id="modalPilihFormLabel">Pilih Jenis Form</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+        </div>
+        <div class="modal-body text-center py-6">
+          <a href="/visitor"
+            class="btn btn-primary bg-[#5ca82f] hover:bg-[#4a8a24] border-none px-4 py-2 m-2 inline-flex items-center gap-1.5 text-xs font-semibold rounded-lg">
+            <i class="bi bi-person-plus"></i> Form Tamu
+          </a>
+          <a href="/package"
+            class="btn btn-success bg-emerald-600 hover:bg-emerald-700 border-none px-4 py-2 m-2 inline-flex items-center gap-1.5 text-xs font-semibold rounded-lg">
+            <i class="bi bi-box-seam"></i> Form Paket
+          </a>
+        </div>
       </div>
     </div>
-
-    <div class="table-responsive">
-      <div class="sticky-table-scroll">
-        <table id="packageTable" class="table table-hover">
-          <thead class="table-light">
-            <tr>
-              <th>No</th>
-              <th>No Resi</th>
-              <th>Jenis Paket</th>
-              <th>Deskripsi Paket</th>
-              <th>Nama Kurir</th>
-              <th>Email Kurir</th>
-              <th>No HP Kurir</th>
-              <th>Penerima Paket</th>
-              <th>Nama Penerima</th>
-              <th>Foto Paket</th>
-              <th>Waktu Input</th>
-              <th>Status</th>
-              <th>Aksi</th>
-            </tr>
-          </thead>
-          <tbody id="packageTableBody">
-            <% if (allPackages.length === 0) { %>
-              <tr><td colspan="6" class="text-center py-4">Belum ada paket.</td></tr>
-            <% } else { %>
-              <% allPackages.forEach((p, i) => { %>
-                <tr>
-                  <td><%= i + 1 %></td>
-                  <td><%= p.nomorResi %></td>
-                  <td><%= p.jenisPaket %></td>
-                  <td><%= p.deskripsiPaket %></td>
-                  <td><%= p.namaKurir %></td>
-                  <td><%= p.emailKurir %></td>
-                  <td><%= p.nomorHpKurir %></td>
-                  <td><%= p.penerimaPaket ? p.penerimaPaket.name : '-' %></td>
-                  <td><%= p.penerimaNama %></td>
-                  <td>
-                    <% if (p.fotoPaket) { %>
-                      <img src="/uploads/<%= p.fotoPaket %>" alt="Foto Paket" style="max-width:60px;max-height:60px;">
-                    <% } else { %>
-                      -
-                    <% } %>
-                  </td>
-                  <td><%= p.createdAt ? new Date(p.createdAt).toLocaleString("id-ID") : '-' %></td>
-                  <td>
-                    <span class="badge badge-pending"><i class="bi bi-box-seam me-1"></i> Belum diambil</span>
-                  </td>
-                  <td>
-                    <a href="/package/edit/<%= p._id %>" class="btn btn-sm btn-warning me-1 btn-edit-package"><i class="bi bi-pencil"></i></a>
-                    <form action="/package/delete/<%= p._id %>" method="POST" style="display:inline;" class="form-delete-package">
-                      <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
-                    </form>
-                  </td>
-                </tr>
-              <% }) %>
-            <% } %>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Tombol Detail + Pagination -->
-    <!-- Tabel Paket: Info + Pagination + Tombol Detail -->
-<div class="d-flex justify-content-between align-items-center mt-3">
-  <!-- Kiri: Info entri -->
-  <div>Menampilkan <%= Math.min(5, allPackages.length) %> dari <%= allPackages.length %> entri</div>
-
-  <!-- Tengah: Pagination -->
-  <div class="d-flex justify-content-center flex-grow-1">
-    <div id="packagePagination"></div>
   </div>
 
-  <!-- Kanan: Tombol Detail -->
-  <div>
-    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#detailPackageModal">
-      Detail
-    </button>
-  </div>
-</div>
-  </div>
-  <!-- Modal Detail Paket -->
-<div class="modal fade" id="detailPackageModal" tabindex="-1" aria-labelledby="detailPackageModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="detailPackageModalLabel">Detail Semua Paket</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-      </div>
-      <div class="modal-body">
-        <div class="table-responsive">
+  <!-- ================= BAGIAN MODAL DETAIL VISITOR ================= -->
+  <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title font-bold" id="detailModalLabel">Detail Semua Visitor</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+        </div>
+        <div class="modal-body p-0">
           <div class="sticky-table-scroll">
-            <table class="table table-bordered table-striped align-middle">
-              <thead class="table-light">
-                <tr>
-                  <th class="text-center" style="min-width:40px">No</th>
-                  <th style="min-width:120px">No Resi</th>
-                  <th style="min-width:120px">Jenis Paket</th>
-                  <th style="min-width:150px">Deskripsi Paket</th>
-                  <th style="min-width:120px">Nama Kurir</th>
-                  <th style="min-width:150px">Email Kurir</th>
-                  <th style="min-width:120px">No HP Kurir</th>
-                  <th style="min-width:120px">Penerima Paket</th>
-                  <th style="min-width:120px">Nama Penerima</th>
-                  <th style="min-width:80px">Foto Paket</th>
-                  <th style="min-width:120px">Waktu Input</th>
-                  <th class="text-center" style="min-width:80px">Status</th>
-                  <th class="text-center" style="min-width:100px">Aksi</th>
+            <table class="table table-hover table-striped align-middle mb-0 text-xs text-slate-800">
+              <thead>
+                <tr class="border-b border-slate-700 text-slate-700 font-semibold uppercase text-[10px] tracking-wider">
+                  <th class="text-center py-3" style="min-width:50px">No</th>
+                  <th class="py-3" style="min-width:120px">Nama</th>
+                  <th class="py-3" style="min-width:120px">NIK</th>
+                  <th class="py-3" style="min-width:135px">Nomor HP</th>
+                  <th class="py-3" style="min-width:150px">Email</th>
+                  <th class="py-3" style="min-width:120px">Instansi</th>
+                  <th class="py-3" style="min-width:120px">Jenis</th>
+                  <th class="py-3" style="min-width:150px">Pegawai yang ditemui</th>
+                  <th class="py-3" style="min-width:70px">Janji</th>
+                  <th class="py-3" style="min-width:150px">Keperluan</th>
+                  <th class="text-center py-3" style="min-width:70px">Tamu</th>
+                  <th class="py-3" style="min-width:110px">Tgl Kunjungan</th>
+                  <th class="py-3" style="min-width:90px">Jam</th>
+                  <th class="py-3" style="min-width:130px">Waktu Input</th>
+                  <th class="text-center py-3" style="min-width:105px">Prioritas</th>
+                  <th class="text-center py-3" style="min-width:90px">Status</th>
+                  <th class="text-center py-3" style="min-width:100px">Aksi</th>
                 </tr>
               </thead>
               <tbody>
-                <% allPackages.forEach((p, i) => { %>
-                  <tr>
-                    <td class="text-center"><%= i + 1 %></td>
-                    <td><%= p.nomorResi %></td>
-                    <td><%= p.jenisPaket %></td>
-                    <td><%= p.deskripsiPaket %></td>
-                    <td><%= p.namaKurir %></td>
-                    <td><%= p.emailKurir %></td>
-                    <td><%= p.nomorHpKurir %></td>
-                    <td><%= p.penerimaPaket ? p.penerimaPaket.name : '-' %></td>
-                    <td><%= p.penerimaNama %></td>
-                    <td class="text-center">
-                      <% if (p.fotoPaket) { %>
-                        <img src="/uploads/<%= p.fotoPaket %>" alt="Foto Paket" style="max-width:60px;max-height:60px;">
-                      <% } else { %>
-                        -
-                      <% } %>
+                <% allVisitors.forEach((v, i)=> { %> <tr class="border-b border-slate-200 text-slate-700">
+                    <td class="text-center py-2.5">
+                      <%= i + 1 %>
                     </td>
-                    <td><%= p.createdAt ? new Date(p.createdAt).toLocaleString("id-ID") : '-' %></td>
-                    <td class="text-center">
-                      <span class="badge badge-pending"><i class="bi bi-box-seam me-1"></i> Belum diambil</span>
+                    <td class="font-bold text-slate-800">
+                      <%= v.name %>
+                    </td>
+                    <td>
+                      <%= v.nik %>
+                    </td>
+                    <td>
+                      <% if (v.phoneNumber && v.phoneNumber !=='-' ) { %>
+                        <% let waPhone=v.phoneNumber.replace(/\D/g, '' ); if (waPhone.startsWith('0')) { waPhone='62' +
+                          waPhone.substring(1); } %>
+                          <a href="https://wa.me/<%= waPhone %>" target="_blank"
+                            class="text-emerald-600 hover:text-emerald-700 font-semibold inline-flex items-center gap-1">
+                            <i class="fab fa-whatsapp"></i>
+                            <%= v.phoneNumber %>
+                          </a>
+                          <% } else { %>
+                            -
+                            <% } %>
+                    </td>
+                    <td>
+                      <%= v.email %>
+                    </td>
+                    <td>
+                      <%= v.instansi || v.institution || '-' %>
+                    </td>
+                    <td>
+                      <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 text-[9px] font-bold uppercase">
+                        <%= v.visitCategory || 'Meeting' %>
+                      </span>
+                    </td>
+                    <td>
+                      <%= v.bertemu || v.targetEmployee || '-' %>
+                    </td>
+                    <td class="capitalize">
+                      <%= v.janji || v.hasAppointment || '-' %>
+                    </td>
+                    <td>
+                      <%= v.purpose %>
                     </td>
                     <td class="text-center">
-                      <a href="/package/edit/<%= p._id %>" class="btn btn-sm btn-warning me-1 btn-edit-package"><i class="bi bi-pencil"></i></a>
-                      <form action="/package/delete/<%= p._id %>" method="POST" style="display:inline;" class="form-delete-package">
-                        <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
-                      </form>
+                      <%= v.rekan !==undefined ? v.rekan : (v.companions !==undefined ? v.companions : '-' ) %>
+                    </td>
+                    <td>
+                      <%= v.tanggal || (v.schedule ? new Date(v.schedule).toLocaleDateString('id-ID') : '-' ) %>
+                    </td>
+                    <td>
+                      <%= v.jam || (v.schedule ? new Date(v.schedule).toLocaleTimeString('id-ID', {hour: '2-digit' ,
+                        minute:'2-digit'}) : '-' ) %>
+                    </td>
+                    <td class="font-mono text-slate-600 text-[10px]">
+                      <%= new Date(v.date).toLocaleString("id-ID") %>
+                    </td>
+                    <td class="text-center">
+                      <% let prioText=v.priority || 'Normal' ; let
+                        prioClass='bg-emerald-50 text-emerald-700 border border-emerald-200' ; let prioIcon='🟢' ; if
+                        (prioText==='Mendesak' ) { prioClass='bg-rose-50 text-rose-700 border border-rose-200' ;
+                        prioIcon='🔴' ; } else if (prioText==='Penting' ) {
+                        prioClass='bg-amber-50 text-amber-700 border border-amber-200' ; prioIcon='🟡' ; } %>
+                        <span
+                          class="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider <%= prioClass %>">
+                          <%= prioIcon %>
+                            <%= prioText %>
+                        </span>
+                    </td>
+                    <td class="text-center">
+                      <% let stat=v.status || 'pending' ; let
+                        statClass='bg-amber-50 text-amber-700 border border-amber-200' ; if (stat==='approved' )
+                        statClass='bg-emerald-50 text-emerald-700 border border-emerald-200' ; else if
+                        (stat==='rejected' ) statClass='bg-rose-50 text-rose-700 border border-rose-200' ; else if
+                        (stat==='reschedule' ) statClass='bg-purple-50 text-purple-700 border border-purple-200' ; else
+                        if (stat==='checked-in' ) statClass='bg-blue-50 text-blue-700 border border-blue-200' ; else if
+                        (stat==='checked-out' ) statClass='bg-slate-100 text-slate-700 border border-slate-200' ; %>
+                        <span
+                          class="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider <%= statClass %>">
+                          <%= stat %>
+                        </span>
+                    </td>
+                    <td class="text-center">
+                      <% if (user && user.role==='admin' ) { %>
+                        <div class="flex items-center justify-center space-x-1.5">
+                          <a href="/visitor/edit/<%= v._id %>"
+                            class="btn btn-sm btn-warning bg-amber-500 hover:bg-amber-600 border-none text-black p-1 px-1.5 rounded"><i
+                              class="bi bi-pencil"></i></a>
+                          <form action="/visitor/delete/<%= v._id %>" method="POST" class="form-delete-visitor m-0">
+                            <button type="submit"
+                              class="btn btn-sm btn-danger bg-rose-550 hover:bg-rose-600 border-none p-1 px-1.5 rounded"><i
+                                class="bi bi-trash"></i></button>
+                          </form>
+                        </div>
+                        <% } else { %>
+                          <span class="text-slate-600 text-[10px]">—</span>
+                          <% } %>
                     </td>
                   </tr>
-                <% }) %>
+                  <% }) %>
               </tbody>
             </table>
           </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+        <div class="modal-footer">
+          <button type="button"
+            class="btn btn-light bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 rounded-lg text-xs"
+            data-bs-dismiss="modal">Tutup</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Modal Edit Visitor -->
-<div class="modal fade" id="editVisitorModal" tabindex="-1" aria-labelledby="editVisitorModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form id="editVisitorForm">
+  <!-- ================= BAGIAN MODAL DETAIL PAKET ================= -->
+  <div class="modal fade" id="detailPackageModal" tabindex="-1" aria-labelledby="detailPackageModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="editVisitorModalLabel">Edit Visitor</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          <h5 class="modal-title font-bold" id="detailPackageModalLabel">Detail Semua Paket</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
         </div>
-        <div class="modal-body">
-          <input type="hidden" id="editVisitorId" name="id">
-          <div class="mb-3">
-            <label for="editVisitorName" class="form-label">Nama</label>
-            <input type="text" class="form-control" id="editVisitorName" name="name" required>
-          </div>
-          <div class="mb-3">
-            <label for="editVisitorNik" class="form-label">NIK</label>
-            <input type="text" class="form-control" id="editVisitorNik" name="nik" required>
-          </div>
-          <div class="mb-3">
-            <label for="editVisitorEmail" class="form-label">Email</label>
-            <input type="email" class="form-control" id="editVisitorEmail" name="email" required>
-          </div>
-          <div class="mb-3">
-            <label for="editVisitorInstansi" class="form-label">Instansi</label>
-            <input type="text" class="form-control" id="editVisitorInstansi" name="instansi" required>
-          </div>
-          <div class="mb-3">
-            <label for="editVisitorBertemu" class="form-label">Pegawai yang ingin ditemui</label>
-            <input type="text" class="form-control" id="editVisitorBertemu" name="bertemu" required>
-          </div>
-          <div class="mb-3">
-            <label for="editVisitorJanji" class="form-label">Janji</label>
-            <select class="form-select" id="editVisitorJanji" name="janji" required>
-              <option value="ya">Ya</option>
-              <option value="tidak">Tidak</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="editVisitorPurpose" class="form-label">Keperluan</label>
-            <input type="text" class="form-control" id="editVisitorPurpose" name="purpose" required>
-          </div>
-          <div class="mb-3">
-            <label for="editVisitorRekan" class="form-label">Jumlah Tamu</label>
-            <input type="text" class="form-control" id="editVisitorRekan" name="rekan" required>
-          </div>
-          <div class="mb-3">
-            <label for="editVisitorTanggal" class="form-label">Tanggal Kunjungan</label>
-            <input type="date" class="form-control" id="editVisitorTanggal" name="tanggal" required>
-          </div>
-          <div class="mb-3">
-            <label for="editVisitorJam" class="form-label">Jam Kunjungan</label>
-            <input type="time" class="form-control" id="editVisitorJam" name="jam" required>
-          </div>
-          <div class="mb-3">
-            <label for="editVisitorStatus" class="form-label">Status</label>
-            <select class="form-select" id="editVisitorStatus" name="status">
-              <option value="pending">Pending</option>
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
-              <option value="reschedule">Reschedule</option>
-            </select>
+        <div class="modal-body p-0">
+          <div class="sticky-table-scroll">
+            <table class="table table-hover table-striped align-middle mb-0 text-xs text-slate-800">
+              <thead>
+                <tr class="border-b border-slate-700 text-slate-700 font-semibold uppercase text-[10px] tracking-wider">
+                  <th class="text-center py-3" style="min-width:50px">No</th>
+                  <th class="py-3" style="min-width:120px">No Resi</th>
+                  <th class="py-3" style="min-width:120px">Jenis Paket</th>
+                  <th class="py-3" style="min-width:150px">Deskripsi Paket</th>
+                  <th class="py-3" style="min-width:120px">Nama Kurir</th>
+                  <th class="py-3" style="min-width:150px">Email Kurir</th>
+                  <th class="py-3" style="min-width:120px">No HP Kurir</th>
+                  <th class="py-3" style="min-width:120px">Penerima Paket</th>
+                  <th class="py-3" style="min-width:120px">Nama Penerima</th>
+                  <th class="text-center py-3" style="min-width:90px">Foto Paket</th>
+                  <th class="py-3" style="min-width:130px">Waktu Input</th>
+                  <th class="text-center py-3" style="min-width:90px">Status</th>
+                  <th class="text-center py-3" style="min-width:100px">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% allPackages.forEach((p, i)=> { %>
+                  <tr class="border-b border-slate-800 text-slate-700">
+                    <td class="text-center py-2.5">
+                      <%= i + 1 %>
+                    </td>
+                    <td class="font-bold text-slate-800">
+                      <%= p.nomorResi %>
+                    </td>
+                    <td>
+                      <%= p.jenisPaket || p.tipePaket || '-' %>
+                    </td>
+                    <td>
+                      <%= p.deskripsiPaket || '-' %>
+                    </td>
+                    <td>
+                      <%= p.namaKurir %>
+                    </td>
+                    <td>
+                      <%= p.emailKurir || '-' %>
+                    </td>
+                    <td>
+                      <%= p.nomorHpKurir || '-' %>
+                    </td>
+                    <td>
+                      <%= p.penerimaPaket ? p.penerimaPaket.name : '-' %>
+                    </td>
+                    <td>
+                      <%= p.penerimaNama || '-' %>
+                    </td>
+                    <td class="text-center">
+                      <% if (p.fotoPaket) { %>
+                        <img src="/uploads/<%= p.fotoPaket %>" alt="Foto Paket"
+                          class="max-w-[40px] max-h-[40px] rounded object-cover mx-auto cursor-pointer"
+                          onclick="window.open('/uploads/<%= p.fotoPaket %>')">
+                        <% } else { %>
+                          -
+                          <% } %>
+                    </td>
+                    <td class="font-mono text-slate-600 text-[10px]">
+                      <%= p.createdAt ? new Date(p.createdAt).toLocaleString("id-ID") : '-' %>
+                    </td>
+                    <td class="text-center">
+                      <% let pkgStat=p.status || 'belum diambil' ; let pkgStatText='Belum Diambil' ; let
+                        pkgStatClass='bg-amber-500/10 text-amber-400 border border-amber-500/20' ; if
+                        (pkgStat==='diambil' ) { pkgStatText='Diambil' ;
+                        pkgStatClass='bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' ; } %>
+                        <span
+                          class="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider <%= pkgStatClass %>">
+                          <%= pkgStatText %>
+                        </span>
+                    </td>
+                    <td class="text-center">
+                      <% if (user && user.role==='admin' ) { %>
+                        <div class="flex items-center justify-center space-x-1.5">
+                          <a href="/package/edit/<%= p._id %>"
+                            class="btn btn-sm btn-warning bg-amber-500 hover:bg-amber-600 border-none text-black p-1 px-1.5 rounded btn-edit-package"><i
+                              class="bi bi-pencil"></i></a>
+                          <form action="/package/delete/<%= p._id %>" method="POST" class="form-delete-package m-0">
+                            <button type="submit"
+                              class="btn btn-sm btn-danger bg-rose-550 hover:bg-rose-600 border-none p-1 px-1.5 rounded"><i
+                                class="bi bi-trash"></i></button>
+                          </form>
+                        </div>
+                        <% } else { %>
+                          <span class="text-slate-600 text-[10px]">—</span>
+                          <% } %>
+                    </td>
+                  </tr>
+                  <% }) %>
+              </tbody>
+            </table>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Simpan</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="button"
+            class="btn btn-secondary bg-slate-800 border-slate-700 text-slate-700 hover:bg-slate-700 hover:text-slate-800 rounded-lg text-xs"
+            data-bs-dismiss="modal">Tutup</button>
         </div>
       </div>
-    </form>
+    </div>
   </div>
-</div>
 
-<!-- Modal Edit Package -->
-<div class="modal fade" id="editPackageModal" tabindex="-1" aria-labelledby="editPackageModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form id="editPackageForm">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="editPackageModalLabel">Edit Paket</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+  <!-- ================= BAGIAN MODAL EDIT VISITOR ================= -->
+  <div class="modal fade" id="editVisitorModal" tabindex="-1" aria-labelledby="editVisitorModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <form id="editVisitorForm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title font-bold text-slate-800" id="editVisitorModalLabel">Edit Visitor</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body space-y-4">
+            <input type="hidden" id="editVisitorId" name="id">
+
+            <div>
+              <label for="editVisitorName" class="block text-xs font-semibold text-slate-700 mb-1">Nama</label>
+              <input type="text"
+                class="form-control w-full bg-slate-50 border border-slate-200 text-slate-900 rounded p-2 text-xs focus:ring-1 focus:ring-[#1e3a8a] focus:bg-white"
+                id="editVisitorName" name="name" required>
+            </div>
+
+            <div>
+              <label for="editVisitorNik" class="block text-xs font-semibold text-slate-700 mb-1">NIK</label>
+              <input type="text"
+                class="form-control w-full bg-slate-50 border border-slate-200 text-slate-900 rounded p-2 text-xs focus:ring-1 focus:ring-[#1e3a8a] focus:bg-white"
+                id="editVisitorNik" name="nik" required>
+            </div>
+
+            <div>
+              <label for="editVisitorEmail" class="block text-xs font-semibold text-slate-700 mb-1">Email</label>
+              <input type="email"
+                class="form-control w-full bg-slate-50 border border-slate-200 text-slate-900 rounded p-2 text-xs focus:ring-1 focus:ring-[#1e3a8a] focus:bg-white"
+                id="editVisitorEmail" name="email" required>
+            </div>
+
+            <div>
+              <label for="editVisitorPhone" class="block text-xs font-semibold text-slate-700 mb-1">Nomor HP</label>
+              <input type="tel"
+                class="form-control w-full bg-slate-50 border border-slate-200 text-slate-900 rounded p-2 text-xs focus:ring-1 focus:ring-[#1e3a8a] focus:bg-white"
+                id="editVisitorPhone" name="phoneNumber" required>
+            </div>
+
+            <div>
+              <label for="editVisitorInstansi" class="block text-xs font-semibold text-slate-700 mb-1">Instansi</label>
+              <input type="text"
+                class="form-control w-full bg-slate-50 border border-slate-200 text-slate-900 rounded p-2 text-xs focus:ring-1 focus:ring-[#1e3a8a] focus:bg-white"
+                id="editVisitorInstansi" name="instansi" required>
+            </div>
+
+            <div>
+              <label for="editVisitorBertemu" class="block text-xs font-semibold text-slate-700 mb-1">Pegawai yang ingin
+                ditemui</label>
+              <input type="text"
+                class="form-control w-full bg-slate-50 border border-slate-200 text-slate-900 rounded p-2 text-xs focus:ring-1 focus:ring-[#1e3a8a] focus:bg-white"
+                id="editVisitorBertemu" name="bertemu" required>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label for="editVisitorJanji" class="block text-xs font-semibold text-slate-700 mb-1">Janji</label>
+                <select
+                  class="form-select w-full bg-slate-50 border border-slate-200 text-slate-900 rounded p-2 text-xs focus:ring-1 focus:ring-[#1e3a8a] focus:bg-white"
+                  id="editVisitorJanji" name="janji" required>
+                  <option value="ya">Ya</option>
+                  <option value="tidak">Tidak</option>
+                </select>
+              </div>
+              <div>
+                <label for="editVisitorRekan" class="block text-xs font-semibold text-slate-700 mb-1">Jumlah
+                  Tamu</label>
+                <input type="text"
+                  class="form-control w-full bg-slate-50 border border-slate-200 text-slate-900 rounded p-2 text-xs focus:ring-1 focus:ring-[#1e3a8a] focus:bg-white"
+                  id="editVisitorRekan" name="rekan" required>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label for="editVisitorCategory" class="block text-xs font-semibold text-slate-700 mb-1">Jenis
+                  Kunjungan</label>
+                <select
+                  class="form-select w-full bg-slate-50 border border-slate-200 text-slate-900 rounded p-2 text-xs focus:ring-1 focus:ring-[#1e3a8a] focus:bg-white"
+                  id="editVisitorCategory" name="visitCategory" required>
+                  <option value="Meeting">Meeting</option>
+                  <option value="Konsultasi">Konsultasi</option>
+                  <option value="Vendor">Vendor</option>
+                  <option value="Pengiriman Dokumen">Pengiriman Dokumen</option>
+                  <option value="Interview">Interview</option>
+                  <option value="Maintenance">Maintenance</option>
+                  <option value="Audit">Audit</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+              </div>
+              <div>
+                <label for="editVisitorPriority"
+                  class="block text-xs font-semibold text-slate-700 mb-1">Prioritas</label>
+                <select
+                  class="form-select w-full bg-slate-50 border border-slate-200 text-slate-900 rounded p-2 text-xs focus:ring-1 focus:ring-[#1e3a8a] focus:bg-white"
+                  id="editVisitorPriority" name="priority" required>
+                  <option value="Normal">Normal</option>
+                  <option value="Penting">Penting</option>
+                  <option value="Mendesak">Mendesak</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label for="editVisitorPurpose" class="block text-xs font-semibold text-slate-700 mb-1">Keperluan</label>
+              <input type="text"
+                class="form-control w-full bg-slate-50 border border-slate-200 text-slate-900 rounded p-2 text-xs focus:ring-1 focus:ring-[#1e3a8a] focus:bg-white"
+                id="editVisitorPurpose" name="purpose" required>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label for="editVisitorTanggal" class="block text-xs font-semibold text-slate-700 mb-1">Tanggal
+                  Kunjungan</label>
+                <input type="date"
+                  class="form-control w-full bg-slate-50 border border-slate-200 text-slate-900 rounded p-2 text-xs focus:ring-1 focus:ring-[#1e3a8a] focus:bg-white"
+                  id="editVisitorTanggal" name="tanggal" required>
+              </div>
+              <div>
+                <label for="editVisitorJam" class="block text-xs font-semibold text-slate-700 mb-1">Jam
+                  Kunjungan</label>
+                <input type="time"
+                  class="form-control w-full bg-slate-50 border border-slate-200 text-slate-900 rounded p-2 text-xs focus:ring-1 focus:ring-[#1e3a8a] focus:bg-white"
+                  id="editVisitorJam" name="jam" required>
+              </div>
+            </div>
+
+            <div>
+              <label for="editVisitorStatus" class="block text-xs font-semibold text-slate-700 mb-1">Status</label>
+              <select
+                class="form-select w-full bg-slate-50 border border-slate-200 text-slate-900 rounded p-2 text-xs focus:ring-1 focus:ring-[#1e3a8a] focus:bg-white"
+                id="editVisitorStatus" name="status">
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+                <option value="reschedule">Reschedule</option>
+                <option value="checked-in">Checked-In</option>
+                <option value="checked-out">Checked-Out</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit"
+              class="btn btn-primary bg-[#5ca82f] hover:bg-[#4d8b26] border-none rounded-lg px-4 py-2 text-xs font-semibold text-white">Simpan</button>
+            <button type="button"
+              class="btn btn-light bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 rounded-lg text-xs"
+              data-bs-dismiss="modal">Batal</button>
+          </div>
         </div>
-        <div class="modal-body">
-          <input type="hidden" id="editPackageId" name="id">
-          <div class="mb-3">
-            <label for="editNomorResi" class="form-label">No Resi</label>
-            <input type="text" class="form-control" id="editNomorResi" name="nomorResi" required>
-          </div>
-          <div class="mb-3">
-            <label for="editNamaKurir" class="form-label">Nama Kurir</label>
-            <input type="text" class="form-control" id="editNamaKurir" name="namaKurir" required>
-          </div>
-          <div class="mb-3">
-            <label for="editPenerimaNama" class="form-label">Penerima Paket</label>
-            <input type="text" class="form-control" id="editPenerimaNama" name="penerimaNama" required>
-          </div>
-          <div class="mb-3">
-            <label for="editDeskripsiPaket" class="form-label">Deskripsi Paket</label>
-            <input type="text" class="form-control" id="editDeskripsiPaket" name="deskripsiPaket">
-          </div>
-          <div class="mb-3">
-            <label for="editJenisPaket" class="form-label">Jenis Paket</label>
-            <input type="text" class="form-control" id="editJenisPaket" name="jenisPaket">
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Simpan</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-        </div>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
-</div>
 
-  <!-- Scripts -->
+  <!-- ================= BAGIAN MODAL EDIT PAKET ================= -->
+  <div class="modal fade" id="editPackageModal" tabindex="-1" aria-labelledby="editPackageModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <form id="editPackageForm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title font-bold text-slate-800" id="editPackageModalLabel">Edit Paket</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body space-y-4">
+            <input type="hidden" id="editPackageId" name="id">
+
+            <div>
+              <label for="editNomorResi" class="block text-xs font-semibold text-slate-700 mb-1">No Resi</label>
+              <input type="text"
+                class="form-control w-full bg-slate-50 border border-slate-200 text-slate-900 rounded p-2 text-xs focus:ring-1 focus:ring-[#1e3a8a] focus:bg-white"
+                id="editNomorResi" name="nomorResi" required>
+            </div>
+
+            <div>
+              <label for="editNamaKurir" class="block text-xs font-semibold text-slate-700 mb-1">Nama Kurir</label>
+              <input type="text"
+                class="form-control w-full bg-slate-50 border border-slate-200 text-slate-900 rounded p-2 text-xs focus:ring-1 focus:ring-[#1e3a8a] focus:bg-white"
+                id="editNamaKurir" name="namaKurir" required>
+            </div>
+
+            <div>
+              <label for="editPenerimaNama" class="block text-xs font-semibold text-slate-700 mb-1">Penerima
+                Paket</label>
+              <input type="text"
+                class="form-control w-full bg-slate-50 border border-slate-200 text-slate-900 rounded p-2 text-xs focus:ring-1 focus:ring-[#1e3a8a] focus:bg-white"
+                id="editPenerimaNama" name="penerimaNama" required>
+            </div>
+
+            <div>
+              <label for="editDeskripsiPaket" class="block text-xs font-semibold text-slate-700 mb-1">Deskripsi
+                Paket</label>
+              <input type="text"
+                class="form-control w-full bg-slate-50 border border-slate-200 text-slate-900 rounded p-2 text-xs focus:ring-1 focus:ring-[#1e3a8a] focus:bg-white"
+                id="editDeskripsiPaket" name="deskripsiPaket">
+            </div>
+
+            <div>
+              <label for="editJenisPaket" class="block text-xs font-semibold text-slate-700 mb-1">Jenis Paket</label>
+              <input type="text"
+                class="form-control w-full bg-slate-50 border border-slate-200 text-slate-900 rounded p-2 text-xs focus:ring-1 focus:ring-[#1e3a8a] focus:bg-white"
+                id="editJenisPaket" name="jenisPaket">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit"
+              class="btn btn-primary bg-[#5ca82f] hover:bg-[#4d8b26] border-none rounded-lg px-4 py-2 text-xs font-semibold text-white">Simpan</button>
+            <button type="button"
+              class="btn btn-light bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 rounded-lg text-xs"
+              data-bs-dismiss="modal">Batal</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- ======================== SCRIPTS SECTION ======================== -->
+  <!-- ================================================================= -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <script>
-    // Update current date and time
+    // ================= SCRIPT UPDATE WAKTU REALTIME =================
     function updateDateTime() {
       const now = new Date();
-      document.getElementById('current-date').textContent = now.toLocaleDateString('id-ID', { 
-        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+      document.getElementById('current-date').textContent = now.toLocaleDateString('id-ID', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
       });
       document.getElementById('current-time').textContent = now.toLocaleTimeString('id-ID');
     }
     setInterval(updateDateTime, 1000);
     updateDateTime();
 
-    // Visitor Chart
-    const visitorCtx = document.getElementById('visitorChart').getContext('2d');
-    const visitorChart = new Chart(visitorCtx, {
-      type: 'line',
-      data: {
-        labels: <%- JSON.stringify(chartLabels) %>,
-        datasets: [{
-          label: 'Jumlah Visitor',
-          data: <%- JSON.stringify(chartData) %>,
-          borderColor: 'rgba(52, 152, 219, 1)',
-          backgroundColor: 'rgba(52, 152, 219, 0.1)',
-          borderWidth: 2,
-          fill: true,
-          tension: 0.3
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top',
-          },
-          tooltip: {
-            mode: 'index',
-            intersect: false,
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: {
-              precision: 0
-            }
-          }
-        }
-      }
-    });
-
-    // Package Chart
-    const packageCtx = document.getElementById('packageChart').getContext('2d');
-    const packageChart = new Chart(packageCtx, {
-      type: 'bar',
-      data: {
-        labels: <%- JSON.stringify(chartLabels) %>,
-        datasets: [{
-          label: 'Jumlah Paket',
-          data: <%- JSON.stringify(packageChartData) %>,
-          backgroundColor: 'rgba(231, 76, 60, 0.5)',
-          borderColor: 'rgba(231, 76, 60, 1)',
-          borderWidth: 2
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'top' },
-          tooltip: { mode: 'index', intersect: false }
-        },
-        scales: {
-          y: { beginAtZero: true, ticks: { precision: 0 } }
-        }
-      }
-    });
-
-    // Comparison Chart
-    const comparisonCtx = document.getElementById('comparisonChart').getContext('2d');
-    const comparisonChart = new Chart(comparisonCtx, {
-      type: 'bar',
-      data: {
-        labels: <%- JSON.stringify(chartLabels) %>,
-        datasets: [
-          {
-            label: 'Visitor',
-            data: <%- JSON.stringify(chartData) %>,
-            backgroundColor: 'rgba(52, 152, 219, 0.7)',
-            borderColor: 'rgba(52, 152, 219, 1)',
-            borderWidth: 1
-          },
-          {
-            label: 'Paket',
-            data: <%- JSON.stringify(packageChartData) %>,
-            backgroundColor: 'rgba(46, 204, 113, 0.7)',
-            borderColor: 'rgba(46, 204, 113, 1)',
-            borderWidth: 1
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend:
-          {
-            position: 'top',
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: {
-              precision: 0
-            }
-          }
-        }
-      }
-    });
-
-    // Tambah Visitor button: show modal pilihan form
-    document.getElementById('btnTambahVisitor').addEventListener('click', function() {
+    // ================= SCRIPT TRIGGER MODAL PILIHAN TAMU/PAKET =================
+    document.getElementById('btnTambahVisitor').addEventListener('click', function () {
       var modal = new bootstrap.Modal(document.getElementById('modalPilihForm'));
       modal.show();
     });
 
-    // Bootstrap tab event: resize chart when tab is shown
-    document.querySelectorAll('button[data-bs-toggle="pill"]').forEach(tabBtn => {
-      tabBtn.addEventListener('shown.bs.tab', function (event) {
-        if (event.target.id === 'visitor-chart-tab') {
-          visitorChart.resize();
-        } else if (event.target.id === 'package-chart-tab') {
-          packageChart.resize();
-        } else if (event.target.id === 'comparison-chart-tab') {
-          comparisonChart.resize();
+    // ================= SCRIPT GRAFIK UTAMA APEXCHARTS =================
+
+    // Konfigurasi Area Chart Trend Kunjungan Mingguan
+    var trendOptions = {
+      series: [{
+        name: 'Visitor',
+        data: <%- JSON.stringify(chartData) %>
+      }, {
+        name: 'Paket',
+        data: <%- JSON.stringify(packageChartData) %>
+      }],
+      chart: {
+        height: 280,
+        type: 'area',
+        background: 'transparent',
+        fontFamily: 'Plus Jakarta Sans, sans-serif',
+        toolbar: { show: false },
+        sparkline: { enabled: false }
+      },
+      theme: { mode: 'light' },
+      colors: ['#1e3a8a', '#5ca82f'],
+      dataLabels: { enabled: false },
+      stroke: { curve: 'smooth', width: 2.5 },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.25,
+          opacityTo: 0,
+          stops: [0, 95, 100]
         }
-      });
+      },
+      grid: {
+        borderColor: '#e2e8f0',
+        strokeDashArray: 4,
+        xaxis: { lines: { show: false } },
+        yaxis: { lines: { show: true } }
+      },
+      xaxis: {
+        categories: <%- JSON.stringify(chartLabels.map(l => {
+          const d = new Date(l);
+          return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+        })) %>,
+        axisBorder: { show: false },
+        axisTicks: { show: false },
+        labels: { style: { colors: '#64748b', fontSize: '9px' } }
+      },
+      yaxis: {
+        labels: { style: { colors: '#64748b', fontSize: '9px' } }
+      },
+      tooltip: {
+        theme: 'dark',
+        x: { show: true }
+      }
+    };
+    var trendChart = new ApexCharts(document.querySelector("#main-trend-chart"), trendOptions);
+    trendChart.render();
+
+    // ================= SCRIPT DONUT CHART STATUS KUNJUNGAN =================
+    const visitorsList = <%- JSON.stringify(allVisitors) %>;
+    const statusCounts = { approved: 0, pending: 0, checkedIn: 0, reschedule: 0, rejected: 0 };
+    visitorsList.forEach(v => {
+      const s = (v.status || '').toLowerCase();
+      if (s === 'approved') statusCounts.approved++;
+      else if (s === 'checked-in') statusCounts.checkedIn++;
+      else if (s === 'reschedule') statusCounts.reschedule++;
+      else if (s === 'rejected') statusCounts.rejected++;
+      else statusCounts.pending++;
     });
 
-    function paginateTable(tableId, paginationId, rowsPerPage) {
+    var statusOptions = {
+      series: [statusCounts.approved, statusCounts.pending, statusCounts.checkedIn, statusCounts.reschedule, statusCounts.rejected],
+      chart: {
+        type: 'donut',
+        height: 180,
+        fontFamily: 'Plus Jakarta Sans, sans-serif'
+      },
+      labels: ['Approved', 'Pending', 'Checked-in', 'Reschedule', 'Rejected'],
+      colors: ['#10b981', '#f59e0b', '#3b82f6', '#8b5cf6', '#ef4444'],
+      legend: { show: false },
+      dataLabels: { enabled: false },
+      plotOptions: {
+        pie: {
+          donut: {
+            size: '72%',
+            background: 'transparent',
+            labels: {
+              show: true,
+              name: {
+                show: true,
+                fontSize: '10px',
+                color: '#64748b',
+                offsetY: -5
+              },
+              value: {
+                show: true,
+                fontSize: '18px',
+                fontWeight: 'bold',
+                color: '#1e293b',
+                offsetY: 5,
+                formatter: function (val) { return val; }
+              },
+              total: {
+                show: true,
+                label: 'Total',
+                color: '#64748b',
+                fontSize: '10px',
+                formatter: function (w) {
+                  return w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                }
+              }
+            }
+          }
+        }
+      },
+      stroke: { show: false },
+      theme: { mode: 'light' }
+    };
+    var statusChart = new ApexCharts(document.querySelector("#visitor-status-chart"), statusOptions);
+    statusChart.render();
+
+    // ================= SCRIPT GRAFIK MINI SPARKLINE CARD =================
+    var spark1Options = {
+      series: [{ data: <%- JSON.stringify(chartData) %> }],
+      chart: { type: 'line', width: 90, height: 35, sparkline: { enabled: true } },
+      stroke: { curve: 'smooth', width: 2 },
+      colors: ['#3b82f6'],
+      tooltip: { enabled: false }
+    };
+    new ApexCharts(document.querySelector("#sparkline-visitor"), spark1Options).render();
+
+    var spark2Options = {
+      series: [{ data: <%- JSON.stringify(packageChartData) %> }],
+      chart: { type: 'line', width: 90, height: 35, sparkline: { enabled: true } },
+      stroke: { curve: 'smooth', width: 2 },
+      colors: ['#10b981'],
+      tooltip: { enabled: false }
+    };
+    new ApexCharts(document.querySelector("#sparkline-package"), spark2Options).render();
+
+    var spark3Options = {
+      series: [{ data: <%- JSON.stringify(chartData) %> }],
+      chart: { type: 'line', width: 90, height: 35, sparkline: { enabled: true } },
+      stroke: { curve: 'smooth', width: 2 },
+      colors: ['#8b5cf6'],
+      tooltip: { enabled: false }
+    };
+    new ApexCharts(document.querySelector("#sparkline-monthly-visitor"), spark3Options).render();
+
+    var spark4Options = {
+      series: [{ data: <%- JSON.stringify(packageChartData) %> }],
+      chart: { type: 'line', width: 90, height: 35, sparkline: { enabled: true } },
+      stroke: { curve: 'smooth', width: 2 },
+      colors: ['#f59e0b'],
+      tooltip: { enabled: false }
+    };
+    new ApexCharts(document.querySelector("#sparkline-monthly-package"), spark4Options).render();
+
+    // ================= SCRIPT PAGINATION & SEARCH PREVIEW TABEL =================
+    function setupPaginatedSearch(tableId, paginationId, searchInputId, itemsPerPage) {
       const table = document.getElementById(tableId);
       if (!table) return;
       const tbody = table.querySelector('tbody');
       const rows = Array.from(tbody.querySelectorAll('tr'));
       const pagination = document.getElementById(paginationId);
-      let currentPage = 1;
-      const totalPages = Math.ceil(rows.length / rowsPerPage);
+      const searchInput = document.getElementById(searchInputId);
 
-      function showPage(page) {
-        currentPage = page;
-        rows.forEach((row, i) => {
-          row.style.display = (i >= (page-1)*rowsPerPage && i < page*rowsPerPage) ? '' : 'none';
-        });
-        renderPagination();
+      let currentPage = 1;
+      let filteredRows = rows;
+
+      function showRows() {
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        rows.forEach(row => row.style.display = 'none');
+        filteredRows.slice(start, end).forEach(row => row.style.display = '');
       }
 
       function renderPagination() {
         pagination.innerHTML = '';
+        const totalPages = Math.ceil(filteredRows.length / itemsPerPage);
         if (totalPages <= 1) return;
+
         for (let i = 1; i <= totalPages; i++) {
           const btn = document.createElement('button');
           btn.textContent = i;
-          btn.className = 'btn btn-sm mx-1 ' + (i === currentPage ? 'btn-primary' : 'btn-outline-primary');
-          btn.onclick = () => showPage(i);
+          btn.className = 'w-5 h-5 rounded flex items-center justify-center text-[10px] transition-all ' +
+            (i === currentPage
+              ? 'bg-[#5ca82f] text-white font-bold'
+              : 'bg-[#1e293b]/50 text-slate-600 hover:bg-slate-800 hover:text-slate-800');
+
+          btn.onclick = () => {
+            currentPage = i;
+            showRows();
+            renderPagination();
+          };
           pagination.appendChild(btn);
         }
       }
 
-      showPage(1);
-    }
-
-    paginateTable('visitorTable', 'visitorPagination', 5);
-    paginateTable('packageTable', 'packagePagination', 5);
-
-    // Visitor search filter
-const searchInput = document.getElementById('searchVisitorInput');
-const visitorTableBody = document.getElementById('visitorTableBody');
-
-if (searchInput && visitorTableBody) {
-  searchInput.addEventListener('input', function () {
-    const filter = this.value.toLowerCase();
-    const rows = visitorTableBody.getElementsByTagName('tr');
-
-    Array.from(rows).forEach(row => {
-      const match = Array.from(row.getElementsByTagName('td')).some(cell =>
-        cell.textContent.toLowerCase().includes(filter)
-      );
-      row.style.display = match ? '' : 'none';
-    });
-  });
-}
-
-function setupPaginatedSearch(tableId, paginationId, searchInputId, itemsPerPage) {
-  const table = document.getElementById(tableId);
-  const tbody = table.querySelector('tbody');
-  const rows = Array.from(tbody.querySelectorAll('tr'));
-  const pagination = document.getElementById(paginationId);
-  const searchInput = document.getElementById(searchInputId);
-
-  let currentPage = 1;
-  let filteredRows = rows;
-
-  function showRows() {
-    const start = (currentPage - 1) * itemsPerPage;
-    const end = start + itemsPerPage;
-    rows.forEach(row => row.style.display = 'none');
-    filteredRows.slice(start, end).forEach(row => row.style.display = '');
-  }
-
-  function renderPagination() {
-    pagination.innerHTML = '';
-    const totalPages = Math.ceil(filteredRows.length / itemsPerPage);
-    if (totalPages <= 1) return;
-    for (let i = 1; i <= totalPages; i++) {
-      const btn = document.createElement('button');
-      btn.textContent = i;
-      btn.className = 'btn btn-sm mx-1 ' + (i === currentPage ? 'btn-primary' : 'btn-outline-primary');
-      btn.onclick = () => {
-        currentPage = i;
-        showRows();
+      function filterRows() {
+        const keyword = searchInput.value.toLowerCase();
+        filteredRows = rows.filter(row =>
+          row.innerText.toLowerCase().includes(keyword)
+        );
+        currentPage = 1;
         renderPagination();
+        showRows();
+      }
+
+      if (searchInput) {
+        searchInput.addEventListener('input', filterRows);
+      }
+
+      filterRows(); // Render pertama kali
+    }
+
+    // Inisialisasi pagination tabel preview (5 data per halaman)
+    setupPaginatedSearch('visitorTable', 'visitorPagination', 'searchVisitorInput', 5);
+    setupPaginatedSearch('packageTable', 'packagePagination', 'searchPackageInput', 5);
+
+    // ================= SCRIPT GLOBAL SEARCH =================
+    const globalSearch = document.getElementById('globalSearchInput');
+    if (globalSearch) {
+      globalSearch.addEventListener('input', function () {
+        const val = this.value;
+        const vSearch = document.getElementById('searchVisitorInput');
+        const pSearch = document.getElementById('searchPackageInput');
+        if (vSearch) {
+          vSearch.value = val;
+          vSearch.dispatchEvent(new Event('input'));
+        }
+        if (pSearch) {
+          pSearch.value = val;
+          pSearch.dispatchEvent(new Event('input'));
+        }
+      });
+    }
+
+
+
+    // ================= SCRIPT PARSING & TAMPIL MODAL EDIT VISITOR =================
+    document.querySelectorAll('#detailModal .btn-warning').forEach(btn => {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        const row = btn.closest('tr');
+        const id = btn.getAttribute('href').split('/').pop();
+
+        document.getElementById('editVisitorId').value = id;
+        document.getElementById('editVisitorName').value = row.children[1].innerText;
+        document.getElementById('editVisitorNik').value = row.children[2].innerText;
+        document.getElementById('editVisitorPhone').value = row.children[3].innerText.trim() !== '-' ? row.children[3].innerText.trim() : '';
+        document.getElementById('editVisitorEmail').value = row.children[4].innerText;
+        document.getElementById('editVisitorInstansi').value = row.children[5].innerText !== '-' ? row.children[5].innerText : '';
+
+        // Jenis Kunjungan (Category)
+        const catText = row.children[6].innerText.trim();
+        document.getElementById('editVisitorCategory').value = catText || 'Meeting';
+
+        document.getElementById('editVisitorBertemu').value = row.children[7].innerText !== '-' ? row.children[7].innerText : '';
+        document.getElementById('editVisitorJanji').value = row.children[8].innerText.toLowerCase();
+        document.getElementById('editVisitorPurpose').value = row.children[9].innerText;
+        document.getElementById('editVisitorRekan').value = row.children[10].innerText !== '-' ? row.children[10].innerText : '';
+
+        // Parse tanggal dd/mm/yyyy ke format yyyy-mm-dd
+        const rawDate = row.children[11].innerText;
+        if (rawDate && rawDate !== '-') {
+          const parts = rawDate.split('/');
+          if (parts.length === 3) {
+            document.getElementById('editVisitorTanggal').value = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+          }
+        } else {
+          document.getElementById('editVisitorTanggal').value = '';
+        }
+
+        document.getElementById('editVisitorJam').value = row.children[12].innerText !== '-' ? row.children[12].innerText : '';
+
+        // Prioritas
+        const prioText = row.children[14].innerText.trim();
+        let prioVal = 'Normal';
+        if (prioText.includes('Mendesak')) prioVal = 'Mendesak';
+        else if (prioText.includes('Penting')) prioVal = 'Penting';
+        document.getElementById('editVisitorPriority').value = prioVal;
+
+        document.getElementById('editVisitorStatus').value = row.children[15].innerText.trim().toLowerCase();
+
+        // Sembunyikan modal detail, lalu tampilkan modal edit
+        var detailModal = bootstrap.Modal.getInstance(document.getElementById('detailModal'));
+        if (detailModal) detailModal.hide();
+
+        var modal = new bootstrap.Modal(document.getElementById('editVisitorModal'));
+        modal.show();
+      });
+    });
+
+    // ================= SCRIPT PARSING & TAMPIL MODAL EDIT PAKET =================
+    document.querySelectorAll('#detailPackageModal .btn-edit-package').forEach(btn => {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        const row = btn.closest('tr');
+        const id = btn.getAttribute('href').split('/').pop();
+
+        document.getElementById('editPackageId').value = id;
+        document.getElementById('editNomorResi').value = row.children[1].innerText;
+        document.getElementById('editJenisPaket').value = row.children[2].innerText !== '-' ? row.children[2].innerText : '';
+        document.getElementById('editDeskripsiPaket').value = row.children[3].innerText !== '-' ? row.children[3].innerText : '';
+        document.getElementById('editNamaKurir').value = row.children[4].innerText;
+        document.getElementById('editPenerimaNama').value = row.children[8].innerText !== '-' ? row.children[8].innerText : '';
+
+        // Sembunyikan modal detail, lalu tampilkan modal edit
+        var detailModal = bootstrap.Modal.getInstance(document.getElementById('detailPackageModal'));
+        if (detailModal) detailModal.hide();
+
+        var modal = new bootstrap.Modal(document.getElementById('editPackageModal'));
+        modal.show();
+      });
+    });
+
+    // ================= SCRIPT SUBMIT EDIT FORM VIA AJAX =================
+    document.getElementById('editVisitorForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const id = document.getElementById('editVisitorId').value;
+      const data = {
+        name: document.getElementById('editVisitorName').value,
+        nik: document.getElementById('editVisitorNik').value,
+        email: document.getElementById('editVisitorEmail').value,
+        nomorHp: document.getElementById('editVisitorPhone').value,
+        instansi: document.getElementById('editVisitorInstansi').value,
+        bertemu: document.getElementById('editVisitorBertemu').value,
+        janji: document.getElementById('editVisitorJanji').value,
+        jenisKunjungan: document.getElementById('editVisitorCategory').value,
+        prioritas: document.getElementById('editVisitorPriority').value,
+        purpose: document.getElementById('editVisitorPurpose').value,
+        rekan: document.getElementById('editVisitorRekan').value,
+        tanggal: document.getElementById('editVisitorTanggal').value,
+        jam: document.getElementById('editVisitorJam').value,
+        status: document.getElementById('editVisitorStatus').value
       };
-      pagination.appendChild(btn);
-    }
-  }
 
-  function filterRows() {
-    const keyword = searchInput.value.toLowerCase();
-    filteredRows = rows.filter(row =>
-      row.innerText.toLowerCase().includes(keyword)
-    );
-    currentPage = 1;
-    renderPagination();
-    showRows();
-  }
-
-  searchInput.addEventListener('input', filterRows);
-
-  filterRows(); // Initial render
-}
-
-// Aktifkan untuk masing-masing tabel
-setupPaginatedSearch('visitorTable', 'visitorPagination', 'searchVisitorInput', 5);
-setupPaginatedSearch('packageTable', 'packagePagination', 'searchPackageInput', 5);
-
-    // Edit button handler (inside modal detail visitor)
-document.querySelectorAll('#detailModal .btn-warning').forEach(btn => {
-  btn.addEventListener('click', function(e) {
-    e.preventDefault();
-    const row = btn.closest('tr');
-    const id = btn.getAttribute('href').split('/').pop();
-
-    // Isi semua field sesuai urutan kolom tabel
-    document.getElementById('editVisitorId').value = id;
-    document.getElementById('editVisitorName').value = row.children[1].innerText;
-    document.getElementById('editVisitorNik').value = row.children[2].innerText;
-    document.getElementById('editVisitorEmail').value = row.children[3].innerText;
-    document.getElementById('editVisitorInstansi').value = row.children[4].innerText;
-    document.getElementById('editVisitorBertemu').value = row.children[5].innerText;
-    document.getElementById('editVisitorJanji').value = row.children[6].innerText.toLowerCase();
-    document.getElementById('editVisitorPurpose').value = row.children[7].innerText;
-    document.getElementById('editVisitorRekan').value = row.children[8].innerText;
-    document.getElementById('editVisitorTanggal').value = row.children[9].innerText !== '-' ? row.children[9].innerText : '';
-    document.getElementById('editVisitorJam').value = row.children[10].innerText !== '-' ? row.children[10].innerText : '';
-    document.getElementById('editVisitorStatus').value = row.children[12].innerText.trim().toLowerCase();
-
-    // Tutup modal detail sebelum buka modal edit
-    var detailModal = bootstrap.Modal.getInstance(document.getElementById('detailModal'));
-    if (detailModal) detailModal.hide();
-
-    var modal = new bootstrap.Modal(document.getElementById('editVisitorModal'));
-    modal.show();
-  });
-});
-
-// Edit button handler (modal detail package)
-document.querySelectorAll('#detailPackageModal .btn-edit-package').forEach(btn => {
-  btn.addEventListener('click', function(e) {
-    e.preventDefault();
-    const row = btn.closest('tr');
-    const id = btn.getAttribute('href').split('/').pop();
-
-    document.getElementById('editPackageId').value = id;
-    document.getElementById('editNomorResi').value = row.children[1].innerText;
-    document.getElementById('editJenisPaket').value = row.children[2].innerText;
-    document.getElementById('editDeskripsiPaket').value = row.children[3].innerText;
-    document.getElementById('editNamaKurir').value = row.children[4].innerText;
-    document.getElementById('editPenerimaNama').value = row.children[8].innerText;
-
-    // Tutup modal detail sebelum buka modal edit
-    var detailModal = bootstrap.Modal.getInstance(document.getElementById('detailPackageModal'));
-    if (detailModal) detailModal.hide();
-
-    var modal = new bootstrap.Modal(document.getElementById('editPackageModal'));
-    modal.show();
-  });
-});
-
-// Submit edit form via AJAX
-document.getElementById('editVisitorForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  const id = document.getElementById('editVisitorId').value;
-  const data = {
-    name: document.getElementById('editVisitorName').value,
-    nik: document.getElementById('editVisitorNik').value,
-    email: document.getElementById('editVisitorEmail').value,
-    instansi: document.getElementById('editVisitorInstansi').value,
-    bertemu: document.getElementById('editVisitorBertemu').value,
-    janji: document.getElementById('editVisitorJanji').value,
-    purpose: document.getElementById('editVisitorPurpose').value,
-    rekan: document.getElementById('editVisitorRekan').value,
-    tanggal: document.getElementById('editVisitorTanggal').value,
-    jam: document.getElementById('editVisitorJam').value,
-    status: document.getElementById('editVisitorStatus').value
-  };
-  fetch(`/visitor/edit/${id}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      location.reload();
-    } else {
-      Swal.fire('Gagal!', 'Gagal update data.', 'error');
-    }
-  });
-});
-
-// Hapus visitor via AJAX
-document.querySelectorAll('#detailModal form[action^="/visitor/delete"]').forEach(form => {
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    Swal.fire({
-      title: 'Yakin hapus data ini?',
-      text: 'Data yang dihapus tidak dapat dikembalikan!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Ya, hapus!',
-      cancelButtonText: 'Batal'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        fetch(form.action, { method: 'POST' })
-          .then(res => res.json())
-          .then(data => {
-            if (data.success) {
-              Swal.fire('Terhapus!', 'Data berhasil dihapus.', 'success')
-                .then(() => location.reload());
-            } else {
-              Swal.fire('Gagal!', 'Gagal menghapus data.', 'error');
-            }
-          });
-      }
+      fetch(`/visitor/edit/${id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+        .then(res => res.json())
+        .then(resData => {
+          if (resData.success) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Berhasil!',
+              text: 'Data visitor berhasil diperbarui.',
+              confirmButtonColor: '#3b82f6'
+            }).then(() => location.reload());
+          } else {
+            Swal.fire('Gagal!', 'Gagal update data visitor: ' + (resData.error || ''), 'error');
+          }
+        });
     });
-  });
-});
 
-// Submit edit package form via AJAX
-document.getElementById('editPackageForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  const id = document.getElementById('editPackageId').value;
-  const data = {
-    nomorResi: document.getElementById('editNomorResi').value,
-    namaKurir: document.getElementById('editNamaKurir').value,
-    penerimaNama: document.getElementById('editPenerimaNama').value,
-    deskripsiPaket: document.getElementById('editDeskripsiPaket').value,
-    jenisPaket: document.getElementById('editJenisPaket').value
-  };
-  fetch(`/package/edit/${id}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      location.reload();
-    } else {
-      Swal.fire('Gagal!', 'Gagal update data paket.', 'error');
-    }
-  });
-});
+    document.getElementById('editPackageForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const id = document.getElementById('editPackageId').value;
+      const data = {
+        nomorResi: document.getElementById('editNomorResi').value,
+        namaKurir: document.getElementById('editNamaKurir').value,
+        penerimaNama: document.getElementById('editPenerimaNama').value,
+        deskripsiPaket: document.getElementById('editDeskripsiPaket').value,
+        jenisPaket: document.getElementById('editJenisPaket').value
+      };
 
-// Hapus package via AJAX
-document.querySelectorAll('#detailPackageModal .form-delete-package').forEach(form => {
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    Swal.fire({
-      title: 'Yakin hapus data paket ini?',
-      text: 'Data yang dihapus tidak dapat dikembalikan!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Ya, hapus!',
-      cancelButtonText: 'Batal'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        fetch(form.action, { method: 'POST' })
-          .then(res => res.json())
-          .then(data => {
-            if (data.success) {
-              Swal.fire('Terhapus!', 'Data paket berhasil dihapus.', 'success')
-                .then(() => location.reload());
-            } else {
-              Swal.fire('Gagal!', 'Gagal menghapus data paket.', 'error');
-            }
-          });
-      }
+      fetch(`/package/edit/${id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+        .then(res => res.json())
+        .then(resData => {
+          if (resData.success) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Berhasil!',
+              text: 'Data paket berhasil diperbarui.',
+              confirmButtonColor: '#3b82f6'
+            }).then(() => location.reload());
+          } else {
+            Swal.fire('Gagal!', 'Gagal update data paket: ' + (resData.error || ''), 'error');
+          }
+        });
     });
-  });
-});
 
+    // ================= SCRIPT HAPUS DATA VIA AJAX (SWEETALERT2) =================
+    document.querySelectorAll('#detailModal .form-delete-visitor').forEach(form => {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        Swal.fire({
+          title: 'Yakin hapus data ini?',
+          text: 'Data yang dihapus tidak dapat dikembalikan!',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#ef4444',
+          cancelButtonColor: '#475569',
+          confirmButtonText: 'Ya, hapus!',
+          cancelButtonText: 'Batal'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            fetch(form.action, { method: 'POST' })
+              .then(res => res.json())
+              .then(resData => {
+                if (resData.success) {
+                  Swal.fire('Terhapus!', 'Data berhasil dihapus.', 'success')
+                    .then(() => location.reload());
+                } else {
+                  Swal.fire('Gagal!', 'Gagal menghapus data.', 'error');
+                }
+              });
+          }
+        });
+      });
+    });
+
+    document.querySelectorAll('#detailPackageModal .form-delete-package').forEach(form => {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        Swal.fire({
+          title: 'Yakin hapus data paket ini?',
+          text: 'Data yang dihapus tidak dapat dikembalikan!',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#ef4444',
+          cancelButtonColor: '#475569',
+          confirmButtonText: 'Ya, hapus!',
+          cancelButtonText: 'Batal'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            fetch(form.action, { method: 'POST' })
+              .then(res => res.json())
+              .then(resData => {
+                if (resData.success) {
+                  Swal.fire('Terhapus!', 'Data paket berhasil dihapus.', 'success')
+                    .then(() => location.reload());
+                } else {
+                  Swal.fire('Gagal!', 'Gagal menghapus data paket.', 'error');
+                }
+              });
+          }
+        });
+      });
+    });
   </script>
-  <%- include('partials/footer') %>
 </body>
+
 </html>

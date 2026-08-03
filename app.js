@@ -4,11 +4,21 @@ const mongoose = require('mongoose');
 const path = require('path');
 const session = require('express-session');
 const flash = require('connect-flash');
+const crypto = require('crypto');
 
 const visitorRoutes = require('./routes/visitor');
 const packageRoutes = require('./routes/package');
 const dashboardRoute = require('./routes/dashboard');
 const responseRoutes = require('./routes/response');
+const authRoutes = require('./routes/auth');
+const approvalRoutes = require('./routes/approval');
+const appointmentRoutes = require('./routes/appointment');
+const laporanRoutes = require('./routes/laporan');
+const auditLogRoutes = require('./routes/auditLog');
+const pengaturanRoutes = require('./routes/pengaturan');
+
+const { requireLogin } = require('./utils/authMiddleware');
+const User = require('./models/User');
 
 const app = express();
 
@@ -45,13 +55,57 @@ app.use((req, res, next) => {
 });
 
 // 🌐 Routes
+
+// Rute Auth (Login / Logout) - Tanpa proteksi middleware
+app.use('/', authRoutes);
+
+// Rute Response (Approval via email link) - Tanpa proteksi middleware
+app.use('/response', responseRoutes);
+
+// Proteksi rute berikut dengan middleware requireLogin (kecuali form visitor/package yang dibuat publik)
 app.use('/visitor', visitorRoutes);
 app.use('/package', packageRoutes);
-app.use('/response', responseRoutes);
-app.use('/', dashboardRoute);
+app.use('/approval', requireLogin, approvalRoutes);
+app.use('/appointment', requireLogin, appointmentRoutes);
+app.use('/laporan', requireLogin, laporanRoutes);
+app.use('/audit-log', requireLogin, auditLogRoutes);
+app.use('/pengaturan', requireLogin, pengaturanRoutes);
+app.use('/', requireLogin, dashboardRoute);
+
+// 🌱 Auto-Seeding: Buat akun default Admin & Satpam jika belum ada
+async function seedDefaultUsers() {
+  try {
+    const adminExists = await User.findOne({ username: 'admin' });
+    if (!adminExists) {
+      const hashedPassword = crypto.createHash('sha256').update('admin123').digest('hex');
+      await User.create({
+        username: 'admin',
+        password: hashedPassword,
+        role: 'admin',
+        name: 'Administrator'
+      });
+      console.log('✅ Default admin account created (admin / admin123)');
+    }
+
+    const satpamExists = await User.findOne({ username: 'satpam' });
+    if (!satpamExists) {
+      const hashedPassword = crypto.createHash('sha256').update('satpam123').digest('hex');
+      await User.create({
+        username: 'satpam',
+        password: hashedPassword,
+        role: 'satpam',
+        name: 'Satpam BPMA'
+      });
+      console.log('✅ Default satpam account created (satpam / satpam123)');
+    }
+  } catch (err) {
+    console.error('❌ Error seeding default users:', err);
+  }
+}
 
 // 🚀 Start Server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Server running on http://localhost:${PORT}`);
+  await seedDefaultUsers();
 });

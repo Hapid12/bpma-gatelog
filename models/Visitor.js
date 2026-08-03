@@ -11,7 +11,13 @@ const visitorSchema = new mongoose.Schema({
   companions: { type: Number, required: true },
   schedule: { type: Date, required: true },
   date: { type: Date, default: Date.now },
-  status: { type: String, default: 'pending' }
+  status: { type: String, default: 'pending' },
+  checkInTime: { type: Date },
+  checkOutTime: { type: Date },
+  visitCategory: { type: String, default: 'Meeting' },
+  phoneNumber: { type: String, default: '-' },
+  priority: { type: String, default: 'Normal' },
+  employeeNotes: { type: String }
 });
 
 module.exports = mongoose.model('Visitor', visitorSchema);

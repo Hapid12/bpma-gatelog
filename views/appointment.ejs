@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Appointment Management - BPMA GateLog</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased overflow-hidden font-sans">
+  
+  <div class="flex h-screen w-screen overflow-hidden">
+    
+    <!-- Sidebar Kiri (Admin) -->
+    <aside class="w-64 bg-[#1e3a8a] border-r border-[#1e3a8a]/20 flex flex-col justify-between shrink-0 z-20">
+      <div>
+        <!-- Logo -->
+        <div class="flex items-center px-6 py-5 border-b border-[#1e3a8a]/20">
+          <svg class="w-8 h-8 mr-2.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3C12 3 6 8.5 6 13C6 16.3137 8.68629 19 12 19C15.3137 19 18 16.3137 18 13C18 8.5 12 3 12 3Z" fill="url(#leafGradient)"/>
+            <path d="M12 8C12 8 9.5 11 9.5 13C9.5 14.3807 10.6193 15.5 12 15.5C13.3807 15.5 14.5 14.3807 14.5 13C14.5 11 12 8 12 8Z" fill="#FFFFFF"/>
+            <defs>
+              <linearGradient id="leafGradient" x1="6" y1="3" x2="18" y2="19" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#10B981"/>
+                <stop stop-color="#059669"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="flex flex-col">
+            <span class="text-base font-bold tracking-wider text-white">BPMA</span>
+            <span class="text-xs font-semibold tracking-wide text-[#5ca82f] -mt-1">GateLog</span>
+          </div>
+        </div>
+
+        <!-- Menu Sidebar -->
+        <nav class="flex-1 px-4 space-y-1.5 py-6">
+          <a href="/" class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium text-blue-200 hover:text-white hover:bg-white/10 transition-all duration-200">
+            <i class="bi bi-grid-fill mr-3 text-base"></i>
+            <span>Dashboard</span>
+          </a>
+          
+          <a href="/visitor" class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium text-blue-200 hover:text-white hover:bg-white/10 transition-all duration-200">
+            <i class="bi bi-people mr-3 text-base"></i>
+            <span>Visitor</span>
+          </a>
+          
+          <a href="/package" class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium text-blue-200 hover:text-white hover:bg-white/10 transition-all duration-200">
+            <i class="bi bi-box-seam mr-3 text-base"></i>
+            <span>Paket Masuk</span>
+          </a>
+          
+          <a href="/appointment" class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium text-white bg-[#5ca82f]/90 shadow-md shadow-[#5ca82f]/20 transition-all duration-200">
+            <i class="bi bi-calendar-event mr-3 text-base"></i>
+            <span>Appointment</span>
+          </a>
+          
+          <a href="/approval" class="flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-medium text-blue-200 hover:text-white hover:bg-white/10 transition-all duration-200">
+            <div class="flex items-center">
+              <i class="bi bi-shield-check mr-3 text-base"></i>
+              <span>Approval</span>
+            </div>
+          </a>
+          
+          <a href="/laporan" class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium text-blue-200 hover:text-white hover:bg-white/10 transition-all duration-200">
+            <i class="bi bi-file-earmark-text mr-3 text-base"></i>
+            <span>Laporan</span>
+          </a>
+          
+          <a href="/audit-log" class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium text-blue-200 hover:text-white hover:bg-white/10 transition-all duration-200">
+            <i class="bi bi-journal-code mr-3 text-base"></i>
+            <span>Audit Log</span>
+          </a>
+          
+          <a href="/pengaturan" class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium text-blue-200 hover:text-white hover:bg-white/10 transition-all duration-200">
+            <i class="bi bi-gear mr-3 text-base"></i>
+            <span>Pengaturan</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Profil Admin -->
+      <div class="p-4 border-t border-[#1e3a8a]/20">
+        <a href="/logout" class="flex items-center justify-between p-2 rounded-lg hover:bg-rose-950/20 group cursor-pointer transition-colors duration-200">
+          <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-full bg-[#5ca82f] flex items-center justify-center font-bold text-white text-xs border border-[#5ca82f]">
+              <%= user.name ? user.name[0].toUpperCase() : 'U' %>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-xs font-semibold text-white"><%= user.name || 'User' %></span>
+              <span class="text-[9px] text-blue-200 capitalize">Role: <%= user.role || 'Guest' %></span>
+            </div>
+          </div>
+          <i class="bi bi-box-arrow-right text-blue-300 group-hover:text-rose-400 text-sm transition-colors"></i>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Panel Konten Kanan -->
+    <div class="flex-1 flex flex-col overflow-hidden bg-slate-50">
+      
+      <!-- Topbar -->
+      <header class="h-20 bg-white/90 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-8 z-10 shrink-0">
+        <div>
+          <h1 class="text-xl font-bold text-slate-800 tracking-wide">Kelola Appointment</h1>
+          <p class="text-[11px] text-slate-600 mt-0.5">Setujui, tolak, atau jadwalkan ulang permintaan kunjungan</p>
+        </div>
+
+        <div class="flex items-center space-x-6">
+          <div class="flex items-center space-x-3 text-xs">
+            <div class="flex items-center space-x-2 bg-white border border-slate-200 px-3 py-2 rounded-lg text-slate-700">
+              <i class="bi bi-calendar3 text-[#5ca82f]"></i>
+              <span id="current-date" class="font-medium"></span>
+            </div>
+            <div class="flex items-center space-x-2 bg-white border border-slate-200 px-3 py-2 rounded-lg text-slate-700">
+              <i class="bi bi-clock text-[#5ca82f]"></i>
+              <span id="current-time" class="font-mono font-medium"></span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Area Utama Halaman -->
+      <main class="flex-1 overflow-y-auto p-8 space-y-6">
+        
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <h2 class="text-base font-semibold text-slate-600 uppercase tracking-wider">Permintaan Kunjungan</h2>
+          <div class="relative w-64">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <i class="bi bi-search text-slate-400 text-xs"></i>
+            </span>
+            <input type="text" id="searchAppInput" class="w-full bg-slate-50 border border-slate-200 text-xs text-slate-800 rounded-lg pl-9 pr-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#1e3a8a] focus:border-transparent placeholder-slate-400" placeholder="Cari nama, instansi, atau tujuan...">
+          </div>
+        </div>
+
+        <!-- Tabel Appointment -->
+        <div class="bg-white shadow-sm border border-slate-200 rounded-xl p-5 flex flex-col justify-between min-h-[450px]">
+          <div>
+            <div class="overflow-x-auto">
+              <table id="appointmentTable" class="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr class="border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider text-[10px]">
+                    <th class="py-3.5 pb-3">Tamu & Email</th>
+                    <th class="py-3.5 pb-3">Instansi</th>
+                    <th class="py-3.5 pb-3">Pegawai Tujuan</th>
+                    <th class="py-3.5 pb-3">Keperluan</th>
+                    <th class="py-3.5 pb-3">Jadwal Pengajuan</th>
+                    <th class="py-3.5 pb-3">Status</th>
+                    <th class="py-3.5 pb-3 text-center">Tindakan Cepat</th>
+                  </tr>
+                </thead>
+                <tbody id="appointmentTableBody" class="divide-y divide-slate-100">
+                  <% if (appointments.length === 0) { %>
+                    <tr><td colspan="7" class="text-center py-16 text-slate-600">Tidak ada permintaan kunjungan yang tertunda.</td></tr>
+                  <% } else { %>
+                    <% appointments.forEach((v) => { %>
+                      <tr class="hover:bg-slate-800/10 transition-colors text-slate-700">
+                        <td class="py-3.5">
+                          <span class="font-bold text-slate-800 text-sm block"><%= v.name %></span>
+                          <span class="text-[10px] text-slate-600"><i class="bi bi-envelope mr-1"></i><%= v.email %></span>
+                        </td>
+                        <td class="py-3.5"><%= v.institution || v.instansi || '-' %></td>
+                        <td class="py-3.5 text-slate-600"><%= v.targetEmployee || v.bertemu %></td>
+                        <td class="py-3.5 max-w-[150px] truncate" title="<%= v.purpose %>"><%= v.purpose %></td>
+                        <td class="py-3.5">
+                          <span class="block text-slate-700 font-semibold"><%= v.tanggal || (v.schedule ? new Date(v.schedule).toLocaleDateString('id-ID') : '-') %></span>
+                          <span class="block text-[10px] text-slate-600 font-mono"><%= v.jam || (v.schedule ? new Date(v.schedule).toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}) : '-') %></span>
+                        </td>
+                        <td class="py-3.5">
+                          <% 
+                            let badgeClass = 'bg-amber-55 text-amber-700 border border-amber-200';
+                            let displayStatus = v.status || 'Pending';
+                            if (displayStatus === 'rejected') badgeClass = 'bg-rose-50 text-rose-700 border border-rose-200';
+                            if (displayStatus === 'reschedule') badgeClass = 'bg-purple-50 text-purple-700 border border-purple-200';
+                            if (displayStatus === 'approved') badgeClass = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+                          %>
+                          <span class="inline-block px-2.5 py-0.5 rounded text-[10px] font-semibold tracking-wide uppercase <%= badgeClass %>">
+                            <%= displayStatus %>
+                          </span>
+                        </td>
+                        <td class="py-3.5 text-center">
+                          <!-- Jika masih pending, munculkan ketiga tombol aksi -->
+                          <% if (!v.status || v.status === 'pending') { %>
+                            <div class="flex items-center justify-center space-x-2">
+                              <button onclick="updateStatus('<%= v._id %>', 'approved')" class="bg-emerald-600 hover:bg-emerald-700 text-white p-1.5 rounded transition-colors tooltip-btn" title="Setujui">
+                                <i class="bi bi-check-lg"></i>
+                              </button>
+                              <button onclick="updateStatus('<%= v._id %>', 'reschedule')" class="bg-purple-600 hover:bg-purple-700 text-white p-1.5 rounded transition-colors tooltip-btn" title="Jadwalkan Ulang">
+                                <i class="bi bi-calendar-x"></i>
+                              </button>
+                              <button onclick="updateStatus('<%= v._id %>', 'rejected')" class="bg-rose-600 hover:bg-rose-700 text-white p-1.5 rounded transition-colors tooltip-btn" title="Tolak">
+                                <i class="bi bi-x-lg"></i>
+                              </button>
+                            </div>
+                          <% } else { %>
+                            <!-- Jika sudah direspons, beri tombol kembalikan ke pending jika perlu, atau cukup teks -->
+                            <span class="text-[10px] text-slate-600 italic">Sudah direspons</span>
+                            <button onclick="updateStatus('<%= v._id %>', 'pending')" class="text-[#1e3a8a] hover:text-[#5ca82f] ml-2 text-[10px] underline">Batal?</button>
+                          <% } %>
+                        </td>
+                      </tr>
+                    <% }) %>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center mt-4 border-t border-slate-200 pt-3 text-[10px] text-slate-600 shrink-0">
+            <div>Menampilkan data pencarian</div>
+            <div class="flex items-center space-x-1" id="appPagination"></div>
+            <div>Total: <span class="text-slate-800"><%= appointments.length %></span> Permintaan</div>
+          </div>
+        </div>
+
+        <footer class="text-center text-slate-600 text-[10px] pt-12 pb-4">
+          © 2026 BPMA GateLog - Sistem Informasi Manajemen Akses BPMA
+        </footer>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <script>
+    // Realtime Clock
+    function updateDateTime() {
+      const now = new Date();
+      document.getElementById('current-date').textContent = now.toLocaleDateString('id-ID', { 
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+      });
+      document.getElementById('current-time').textContent = now.toLocaleTimeString('id-ID');
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+
+    // AJAX Action Update Status
+    function updateStatus(id, newStatus) {
+      let titleStr = '';
+      let textStr = 'Aksi ini akan mengirimkan email notifikasi ke visitor tersebut.';
+      let color = '#3b82f6';
+      let inputType = null;
+      let inputPlaceholder = '';
+      
+      if (newStatus === 'approved') {
+        titleStr = 'Setujui Kunjungan?';
+        color = '#10b981';
+      } else if (newStatus === 'rejected') {
+        titleStr = 'Tolak Kunjungan?';
+        color = '#ef4444';
+        inputType = 'textarea';
+        inputPlaceholder = 'Masukkan alasan penolakan...';
+        textStr = 'Aksi ini akan mengirimkan email notifikasi. Silakan masukkan alasan penolakan:';
+      } else if (newStatus === 'reschedule') {
+        titleStr = 'Minta Jadwal Ulang?';
+        color = '#8b5cf6';
+        inputType = 'textarea';
+        inputPlaceholder = 'Masukkan alasan jadwal ulang...';
+        textStr = 'Aksi ini akan mengirimkan email notifikasi. Silakan masukkan alasan jadwal ulang:';
+      } else {
+        titleStr = 'Batalkan Respons?';
+        textStr = 'Status akan dikembalikan ke pending.';
+        color = '#475569';
+      }
+
+      Swal.fire({
+        title: titleStr,
+        text: textStr,
+        icon: 'question',
+        input: inputType,
+        inputPlaceholder: inputPlaceholder,
+        showCancelButton: true,
+        confirmButtonColor: color,
+        cancelButtonColor: '#1e293b',
+        confirmButtonText: 'Ya, Lanjutkan!',
+        cancelButtonText: 'Batal',
+        preConfirm: (inputValue) => {
+          if (inputType && !inputValue) {
+            Swal.showValidationMessage('Keterangan wajib diisi!');
+            return false;
+          }
+          return inputValue;
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          
+          Swal.fire({
+            title: 'Memproses...',
+            text: 'Mohon tunggu sebentar, sedang memperbarui dan mengirim email.',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading() }
+          });
+
+          const requestBody = { status: newStatus };
+          if (result.value && typeof result.value === 'string') {
+            requestBody.employeeNotes = result.value;
+          }
+
+          fetch(`/appointment/update/${id}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestBody)
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: data.message,
+                confirmButtonColor: '#3b82f6'
+              }).then(() => location.reload());
+            } else {
+              Swal.fire('Gagal!', data.error || 'Terjadi kesalahan.', 'error');
+            }
+          })
+          .catch(err => {
+            Swal.fire('Error!', 'Koneksi terputus.', 'error');
+          });
+        }
+      });
+    }
+
+    // Simple Filter/Search
+    document.getElementById('searchAppInput').addEventListener('input', function(e) {
+      const keyword = e.target.value.toLowerCase();
+      const rows = document.querySelectorAll('#appointmentTableBody tr');
+      rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(keyword) ? '' : 'none';
+      });
+    });
+  </script>
+</body>
+</html>
